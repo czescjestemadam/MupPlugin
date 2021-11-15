@@ -1,0 +1,9 @@
+mup.cmd.mupplugin - /mupplugin
+mup.cmd.sortowanie - /sortowanie
+mup.cmd.butelka - /butelka
+mup.cmd.feed - /feed
+mup.cmd.feed.others - /feed <player>
+mup.cmd.feed.level - /feed <player> [level]
+mup.cmd.heal - /heal
+mup.cmd.heal.others - /heal <player>
+mup.cmd.heal.level - /heal <player> [level]

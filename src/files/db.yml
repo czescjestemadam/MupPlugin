@@ -1,0 +1,7 @@
+# Database configuration
+
+type: sqlite
+address: database.db
+user: root
+passwd: passwd
+db-name: mupdb

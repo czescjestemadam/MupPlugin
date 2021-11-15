@@ -1,0 +1,48 @@
+main: mup.nolan.mupplugin.MupPlugin
+name: MupPlugin
+author: nołanmup
+description: szypkiplugin2011
+version: 0.2
+
+api-version: 1.17
+softdepend: [PlaceholderAPI, Vault]
+
+commands:
+  mupplugin:
+    aliases: mup
+  list:
+    aliases: [ls, who]
+  sortowanie:
+    aliases: sort
+  butelka:
+    aliases: exp
+  feed:
+    description: amciu
+  heal:
+    description: zycko
+  galeria:
+    description: poka ity
+
+permissions:
+  mup.cmd.mupplugin:
+    default: op
+  mup.cmd.sortowanie:
+    default: op
+  mup.cmd.butelka:
+    default: op
+  mup.cmd.feed:
+    default: op
+  mup.cmd.feed.others:
+    default: op
+  mup.cmd.feed.level:
+    default: op
+  mup.cmd.heal:
+    default: op
+  mup.cmd.heal.others:
+    default: op
+  mup.cmd.heal.level:
+    default: op
+  mup.cmd.gallery:
+    default: op
+  mup.cmd.gallery.edit-others:
+    default: op

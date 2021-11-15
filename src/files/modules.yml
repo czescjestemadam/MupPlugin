@@ -1,0 +1,10 @@
+itemsort: true
+butelka: true
+gallery: true
+antiafk: true
+
+messages:
+  on-command-disabled: '&c&o{} &cjest chwilowo wyłączony'
+  on-enable: '&aModule {} enabled'
+  on-disable: '&cModule {} disabled'
+  on-reload: '&eModule {} reloaded'

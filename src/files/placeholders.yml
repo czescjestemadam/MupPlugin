@@ -1,0 +1,5 @@
+# Config for PlaceholderAPI expansion
+
+format:
+  vanished-on: ' &a&l[V]'
+  vanished-off: ''

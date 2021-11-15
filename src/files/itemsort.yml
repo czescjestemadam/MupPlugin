@@ -1,0 +1,8 @@
+
+
+
+messages:
+  enabled: '&awłączone'
+  disabled: '&cwyłączone'
+  changed: '&7Sortwanie zostało {}!'
+  reminder: '&7Użyj komendy &6/sortowanie &7aby &awłączyć &7automatyczne sortowanie skrzynek.'

@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="MupPlugin:jar">
+    <output-path>$USER_HOME$/Dokumenty</output-path>
+    <root id="archive" name="MupPlugin.jar">
+      <element id="module-output" name="MupPlugin" />
+    </root>
+  </artifact>
+</component>

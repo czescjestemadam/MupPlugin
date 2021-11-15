@@ -1,0 +1,43 @@
+unlocked-slots:
+  default: 2
+  vip: 3
+  mvp: 4
+  mvp+: 5
+
+slot-buy-multiplier: 75000 # * additional slot to buy
+max-slots: 54
+
+gui-items:
+  default-border: GRAY_STAINED_GLASS_PANE
+  available-borders:
+    - 'r/*_STAINED_GLASS_PANE'
+    - LADDER
+    - COBWEB
+    - SEAGRASS
+    - IRON_BARS
+    - END_CRYSTAL
+    - LILY_PAD
+  locked-slot: LIGHT_GRAY_STAINED_GLASS_PANE
+  prev-page: ARROW
+  next-page: ARROW
+  info: BOOK
+  border-buymenu: b # todo set
+  slot-buymenu: b # todo set
+
+messages:
+  edit-reminder: '&7By edytować zawartość galerii użyj komendy &a/galeria -edytuj'
+  no-player-found: '&cNie znaleziono takiego gracza'
+  gui:
+    win-name:
+      own: '&aTwoja galeria'
+      other: '&aGaleria gracza {}'
+      edit-own: '&aEdytuj swoją galerie'
+      edit-other: '&aEdytuj galerie gracza {}'
+    locked-slot: '§' # §=puste albo zeby odblokowac costam jakis napis
+    prev-page: '&cPoprzednia strona'
+    next-page: '&cNastępna strona'
+    info:
+      - '&cInformacje' # nazwa itemu
+      - '&eilestam wyswietlen {views}' # ↓ lore
+      - '&eilestam polubien {likes}'
+      - '&eDo edycji użyj komendy /galeria -edytuj'
