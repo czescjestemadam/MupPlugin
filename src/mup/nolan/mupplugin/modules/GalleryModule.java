@@ -93,7 +93,7 @@ public class GalleryModule extends Module
 		final ItemStack info = new ItemBuilder(cfg.getMaterial("gui-items.info")).withName(infols.remove(0)).withLore(infols).build();
 
 		// set items (per page = 28)
-		final Iterator<GalleryRow> it = items.subList(0, 28).iterator();
+		final Iterator<GalleryRow> it = items.iterator();
 		for (int i = 0; i < inv.getSize(); i++)
 		{
 			ItemStack is = lockedSlot;
