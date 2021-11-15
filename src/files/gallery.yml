@@ -41,3 +41,5 @@ messages:
       - '&eilestam wyswietlen {views}' # ↓ lore
       - '&eilestam polubien {likes}'
       - '&eDo edycji użyj komendy /galeria -edytuj'
+    border-buymenu: '&cMenu ramek'
+    slot-buymenu: '&cDokup sloty'
