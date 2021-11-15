@@ -1,6 +1,6 @@
 create table if not exists mup_itemsort (
     id integer primary key autoincrement,
-    player varchar(16) not null,
+    player varchar(16) not null
 );
 
 create table if not exists mup_gallery (
