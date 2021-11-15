@@ -24,11 +24,7 @@ import java.util.*;
 public class GalleryModule extends Module
 {
 	private final MupPlugin mupPlugin;
-	private final Map<Player, List<GalleryRow>> itemsMap = new HashMap<>();
-	private final Map<Player, GalleryUserdataRow> userdataMap = new HashMap<>();
-	private final Map<Player, Inventory> invMap = new HashMap<>();
-	private final Map<Player, Integer> pageMap = new HashMap<>();
-	private final Map<Player, Boolean> editmodeMap = new HashMap<>();
+	private final Map<Player, GalleryView> viewMap = new HashMap<>();
 	private final Set<Player> reminded = new HashSet<>();
 
 	public GalleryModule(MupPlugin mupPlugin)
@@ -40,12 +36,8 @@ public class GalleryModule extends Module
 	@Override
 	public void onDisable()
 	{
-		itemsMap.clear();
-		userdataMap.clear();
-		invMap.keySet().forEach(Player::closeInventory);
-		invMap.clear();
-		pageMap.clear();
-		editmodeMap.clear();
+		viewMap.keySet().forEach(Player::closeInventory);
+		viewMap.clear();
 		reminded.clear();
 	}
 
@@ -86,12 +78,6 @@ public class GalleryModule extends Module
 		if (userdata == null) // set default userdata
 			userdata = new GalleryUserdataRow(-1, owner, 0, "", cfg.getMaterial("gui-items.default-border"), null, null);
 
-		// add items and settings to map for player
-		itemsMap.put(player, items);
-		userdataMap.put(player, userdata);
-		editmodeMap.put(player, editmode);
-		pageMap.put(player, 0);
-
 		// create inventory
 		final String winName = cfg.getString("messages.gui.win-name." + (editmode ? "edit-" : "") + (owner == player ? "own" : "other"));
 		final Inventory inv = Bukkit.createInventory(null, 54, StrUtils.replaceColors(winName.replace("{}", owner.getName())));
@@ -129,9 +115,8 @@ public class GalleryModule extends Module
 			inv.setItem(i, is);
 		}
 
-		// open inv
-		invMap.put(player, inv);
 		player.openInventory(inv);
+		viewMap.put(player, new GalleryView(items, userdata, inv, 0, editmode));
 
 		if (editmode) // if opened editmode don't remind
 			reminded.add(player);
@@ -139,39 +124,30 @@ public class GalleryModule extends Module
 
 	public void onClick(InventoryClickEvent e)
 	{
-		if (!invMap.containsKey((Player)e.getWhoClicked())) // check if player have gallery opened
+		if (!viewMap.containsKey((Player)e.getWhoClicked())) // check if player have gallery opened
 			return;
+
+		final GalleryView view = viewMap.get((Player)e.getWhoClicked());
+
+		if (!view.editmode) // if !editmode cancel item move
+			e.setCancelled(true);
+		else if (e.getSlot() < 9 || e.getSlot() > 44 || e.getSlot() % 9 == 0 || e.getSlot() % 9 == 8) // else cancel only border
+			e.setCancelled(true);
 
 		// check for border settings click and render buy menu
 
 		// check for page changes and rerender items sublist
 
-
-		if (!editmodeMap.get((Player)e.getWhoClicked()))
-			e.setCancelled(true);
-
-		if (invMap.containsValue(e.getClickedInventory()))
-		{
-			if (e.getSlot() < 9 || e.getSlot() > 44 || e.getSlot() % 9 == 0 || e.getSlot() % 9 == 8)
-				e.setCancelled(true);
-
-			MupPlugin.log().info("clicked slot: " + e.getSlot());
-		}
 	}
 
 	public void onClose(InventoryCloseEvent e)
 	{
 		final Player p = (Player)e.getPlayer();
 
-		if (itemsMap.remove(p) == null)
+		if (viewMap.remove(p) == null)
 			return;
 
 		e.getView().setCursor(null);
-
-		userdataMap.remove(p);
-		invMap.remove(p);
-		pageMap.remove(p);
-		editmodeMap.remove(p);
 
 		if (reminded.add((Player)e.getPlayer()))
 			e.getPlayer().sendMessage(StrUtils.replaceColors(mupPlugin.getConfigManager().getConfig("gallery").getString("messages.edit-reminder")));
@@ -182,5 +158,23 @@ public class GalleryModule extends Module
 	public void clearReminder(Player player)
 	{
 		reminded.remove(player);
+	}
+
+	private static class GalleryView
+	{
+		final List<GalleryRow> items;
+		final GalleryUserdataRow userdataRow;
+		final Inventory inv;
+		int page;
+		final boolean editmode;
+
+		GalleryView(List<GalleryRow> items, GalleryUserdataRow userdataRow, Inventory inv, int page, boolean editmode)
+		{
+			this.items = items;
+			this.userdataRow = userdataRow;
+			this.inv = inv;
+			this.page = page;
+			this.editmode = editmode;
+		}
 	}
 }
