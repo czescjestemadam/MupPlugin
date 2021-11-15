@@ -3,6 +3,15 @@ package mup.nolan.mupplugin.db;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 
+// create table if not exists mup_gallery (
+//    id integer primary key autoincrement,
+//    owner varchar(16) not null,
+//    sort_num integer,
+//    item blob not null,
+//    placed timedate not null,
+//    lock_id varchar(16)
+// );
+
 public class GalleryRow
 {
 	private final int id;
