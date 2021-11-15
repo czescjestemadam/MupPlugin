@@ -56,7 +56,7 @@ public class GalleryModule extends Module
 		final Statement st = mupPlugin.getDB().getStatement();
 		try
 		{
-			ResultSet rs = st.executeQuery("select * from mup_gallery where owner = '" + owner.getName() + "' " + (editmode ? "and lock_id is null" : "") + "order by sort_num");
+			ResultSet rs = st.executeQuery("select * from mup_gallery where owner = '" + owner.getName() + "' " + (editmode ? "and lock_id is null" : "") + " order by sort_num");
 			while (rs.next())
 				items.add(new GalleryRow(rs.getInt("id"), owner, rs.getInt("sort_num"), ItemBuilder.fromString(rs.getString("item")), rs.getString("lock_id")));
 
