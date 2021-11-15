@@ -21,8 +21,8 @@ gui-items:
   prev-page: ARROW
   next-page: ARROW
   info: BOOK
-  border-buymenu: b # todo set
-  slot-buymenu: b # todo set
+  border-buymenu: ITEM_FRAME
+  slot-buymenu: OAK_SIGN
 
 messages:
   edit-reminder: '&7By edytować zawartość galerii użyj komendy &a/galeria -edytuj'
