@@ -1,6 +1,7 @@
 package mup.nolan.mupplugin.modules;
 
 import mup.nolan.mupplugin.MupPlugin;
+import mup.nolan.mupplugin.modules.gallery.GalleryModule;
 import mup.nolan.mupplugin.utils.StrUtils;
 import org.bukkit.command.CommandSender;
 
