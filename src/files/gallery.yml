@@ -42,4 +42,4 @@ messages:
       - '&eilestam polubien {likes}'
       - '&eDo edycji użyj komendy /galeria -edytuj'
     border-buymenu: '&cMenu ramek'
-    slot-buymenu: '&cDokup sloty'
+    slot-buymenu: '&cKup miejsce'
