@@ -1,10 +1,11 @@
-package mup.nolan.mupplugin.modules;
+package mup.nolan.mupplugin.modules.gallery;
 
 import mup.nolan.mupplugin.MupPlugin;
 import mup.nolan.mupplugin.config.Config;
 import mup.nolan.mupplugin.db.GalleryRow;
 import mup.nolan.mupplugin.db.GalleryUserdataRow;
 import mup.nolan.mupplugin.db.MupDB;
+import mup.nolan.mupplugin.modules.Module;
 import mup.nolan.mupplugin.utils.ItemBuilder;
 import mup.nolan.mupplugin.utils.StrUtils;
 import org.bukkit.Bukkit;
@@ -124,57 +125,25 @@ public class GalleryModule extends Module
 
 	public void onClick(InventoryClickEvent e)
 	{
-		if (!viewMap.containsKey((Player)e.getWhoClicked())) // check if player have gallery opened
-			return;
-
-		final GalleryView view = viewMap.get((Player)e.getWhoClicked());
-
-		if (!view.editmode) // if !editmode cancel item move
-			e.setCancelled(true);
-		else if (e.getSlot() < 9 || e.getSlot() > 44 || e.getSlot() % 9 == 0 || e.getSlot() % 9 == 8) // else cancel only border
-			e.setCancelled(true);
-
-		// check for border settings click and render buy menu
-
-		// check for page changes and rerender items sublist
-
+		final GalleryView view;
+		if ((view = viewMap.get((Player)e.getWhoClicked())) != null)
+			view.onClick(e);
 	}
 
 	public void onClose(InventoryCloseEvent e)
 	{
-		final Player p = (Player)e.getPlayer();
-
-		if (viewMap.remove(p) == null)
+		final GalleryView view;
+		if ((view = viewMap.remove((Player)e.getPlayer())) == null)
 			return;
 
-		e.getView().setCursor(null);
+		view.onClose(e);
 
-		if (reminded.add((Player)e.getPlayer()))
+		if (reminded.add((Player)e.getPlayer())) // exec once
 			e.getPlayer().sendMessage(StrUtils.replaceColors(mupPlugin.getConfigManager().getConfig("gallery").getString("messages.edit-reminder")));
-
-		Bukkit.getScheduler().scheduleSyncDelayedTask(mupPlugin, () -> ((Player)e.getPlayer()).updateInventory(), 1);
 	}
 
 	public void clearReminder(Player player)
 	{
 		reminded.remove(player);
-	}
-
-	private static class GalleryView
-	{
-		final List<GalleryRow> items;
-		final GalleryUserdataRow userdataRow;
-		final Inventory inv;
-		int page;
-		final boolean editmode;
-
-		GalleryView(List<GalleryRow> items, GalleryUserdataRow userdataRow, Inventory inv, int page, boolean editmode)
-		{
-			this.items = items;
-			this.userdataRow = userdataRow;
-			this.inv = inv;
-			this.page = page;
-			this.editmode = editmode;
-		}
 	}
 }
