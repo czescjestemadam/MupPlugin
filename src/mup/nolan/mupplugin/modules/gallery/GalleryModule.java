@@ -17,9 +17,6 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.*;
 
 public class GalleryModule extends Module
@@ -49,32 +46,8 @@ public class GalleryModule extends Module
 			return;
 
 		// get all items and settings from db
-		final List<GalleryRow> items = new ArrayList<>();
-		GalleryUserdataRow userdata = null;
-
-		final Statement st = mupPlugin.getDB().getStatement();
-		try
-		{
-			ResultSet rs = st.executeQuery("select * from mup_gallery where owner = '" + owner.getName() + "' " + (editmode ? "and lock_id is null" : "") + " order by sort_num");
-			while (rs.next())
-				items.add(new GalleryRow(rs.getInt("id"), owner, rs.getInt("sort_num"), ItemBuilder.fromString(rs.getString("item")), rs.getString("lock_id")));
-
-			rs = st.executeQuery("select " + (editmode ? "*" : "unlocked_slots, current_border") + " from mup_gallery_userdata where player = '" + owner.getName() + "'");
-			if (rs.next())
-			{
-				final int slots = rs.getInt("unlocked_slots");
-
-				userdata = editmode ?
-						new GalleryUserdataRow(rs.getInt("id"), owner, slots, rs.getString("unlocked_borders"), Material.getMaterial(rs.getString("current_border")), null, null) :
-						new GalleryUserdataRow(-1, owner, slots, null, Material.getMaterial(rs.getString("current_border")), null, null);
-			}
-		} catch (SQLException e)
-		{
-			e.printStackTrace();
-		}
-		MupDB.closeStatement(st);
-
-		final Config cfg = mupPlugin.getConfigManager().getConfig("gallery");
+		final Resrc<List<GalleryRow>> items = new Resrc<>(new ArrayList<>());
+		final Resrc<GalleryUserdataRow> userdata = new Resrc<>();
 
 		if (userdata == null) // set default userdata
 			userdata = new GalleryUserdataRow(-1, owner, 0, "", cfg.getMaterial("gui-items.default-border"), null, null);

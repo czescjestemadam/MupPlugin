@@ -3,8 +3,13 @@ package mup.nolan.mupplugin.db;
 import mup.nolan.mupplugin.MupPlugin;
 import mup.nolan.mupplugin.config.Config;
 import mup.nolan.mupplugin.utils.FileUtils;
+import mup.nolan.mupplugin.utils.ItemBuilder;
+import mup.nolan.mupplugin.utils.Resrc;
+import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 
 import java.sql.*;
+import java.util.List;
 
 public class MupDB
 {
@@ -55,6 +60,31 @@ public class MupDB
 		{
 			e.printStackTrace();
 		}
+	}
+
+	public void getGalleryData(OfflinePlayer owner, boolean editmode, Resrc<List<GalleryRow>> items, Resrc<GalleryUserdataRow> userdata)
+	{
+		final Statement st = getStatement();
+		try
+		{
+			ResultSet rs = st.executeQuery("select * from mup_gallery where owner = '" + owner.getName() + "' " + (editmode ? "and lock_id is null" : "") + " order by sort_num");
+			while (rs.next())
+				items.get().add(new GalleryRow(rs.getInt("id"), owner, rs.getInt("sort_num"), ItemBuilder.fromString(rs.getString("item")), rs.getString("lock_id")));
+
+			rs = st.executeQuery("select " + (editmode ? "*" : "unlocked_slots, current_border") + " from mup_gallery_userdata where player = '" + owner.getName() + "'");
+			if (rs.next())
+			{
+				final int slots = rs.getInt("unlocked_slots");
+
+				userdata.set(editmode ?
+						new GalleryUserdataRow(rs.getInt("id"), owner, slots, rs.getString("unlocked_borders"), Material.getMaterial(rs.getString("current_border")), null, null) :
+						new GalleryUserdataRow(-1, owner, slots, null, Material.getMaterial(rs.getString("current_border")), null, null));
+			}
+		} catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		closeStatement(st);
 	}
 
 	public Statement getStatement()
