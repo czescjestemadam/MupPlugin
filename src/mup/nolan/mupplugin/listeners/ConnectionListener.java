@@ -1,7 +1,7 @@
 package mup.nolan.mupplugin.listeners;
 
 import mup.nolan.mupplugin.MupPlugin;
-import mup.nolan.mupplugin.modules.GalleryModule;
+import mup.nolan.mupplugin.modules.gallery.GalleryModule;
 import mup.nolan.mupplugin.modules.ItemsortModule;
 import mup.nolan.mupplugin.modules.ModuleManager;
 import org.bukkit.event.EventHandler;

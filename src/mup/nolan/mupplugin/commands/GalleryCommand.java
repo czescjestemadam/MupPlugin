@@ -1,7 +1,7 @@
 package mup.nolan.mupplugin.commands;
 
 import mup.nolan.mupplugin.MupPlugin;
-import mup.nolan.mupplugin.modules.GalleryModule;
+import mup.nolan.mupplugin.modules.gallery.GalleryModule;
 import mup.nolan.mupplugin.utils.CommandUtils;
 import mup.nolan.mupplugin.utils.PermsUtils;
 import mup.nolan.mupplugin.utils.StrUtils;
