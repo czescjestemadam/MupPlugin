@@ -48,8 +48,6 @@ public class GalleryModule extends Module
 		if (owner.getName() == null)
 			return;
 
-		final Config cfg = mupPlugin.getConfigManager().getConfig("gallery");
-
 		// get all items and settings from db
 		final List<GalleryRow> items = new ArrayList<>();
 		GalleryUserdataRow userdata = null;
@@ -76,6 +74,8 @@ public class GalleryModule extends Module
 		}
 		MupDB.closeStatement(st);
 
+		final Config cfg = mupPlugin.getConfigManager().getConfig("gallery");
+
 		if (userdata == null) // set default userdata
 			userdata = new GalleryUserdataRow(-1, owner, 0, "", cfg.getMaterial("gui-items.default-border"), null, null);
 
@@ -88,6 +88,10 @@ public class GalleryModule extends Module
 		final ItemStack lockedSlot = new ItemBuilder(cfg.getMaterial("gui-items.locked-slot")).withName(cfg.getStringF("messages.gui.locked-slot")).build();
 		final ItemStack prevPage = new ItemBuilder(cfg.getMaterial("gui-items.prev-page")).withName(cfg.getStringF("messages.gui.prev-page")).build();
 		final ItemStack nextPage = new ItemBuilder(cfg.getMaterial("gui-items.next-page")).withName(cfg.getStringF("messages.gui.next-page")).build();
+		final ItemStack borderMenu = new ItemBuilder(cfg.getMaterial("gui-items.border-buymenu")).withName(cfg.getStringF("messages.gui.border-buymenu")).build();
+		final int borderMenuPos = cfg.getInt("gui-items.border-buymenu-pos");
+		final ItemStack slotMenu = new ItemBuilder(cfg.getMaterial("gui-items.slot-buymenu")).withName(cfg.getStringF("messages.gui.slot-buymenu")).build();
+		final int slotMenuPos = cfg.getInt("gui-items.slot-buymenu-pos");
 
 		final List<String> infols = cfg.getStringList("messages.gui.info");
 		infols.replaceAll(StrUtils::replaceColors);
@@ -107,6 +111,10 @@ public class GalleryModule extends Module
 				is = nextPage;
 
 			// if editmode add border menu and buy slots buttons
+			else if (i == borderMenuPos)
+				is = borderMenu;
+			else if (i == slotMenuPos)
+				is = slotMenu;
 
 			else if (i < 9 || i > 44 || i % 9 == 0 || i % 9 == 8)
 				is = border;

@@ -22,7 +22,9 @@ gui-items:
   next-page: ARROW
   info: BOOK
   border-buymenu: ITEM_FRAME
+  border-buymenu-pos: 46
   slot-buymenu: OAK_SIGN
+  slot-buymenu-pos: 52
 
 messages:
   edit-reminder: '&7By edytować zawartość galerii użyj komendy &a/galeria -edytuj'
