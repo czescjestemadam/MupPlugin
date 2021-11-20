@@ -5,6 +5,7 @@ import mup.nolan.mupplugin.commands.CommandManager;
 import mup.nolan.mupplugin.config.ConfigManager;
 import mup.nolan.mupplugin.db.MupDB;
 import mup.nolan.mupplugin.hooks.PapiHook;
+import mup.nolan.mupplugin.hooks.VaultHook;
 import mup.nolan.mupplugin.listeners.ListenerManager;
 import mup.nolan.mupplugin.modules.ModuleManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -47,6 +48,7 @@ public final class MupPlugin extends JavaPlugin
 		commandManager.registerCommands();
 
 		PapiHook.init();
+		VaultHook.init();
 	}
 
 	@Override

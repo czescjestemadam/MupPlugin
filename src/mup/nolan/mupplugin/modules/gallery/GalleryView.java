@@ -4,9 +4,13 @@ import mup.nolan.mupplugin.MupPlugin;
 import mup.nolan.mupplugin.config.Config;
 import mup.nolan.mupplugin.db.GalleryRow;
 import mup.nolan.mupplugin.db.GalleryUserdataRow;
+import mup.nolan.mupplugin.db.MupDB;
+import mup.nolan.mupplugin.hooks.VaultHook;
 import mup.nolan.mupplugin.utils.ItemBuilder;
+import mup.nolan.mupplugin.utils.Resrc;
 import mup.nolan.mupplugin.utils.StrUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -14,10 +18,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
 
 public class GalleryView
 {
@@ -26,37 +27,33 @@ public class GalleryView
 	private final Player player;
 	private final OfflinePlayer owner;
 	private final boolean editmode;
-	private final List<GalleryRow> items;
-	private final GalleryUserdataRow userdata;
+	private List<GalleryRow> items;
+	private GalleryUserdataRow userdata;
 	private final Inventory inv;
-	private final List<List<ItemStack>> editRawItems = new ArrayList<>();
 	private final int borderMenuPos = cfg.getInt("gui-items.border-buymenu-pos");
 	private final int slotMenuPos = cfg.getInt("gui-items.slot-buymenu-pos");
+	private final int cancelPos = cfg.getInt("gui-items.cancel-submenu-pos");
+	private final int acceptPos = cfg.getInt("gui-items.accept-submenu-pos");
+	private final ItemStack lockedSlot = new ItemBuilder(cfg.getMaterial("gui-items.locked-slot")).withName(cfg.getStringF("messages.gui.locked-slot")).build();
+	private final ItemStack cancel;
+	private final ItemStack accept;
+	private final List<Material> availableBorders = cfg.getMaterialList("gui-items.available-borders");
+	private Material selectedBorder;
 	private GalleryViewType type = GalleryViewType.MAIN;
 	private int page = 0;
 	private int allPages;
 
-	public GalleryView(Player player, OfflinePlayer owner, boolean editmode, List<GalleryRow> items, GalleryUserdataRow userdata)
+	public GalleryView(Player player, OfflinePlayer owner, boolean editmode)
 	{
 		this.player = player;
 		this.owner = owner;
 		this.editmode = editmode;
-		this.items = items;
-		this.userdata = userdata == null ? new GalleryUserdataRow(-1, owner, 0, "", cfg.getMaterial("gui-items.default-border"), null, null) : userdata;
+		cancel = editmode ? new ItemBuilder(cfg.getMaterial("gui-items.cancel-submenu")).withName(cfg.getStringF("messages.gui.cancel-submenu")).build() : null;
+		accept = editmode ? new ItemBuilder(cfg.getMaterial("gui-items.accpet-submenu")).withName(cfg.getStringF("messages.gui.accept-submenu")).build() : null;
 
-		allPages = items.size() / 28 + (items.size() % 28 > 0 ? 1 : 0);
-
-		if (editmode) // add paged rawItems
-		{
-			for (int i = 0; i < allPages; i++)
-				editRawItems.add(items.subList(Math.min(items.size(), i * 28), Math.min(items.size(), i * 28 + 27)).stream().map(GalleryRow::getItem).collect(Collectors.toList()));
-		}
-
-		// create inventory
 		final String winName = cfg.getString("messages.gui.win-name." + (editmode ? "edit-" : "") + (owner == player ? "own" : "other"));
 		inv = Bukkit.createInventory(null, 54, StrUtils.replaceColors(winName.replace("{}", owner.getName())));
-
-		renderPage();
+		renderPage(page, type);
 
 		player.openInventory(inv);
 	}
@@ -65,55 +62,131 @@ public class GalleryView
 	{
 		final int i = e.getSlot();
 
-		if (i == 48)
-			prevPage();
-		else if (i == 50)
-			nextPage();
-		else if (i == borderMenuPos)
-			borderMenu();
-		else if (i == slotMenuPos)
-			slotMenu();
+		if (i == 48 && page > 0)
+		{
+			if (editmode && type == GalleryViewType.MAIN)
+				saveItems();
+			renderPage(--page, type);
+		}
+		else if (i == 50 && page < allPages)
+		{
+			if (editmode && type == GalleryViewType.MAIN)
+				saveItems();
+			renderPage(++page, type);
+		}
 
-		if (!editmode) // if !editmode cancel item move
-			e.setCancelled(true);
-		else if (isBorder(i))
-			e.setCancelled(true);
+		switch (type)
+		{
+			case MAIN -> {
+				if (i == borderMenuPos && editmode)
+				{
+					saveItems();
+					renderPage(page, GalleryViewType.BORDER);
+				}
+				else if (i == slotMenuPos && editmode)
+				{
+					saveItems();
+					renderPage(page, GalleryViewType.SLOT);
+				}
+
+				if (!editmode) // if !editmode cancel item move
+					e.setCancelled(true);
+				else if (e.getClickedInventory() == inv && (isBorder(i) || lockedSlot.isSimilar(e.getCurrentItem())))
+					e.setCancelled(true);
+			}
+
+			case BORDER -> {
+				if (cancel.isSimilar(e.getCurrentItem()))
+				{
+					selectedBorder = userdata.getCurrentBorder();
+					renderPage(page, GalleryViewType.MAIN);
+				}
+				else if (accept.isSimilar(e.getCurrentItem()))
+				{
+					userdata.setCurrentBorder(selectedBorder);
+					renderPage(page, GalleryViewType.MAIN);
+				}
+				else if (!isBorder(i) && e.getCurrentItem() != null && availableBorders.contains(e.getCurrentItem().getType()))
+				{
+
+				}
+
+				e.setCancelled(true);
+			}
+
+			case BORDER_BUY -> {
+
+			}
+
+			case SLOT -> {
+				if (cancel.isSimilar(e.getCurrentItem()))
+					renderPage(page, GalleryViewType.MAIN);
+				else if (accept.isSimilar(e.getCurrentItem()))
+				{
+
+				}
+
+				e.setCancelled(true);
+			}
+		}
 	}
 
-	public void onClose(InventoryCloseEvent e)
+	public boolean onClose(InventoryCloseEvent e)
 	{
-		final Player p = (Player)e.getPlayer();
+		if (type == GalleryViewType.BORDER || type == GalleryViewType.SLOT) // prevent closing and open previous
+		{
+			renderPage(page, GalleryViewType.MAIN);
+			Bukkit.getScheduler().scheduleSyncDelayedTask(MupPlugin.get(), () -> player.openInventory(inv), 1);
+			return false;
+		}
+		else if (type == GalleryViewType.BORDER_BUY) // prevent closing and open previous
+		{
+			renderPage(page, GalleryViewType.BORDER);
+			Bukkit.getScheduler().scheduleSyncDelayedTask(MupPlugin.get(), () -> player.openInventory(inv), 1);
+			return false;
+		}
+
+		if (editmode && type == GalleryViewType.MAIN)
+			saveItems();
 
 		e.getView().setCursor(null);
-		Bukkit.getScheduler().scheduleSyncDelayedTask(MupPlugin.get(), p::updateInventory, 1);
-
-		if (!editmode)
-			return;
-
-		final List<ItemStack> invItems = readInvContents(new ArrayList<>());
-		if (editRawItems.isEmpty())
-			return;
-
-		editRawItems.set(page, invItems);
-		saveItems();
+		Bukkit.getScheduler().scheduleSyncDelayedTask(MupPlugin.get(), player::updateInventory, 1);
+		return true;
 	}
 
-	private void renderPage()
+	private void renderPage(int page, GalleryViewType type)
 	{
+		this.type = type;
+
+		if (type == GalleryViewType.MAIN)
+		{
+			final Resrc<List<GalleryRow>> items = new Resrc<>(new ArrayList<>());
+			final Resrc<GalleryUserdataRow> userdata = new Resrc<>();
+			MupPlugin.get().getDB().getGalleryData(owner, editmode, items, userdata);
+			this.items = items.get();
+			this.userdata = userdata.get() == null ? new GalleryUserdataRow(-1, owner, 0, "", cfg.getMaterial("gui-items.default-border"), null, null) : userdata.get();
+			selectedBorder = this.userdata.getCurrentBorder();
+			allPages = getAllSlots() / 28;
+		}
+
 		// prepare items
 		final ItemStack border = new ItemBuilder(userdata.getCurrentBorder()).withName("§").build();
-		final ItemStack lockedSlot = new ItemBuilder(cfg.getMaterial("gui-items.locked-slot")).withName(cfg.getStringF("messages.gui.locked-slot")).build();
-		final ItemStack prevPage = new ItemBuilder(cfg.getMaterial("gui-items.prev-page")).withName(cfg.getStringF("messages.gui.prev-page")).build();
-		final ItemStack nextPage = new ItemBuilder(cfg.getMaterial("gui-items.next-page")).withName(cfg.getStringF("messages.gui.next-page")).build();
-		final ItemStack borderMenu = new ItemBuilder(cfg.getMaterial("gui-items.border-buymenu")).withName(cfg.getStringF("messages.gui.border-buymenu")).build();
-		final ItemStack slotMenu = new ItemBuilder(cfg.getMaterial("gui-items.slot-buymenu")).withName(cfg.getStringF("messages.gui.slot-buymenu")).build();
+		final ItemStack prevPage = new ItemBuilder(cfg.getMaterial("gui-items.prev-page")).withName(cfg.getStringF("messages.gui.prev-page")).withAmount(page + 1).build();
+		final ItemStack nextPage = new ItemBuilder(cfg.getMaterial("gui-items.next-page")).withName(cfg.getStringF("messages.gui.next-page")).withAmount(allPages - page + 1).build();
+		final ItemStack borderMenu = editmode ? new ItemBuilder(cfg.getMaterial("gui-items.border-buymenu")).withName(cfg.getStringF("messages.gui.border-buymenu")).build() : null;
+		final ItemStack slotMenu = editmode ? new ItemBuilder(cfg.getMaterial("gui-items.slot-buymenu")).withName(cfg.getStringF("messages.gui.slot-buymenu")).build() : null;
 
 		final List<String> infols = cfg.getStringList("messages.gui.info");
 		infols.replaceAll(StrUtils::replaceColors);
 		final ItemStack info = new ItemBuilder(cfg.getMaterial("gui-items.info")).withName(infols.remove(0)).withLore(infols).build();
 
 		// set items (per page = 28)
-		final Iterator<GalleryRow> it = items.subList(Math.min(items.size(), page * 28), Math.min(items.size(), page * 28 + 27)).iterator();
+		List<GalleryRow> items = new ArrayList<>();
+		if (type == GalleryViewType.MAIN)
+			items = this.items;
+		else if (type == GalleryViewType.BORDER)
+			items = getBorderList();
+		final List<GalleryRow> subItems = items.subList(Math.min(items.size(), page * 28), Math.min(items.size(), page * 28 + 27));
 		for (int i = 0; i < inv.getSize(); i++)
 		{
 			ItemStack is = lockedSlot;
@@ -126,42 +199,41 @@ public class GalleryView
 				is = nextPage;
 
 				// if editmode add border menu and buy slots buttons
-			else if (i == borderMenuPos && editmode)
+			else if (i == borderMenuPos && type == GalleryViewType.MAIN && editmode)
 				is = borderMenu;
-			else if (i == slotMenuPos && editmode)
+			else if (i == slotMenuPos && type == GalleryViewType.MAIN && editmode)
 				is = slotMenu;
+
+			else if (i == cancelPos && (type == GalleryViewType.BORDER || type == GalleryViewType.SLOT))
+				is = cancel;
+			else if (i == acceptPos && (type == GalleryViewType.BORDER || type == GalleryViewType.SLOT))
+				is = accept;
 
 			else if (isBorder(i))
 				is = border;
-			else if (it.hasNext())
-				is = it.next().getItem(); // if !editmode add date lockId
+			else if (subItems.size() > getRelativePos(i))
+				is = subItems.get(getRelativePos(i)).getItem(); // if !editmode add date lockId
+			else if (getRelativePos(i) + page * 28 < getAllSlots() && type == GalleryViewType.MAIN)
+				is = null;
 
 			inv.setItem(i, is);
 		}
 	}
 
-	private void prevPage()
+	private List<GalleryRow> getBorderList()
 	{
-		System.out.println("prevPage");
-	}
-
-	private void nextPage()
-	{
-		System.out.println("nextPage");
-	}
-
-	private void borderMenu()
-	{
-		System.out.println("borderMenu");
-
-		type = GalleryViewType.BORDER;
-	}
-
-	private void slotMenu()
-	{
-		System.out.println("slotMenu");
-
-		type = GalleryViewType.SLOT;
+		final List<Material> unlocked = StrUtils.getMaterials(Arrays.asList(userdata.getUnlockedBorders().split(";")));
+		final List<GalleryRow> ret = new ArrayList<>();
+		availableBorders.forEach(m -> {
+			final boolean isUnlocked = unlocked.contains(m) || cfg.getMaterial("gui-items.default-border") == m;
+			final ItemBuilder item = new ItemBuilder(m).withName((isUnlocked ? "§a" : "§c") + StrUtils.capitalize(m.name().replaceAll("_", " ")));
+			if (!isUnlocked)
+				item.withLore(cfg.getStringF("messages.gui.border-buymenu-buylore").replace("{}", String.valueOf(getBorderCost(m))));
+			if (userdata.getCurrentBorder() == m)
+				item.addEnchantGlint().withLore(cfg.getStringF("messages.gui.border-buymenu-selected"));
+			ret.add(GalleryRow.justItem(item.build()));
+		});
+		return ret;
 	}
 
 	private List<ItemStack> readInvContents(List<ItemStack> items)
@@ -171,7 +243,7 @@ public class GalleryView
 
 		for (int i = 0; i < inv.getSize(); i++)
 		{
-			if (!isBorder(i) && !border.equals(invItems[i]))
+			if (!isBorder(i) && !border.isSimilar(invItems[i]) && !lockedSlot.isSimilar(invItems[i]))
 				items.add(invItems[i]);
 		}
 
@@ -180,11 +252,86 @@ public class GalleryView
 
 	private void saveItems()
 	{
-		System.out.println("saveItems");
+		final List<ItemStack> invItems = readInvContents(new ArrayList<>());
+
+		System.out.println("saveItems invItems = " + invItems);
+
+		final List<GalleryRow> changed = new ArrayList<>();
+		final List<GalleryRow> added = new ArrayList<>();
+		final List<GalleryRow> removed = new ArrayList<>();
+
+		for (ItemStack invItem : invItems) // every read item
+		{
+			int index;
+			if ((index = contains(invItem)) >= 0) // read item is in db
+			{
+				if (index - page * 28 != invItems.indexOf(invItem)) // changed index (place)
+				{
+					items.get(index).setSortNum(invItems.indexOf(invItem) + page * 28); // update sort_num
+					changed.add(items.get(index)); // db update sort_num
+				}
+			}
+			else if (invItem != null)// item is not in db
+				added.add(new GalleryRow(-1, owner, invItems.indexOf(invItem) + page * 28, invItem, new Date(), null)); // add item
+		}
+
+		for (GalleryRow gItem : items.subList(Math.min(items.size(), page * 28), Math.min(items.size(), page * 28 + 27))) // every db item
+		{
+			if (!containsDB(invItems, gItem.getItem())) // db item isn't in read items
+				removed.add(gItem);
+		}
+
+		MupDB db = MupPlugin.get().getDB();
+		db.updateGalleryData(changed);
+		db.insertGalleryData(added);
+		db.deleteGalleryData(removed);
+
+		MupPlugin.log().warning("inv save");
+		MupPlugin.log().info("changed = " + changed);
+		MupPlugin.log().info("added = " + added);
+		MupPlugin.log().info("removed = " + removed);
+	}
+
+	private int contains(ItemStack is)
+	{
+		for (GalleryRow item : items)
+		{
+			if (item.getItem() != null && item.getItem().equals(is))
+				return items.indexOf(item);
+		}
+		return -1;
+	}
+
+	private boolean containsDB(List<ItemStack> ls, ItemStack item)
+	{
+		for (ItemStack i : ls)
+		{
+//			if (i == item || (i != null && i.equals(item)))
+			if (Objects.equals(i, item))
+				return true;
+		}
+		return false;
 	}
 
 	private boolean isBorder(int i)
 	{
-		return i < 9 || i > 44 || i % 9 == 0 || i % 9 == 8;
+		return i < 9 || i > inv.getSize() - 10 || i % 9 == 0 || i % 9 == 8;
+	}
+
+	private int getRelativePos(int i)
+	{
+		if (!isBorder(i))
+			return i - 8 - i / 9 * 2;
+		return -1;
+	}
+
+	private int getAllSlots()
+	{
+		return cfg.getInt("unlocked-slots." + VaultHook.getPerms().getPrimaryGroup(null, owner).toLowerCase(), cfg.getInt("unlocked-slots.default")) + userdata.getUnlockedSlots();
+	}
+
+	private int getBorderCost(Material m)
+	{
+		return cfg.getInt("border-cost." + m.name(), cfg.getInt("border-cost.default"));
 	}
 }

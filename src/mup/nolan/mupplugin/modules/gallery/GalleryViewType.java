@@ -4,5 +4,6 @@ public enum GalleryViewType
 {
 	MAIN,
 	BORDER,
+	BORDER_BUY,
 	SLOT
 }

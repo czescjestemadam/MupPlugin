@@ -6,7 +6,7 @@ create table if not exists mup_itemsort (
 create table if not exists mup_gallery (
     id integer primary key autoincrement,
     owner varchar(16) not null,
-    sort_num integer,
+    sort_num integer not null,
     item blob not null,
     placed timedate not null,
     lock_id varchar(16)

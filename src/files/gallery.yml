@@ -3,9 +3,14 @@ unlocked-slots:
   vip: 3
   mvp: 4
   mvp+: 5
+  admin: 32
+  wlasciciel: 64
 
 slot-buy-multiplier: 75000 # * additional slot to buy
-max-slots: 54
+max-slots: 64
+border-cost:
+  default: 5000
+  #END_CRYSTAL: 15000
 
 gui-items:
   default-border: GRAY_STAINED_GLASS_PANE
@@ -25,6 +30,10 @@ gui-items:
   border-buymenu-pos: 46
   slot-buymenu: OAK_SIGN
   slot-buymenu-pos: 52
+  cancel-submenu: RED_STAINED_GLASS
+  cancel-submenu-pos: 46
+  accpet-submenu: LIME_STAINED_GLASS
+  accept-submenu-pos: 52
 
 messages:
   edit-reminder: '&7By edytować zawartość galerii użyj komendy &a/galeria -edytuj'
@@ -44,4 +53,10 @@ messages:
       - '&eilestam polubien {likes}'
       - '&eDo edycji użyj komendy /galeria -edytuj'
     border-buymenu: '&cMenu ramek'
+    border-buymenu-buylore: '&cMożesz kupić za: &6{}'
+    border-buymenu-selected: '&aWłączony'
     slot-buymenu: '&cKup miejsce'
+    cancel-submenu: '&cPowrót'
+    accept-submenu: '&aPotwierdź'
+    item-lore:
+      - '&aDodano: '

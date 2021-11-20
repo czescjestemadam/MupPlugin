@@ -1,17 +1,17 @@
 package mup.nolan.mupplugin.modules.gallery;
 
 import mup.nolan.mupplugin.MupPlugin;
-import mup.nolan.mupplugin.db.GalleryRow;
-import mup.nolan.mupplugin.db.GalleryUserdataRow;
 import mup.nolan.mupplugin.modules.Module;
-import mup.nolan.mupplugin.utils.Resrc;
 import mup.nolan.mupplugin.utils.StrUtils;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class GalleryModule extends Module
 {
@@ -36,15 +36,7 @@ public class GalleryModule extends Module
 	// todo move all to GuiManger
 	public void open(OfflinePlayer owner, Player player, boolean editmode)
 	{
-		// get all items and settings from db
-		final Resrc<List<GalleryRow>> items = new Resrc<>(new ArrayList<>());
-		final Resrc<GalleryUserdataRow> userdata = new Resrc<>();
-
-		mupPlugin.getDB().getGalleryData(owner, editmode, items, userdata);
-
-		final GalleryView view = new GalleryView(player, owner, editmode, items.get(), userdata.get());
-
-		viewMap.put(player, view);
+		viewMap.put(player, new GalleryView(player, owner, editmode));
 
 		if (editmode) // if opened editmode don't remind
 			reminded.add(player);
@@ -53,19 +45,22 @@ public class GalleryModule extends Module
 	public void onClick(InventoryClickEvent e)
 	{
 		final GalleryView view;
-		if ((view = viewMap.get((Player)e.getWhoClicked())) != null)
+		if ((view = viewMap.get((Player)e.getWhoClicked())) != null && e.getCurrentItem() != null)
 			view.onClick(e);
 	}
 
 	public void onClose(InventoryCloseEvent e)
 	{
+		final Player p = (Player)e.getPlayer();
+
 		final GalleryView view;
-		if ((view = viewMap.remove((Player)e.getPlayer())) == null)
+		if ((view = viewMap.get(p)) == null)
 			return;
 
-		view.onClose(e);
+		if (view.onClose(e))
+			viewMap.remove(p);
 
-		if (reminded.add((Player)e.getPlayer())) // exec once
+		if (reminded.add(p)) // exec once
 			e.getPlayer().sendMessage(StrUtils.replaceColors(mupPlugin.getConfigManager().getConfig("gallery").getString("messages.edit-reminder")));
 	}
 

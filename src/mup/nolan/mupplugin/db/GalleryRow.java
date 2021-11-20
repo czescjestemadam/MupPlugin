@@ -3,6 +3,8 @@ package mup.nolan.mupplugin.db;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Date;
+
 // create table if not exists mup_gallery (
 //    id integer primary key autoincrement,
 //    owner varchar(16) not null,
@@ -18,14 +20,16 @@ public class GalleryRow
 	private final OfflinePlayer owner;
 	private int sortNum;
 	private final ItemStack item;
+	private final Date placed;
 	private String lockId;
 
-	public GalleryRow(int id, OfflinePlayer owner, int sortNum, ItemStack item, String lockId)
+	public GalleryRow(int id, OfflinePlayer owner, int sortNum, ItemStack item, Date placed, String lockId)
 	{
 		this.id = id;
 		this.owner = owner;
 		this.sortNum = sortNum;
 		this.item = item;
+		this.placed = placed;
 		this.lockId = lockId;
 	}
 
@@ -54,6 +58,11 @@ public class GalleryRow
 		return item;
 	}
 
+	public Date getPlaced()
+	{
+		return placed;
+	}
+
 	public String getLockId()
 	{
 		return lockId;
@@ -72,7 +81,13 @@ public class GalleryRow
 				", owner=" + owner +
 				", sortNum=" + sortNum +
 				", item=" + item +
+				", placed=" + placed +
 				", lockId='" + lockId + '\'' +
 				'}';
+	}
+
+	public static GalleryRow justItem(ItemStack item)
+	{
+		return new GalleryRow(-1, null, -1, item, null, null);
 	}
 }

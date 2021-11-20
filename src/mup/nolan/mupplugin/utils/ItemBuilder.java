@@ -1,6 +1,8 @@
 package mup.nolan.mupplugin.utils;
 
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.io.BukkitObjectInputStream;
@@ -63,9 +65,26 @@ public class ItemBuilder
 		return this;
 	}
 
+	public ItemBuilder addEnchantGlint()
+	{
+		final ItemMeta im = is.getItemMeta();
+		im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+		im.addEnchant(Enchantment.CHANNELING, 1, false);
+		is.setItemMeta(im);
+		return this;
+	}
+
 	public ItemStack build()
 	{
 		return is;
+	}
+
+	@Override
+	public String toString()
+	{
+		return "ItemBuilder{" +
+				"is=" + is +
+				'}';
 	}
 
 	public static String toString(ItemStack is)
