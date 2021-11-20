@@ -69,7 +69,7 @@ public class MupDB
 		{
 			ResultSet rs = st.executeQuery("select * from mup_gallery where owner = '" + owner.getName() + "' " + (editmode ? "and lock_id is null" : "") + " order by sort_num");
 			while (rs.next())
-				items.get().add(new GalleryRow(rs.getInt("id"), owner, rs.getInt("sort_num"), ItemBuilder.fromString(rs.getString("item")), rs.getString("lock_id")));
+				items.get().add(new GalleryRow(rs.getInt("id"), owner, rs.getInt("sort_num"), ItemBuilder.fromString(rs.getString("item")), rs.getDate("placed"), rs.getString("lock_id")));
 
 			rs = st.executeQuery("select " + (editmode ? "*" : "unlocked_slots, current_border") + " from mup_gallery_userdata where player = '" + owner.getName() + "'");
 			if (rs.next())
@@ -85,6 +85,69 @@ public class MupDB
 			e.printStackTrace();
 		}
 		closeStatement(st);
+	}
+
+	public void updateGalleryData(List<GalleryRow> rows)
+	{
+		final Statement st = getStatement();
+		try
+		{
+			for (GalleryRow row : rows)
+				st.addBatch("update mup_gallery set sort_num = " + row.getSortNum() + " where id = " + row.getId());
+			st.executeBatch();
+		} catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		closeStatement(st);
+	}
+
+	public void insertGalleryData(List<GalleryRow> rows)
+	{
+		final Statement st = getStatement();
+		try
+		{
+			for (GalleryRow row : rows)
+			{
+				st.addBatch(String.format(
+						"insert into mup_gallery values(null, '%s', %d, '%s', %d, null)",
+						row.getOwner().getName(),
+						row.getSortNum(),
+						ItemBuilder.toString(row.getItem()),
+						System.currentTimeMillis()
+				));
+			}
+			st.executeBatch();
+		} catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		closeStatement(st);
+	}
+
+	public void deleteGalleryData(List<GalleryRow> rows)
+	{
+		final Statement st = getStatement();
+		try
+		{
+			for (GalleryRow row : rows)
+				st.addBatch("delete from mup_gallery where id = " + row.getId());
+			st.executeBatch();
+		} catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		closeStatement(st);
+	}
+
+	public void updateGalleryUserdata(GalleryUserdataRow userdata)
+	{
+
+	}
+
+	public void insertGalleryUserdata(GalleryUserdataRow userdata)
+	{
+
 	}
 
 	public Statement getStatement()
