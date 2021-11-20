@@ -12,10 +12,10 @@ import java.util.List;
 
 public class Config
 {
-	private YamlConfiguration cfg;
 	private final YamlConfiguration defaultCfg;
 	private final String name;
 	private final File file;
+	private YamlConfiguration cfg;
 
 	public Config(String name, File file, InputStream defaultConfig)
 	{
@@ -60,6 +60,11 @@ public class Config
 		return cfg.getInt(path);
 	}
 
+	public int getInt(String path, int def)
+	{
+		return cfg.getInt(path, def);
+	}
+
 	public String getString(String path)
 	{
 		return cfg.getString(path);
@@ -79,6 +84,16 @@ public class Config
 	public Material getMaterial(String path)
 	{
 		return getMaterial(path, Material.AIR);
+	}
+
+	public List<Material> getMaterialList(String path, boolean includeNulls)
+	{
+		return StrUtils.getMaterials(cfg.getStringList(path), false);
+	}
+
+	public List<Material> getMaterialList(String path)
+	{
+		return getMaterialList(path, false);
 	}
 
 	public String getName()
