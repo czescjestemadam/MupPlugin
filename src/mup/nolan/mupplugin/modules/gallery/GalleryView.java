@@ -18,6 +18,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class GalleryView
@@ -27,8 +28,6 @@ public class GalleryView
 	private final Player player;
 	private final OfflinePlayer owner;
 	private final boolean editmode;
-	private List<GalleryRow> items;
-	private GalleryUserdataRow userdata;
 	private final Inventory inv;
 	private final int borderMenuPos = cfg.getInt("gui-items.border-buymenu-pos");
 	private final int slotMenuPos = cfg.getInt("gui-items.slot-buymenu-pos");
@@ -38,7 +37,10 @@ public class GalleryView
 	private final ItemStack cancel;
 	private final ItemStack accept;
 	private final List<Material> availableBorders = cfg.getMaterialList("gui-items.available-borders");
+	private List<GalleryRow> items;
+	private GalleryUserdataRow userdata;
 	private Material selectedBorder;
+	private Material borderBuySelected;
 	private GalleryViewType type = GalleryViewType.MAIN;
 	private int page = 0;
 	private int allPages;
@@ -108,7 +110,13 @@ public class GalleryView
 				}
 				else if (!isBorder(i) && e.getCurrentItem() != null && availableBorders.contains(e.getCurrentItem().getType()))
 				{
-
+					if (userdata.getUnlockedBorders().contains(e.getCurrentItem().getType().name()) || e.getCurrentItem().getType() == cfg.getMaterial("gui-items.default-border"))
+						selectedBorder = e.getCurrentItem().getType();
+					else
+					{
+						borderBuySelected = e.getCurrentItem().getType();
+						renderPage(page, GalleryViewType.BORDER_BUY);
+					}
 				}
 
 				e.setCancelled(true);
@@ -135,6 +143,7 @@ public class GalleryView
 	{
 		if (type == GalleryViewType.BORDER || type == GalleryViewType.SLOT) // prevent closing and open previous
 		{
+			selectedBorder = userdata.getCurrentBorder();
 			renderPage(page, GalleryViewType.MAIN);
 			Bukkit.getScheduler().scheduleSyncDelayedTask(MupPlugin.get(), () -> player.openInventory(inv), 1);
 			return false;
@@ -204,9 +213,9 @@ public class GalleryView
 			else if (i == slotMenuPos && type == GalleryViewType.MAIN && editmode)
 				is = slotMenu;
 
-			else if (i == cancelPos && (type == GalleryViewType.BORDER || type == GalleryViewType.SLOT))
+			else if (i == cancelPos && type != GalleryViewType.MAIN)
 				is = cancel;
-			else if (i == acceptPos && (type == GalleryViewType.BORDER || type == GalleryViewType.SLOT))
+			else if (i == acceptPos && type != GalleryViewType.MAIN)
 				is = accept;
 
 			else if (isBorder(i))
@@ -254,8 +263,6 @@ public class GalleryView
 	{
 		final List<ItemStack> invItems = readInvContents(new ArrayList<>());
 
-		System.out.println("saveItems invItems = " + invItems);
-
 		final List<GalleryRow> changed = new ArrayList<>();
 		final List<GalleryRow> added = new ArrayList<>();
 		final List<GalleryRow> removed = new ArrayList<>();
@@ -271,11 +278,12 @@ public class GalleryView
 					changed.add(items.get(index)); // db update sort_num
 				}
 			}
-			else if (invItem != null)// item is not in db
+			else if (invItem != null) // item is not in db
 				added.add(new GalleryRow(-1, owner, invItems.indexOf(invItem) + page * 28, invItem, new Date(), null)); // add item
 		}
 
-		for (GalleryRow gItem : items.subList(Math.min(items.size(), page * 28), Math.min(items.size(), page * 28 + 27))) // every db item
+		// every db item
+		for (GalleryRow gItem : items.subList(Math.min(items.size(), page * 28), Math.min(items.size(), page * 28 + 27)))
 		{
 			if (!containsDB(invItems, gItem.getItem())) // db item isn't in read items
 				removed.add(gItem);
@@ -287,6 +295,7 @@ public class GalleryView
 		db.deleteGalleryData(removed);
 
 		MupPlugin.log().warning("inv save");
+		MupPlugin.log().info("invItems = " + invItems);
 		MupPlugin.log().info("changed = " + changed);
 		MupPlugin.log().info("added = " + added);
 		MupPlugin.log().info("removed = " + removed);
@@ -296,7 +305,7 @@ public class GalleryView
 	{
 		for (GalleryRow item : items)
 		{
-			if (item.getItem() != null && item.getItem().equals(is))
+			if (Objects.deepEquals(is, item.getItem()))
 				return items.indexOf(item);
 		}
 		return -1;
