@@ -11,6 +11,7 @@ import org.bukkit.util.io.BukkitObjectOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
@@ -54,7 +55,9 @@ public class ItemBuilder
 	public ItemBuilder addLore(List<String> lore)
 	{
 		final ItemMeta im = is.getItemMeta();
-		im.getLore().addAll(lore); // todo check
+		final List<String> lorels = im.getLore() == null ? new ArrayList<>() : im.getLore();
+		lorels.addAll(lore);
+		im.setLore(lorels);
 		is.setItemMeta(im);
 		return this;
 	}

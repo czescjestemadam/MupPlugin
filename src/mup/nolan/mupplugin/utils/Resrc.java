@@ -4,10 +4,7 @@ public class Resrc<T>
 {
 	private T resource;
 
-	public Resrc()
-	{
-
-	}
+	public Resrc() {}
 
 	public Resrc(T resource)
 	{
@@ -22,6 +19,11 @@ public class Resrc<T>
 	public void set(T resource)
 	{
 		this.resource = resource;
+	}
+
+	public boolean isNull()
+	{
+		return resource == null;
 	}
 
 	@Override

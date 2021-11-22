@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MupDB
@@ -64,6 +65,9 @@ public class MupDB
 
 	public void getGalleryData(OfflinePlayer owner, boolean editmode, Resrc<List<GalleryRow>> items, Resrc<GalleryUserdataRow> userdata)
 	{
+		if (items.isNull())
+			items.set(new ArrayList<>());
+
 		final Statement st = getStatement();
 		try
 		{
@@ -80,6 +84,9 @@ public class MupDB
 						new GalleryUserdataRow(rs.getInt("id"), owner, slots, rs.getString("unlocked_borders"), Material.getMaterial(rs.getString("current_border")), null, null) :
 						new GalleryUserdataRow(-1, owner, slots, null, Material.getMaterial(rs.getString("current_border")), null, null));
 			}
+
+			if (userdata.isNull())
+				userdata.set(new GalleryUserdataRow(-1, owner, 0, "", MupPlugin.get().getConfigManager().getConfig("gallery").getMaterial("gui-items.default-border"), null, null));
 		} catch (SQLException e)
 		{
 			e.printStackTrace();
