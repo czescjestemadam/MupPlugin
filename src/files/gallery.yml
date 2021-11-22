@@ -56,7 +56,12 @@ messages:
     border-buymenu-buylore: '&cMożesz kupić za: &6{}'
     border-buymenu-selected: '&aWłączony'
     slot-buymenu: '&cKup miejsce'
+    slot-buymenu-lore: '&eKup {slot} miejsce za {price} monet'
     cancel-submenu: '&cPowrót'
     accept-submenu: '&aPotwierdź'
-    item-lore:
-      - '&aDodano: '
+    item:
+      lore:
+        - '&aDodano: {added}'
+        - '&aEdycja: {lockId}'
+      added-fmt: 'hh:mm:ss dd.MM.yyyy'
+      null-lockid: 'obecna'

@@ -94,5 +94,17 @@ public class GalleryUserdataRow
 		this.likedGalleries = likedGalleries;
 	}
 
-
+	@Override
+	public String toString()
+	{
+		return "GalleryUserdataRow{" +
+				"id=" + id +
+				", player=" + player +
+				", unlockedSlots=" + unlockedSlots +
+				", unlockedBorders='" + unlockedBorders + '\'' +
+				", currentBorder=" + currentBorder +
+				", viewedGalleries='" + viewedGalleries + '\'' +
+				", likedGalleries='" + likedGalleries + '\'' +
+				'}';
+	}
 }
