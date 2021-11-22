@@ -2,6 +2,7 @@ itemsort: true
 butelka: true
 gallery: true
 antiafk: true
+cheatnono: true
 
 messages:
   on-command-disabled: '&c&o{} &cjest chwilowo wyłączony'

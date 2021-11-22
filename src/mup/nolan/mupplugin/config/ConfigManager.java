@@ -26,6 +26,7 @@ public class ConfigManager
 		load("itemsort");
 		load("modules");
 		load("placeholders");
+		load("cheatnono");
 	}
 
 	public List<String> getConfigs()

@@ -24,6 +24,7 @@ public class ModuleManager
 		register(new ButelkaModule(mupPlugin));
 		register(new GalleryModule(mupPlugin));
 		register(new AntiafkModule(mupPlugin));
+		register(new CheatnonoModule(mupPlugin));
 	}
 
 	public List<String> getModules(boolean enabledOnly)
