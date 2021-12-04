@@ -17,14 +17,16 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.tags.ItemTagType;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class GalleryView
@@ -390,54 +392,56 @@ public class GalleryView
 
 		invItems.set(page, readInvItems());
 
-		final List<GalleryRow> changed = new ArrayList<>();
-		final List<GalleryRow> added = new ArrayList<>();
-		final List<GalleryRow> removed = new ArrayList<>();
+		Bukkit.getScheduler().runTaskAsynchronously(MupPlugin.get(), () -> {
+			final List<GalleryRow> changed = new ArrayList<>();
+			final List<GalleryRow> added = new ArrayList<>();
+			final List<GalleryRow> removed = new ArrayList<>();
 
-		for (int page = 0; page < invItems.size(); page++) // search for moved place
-		{
-			final List<ItemStack> pagels = invItems.get(page);
-
-			for (int i = 0; i < pagels.size(); i++)
+			for (int page = 0; page < invItems.size(); page++) // search for moved place
 			{
-				final int sortNum = page * SLOTS_PER_PAGE + i;
-				final ItemStack item = pagels.get(i);
-				final long itemPlaced = getTag(item);
-				final GalleryRow row = items.get().stream().filter(r -> r.getSortNum() == sortNum).findFirst().orElse(null);
+				final List<ItemStack> pagels = invItems.get(page);
 
-				if (item == null && row == null)
-					continue;
-				else if (item == null)
-					removed.add(row);
-				else if (row == null)
-					added.add(new GalleryRow(owner, sortNum, item, itemPlaced < 0 ? null : new Date(itemPlaced)).withAmountUpdate());
-				else
+				for (int i = 0; i < pagels.size(); i++)
 				{
-					if (item.isSimilar(row.getItem()))
-					{
-						if (item.getAmount() == row.getAmount())
-							continue;
+					final int sortNum = page * SLOTS_PER_PAGE + i;
+					final ItemStack item = pagels.get(i);
+					final long itemPlaced = getTag(item);
+					final GalleryRow row = items.get().stream().filter(r -> r.getSortNum() == sortNum).findFirst().orElse(null);
 
-						row.setAmount(item.getAmount());
-						changed.add(row.withAmountUpdate());
+					if (item == null && row == null)
 						continue;
-					}
+					else if (item == null)
+						removed.add(row);
+					else if (row == null)
+						added.add(new GalleryRow(owner, sortNum, item, itemPlaced < 0 ? null : new Date(itemPlaced)).withAmountUpdate());
+					else
+					{
+						if (item.isSimilar(row.getItem()))
+						{
+							if (item.getAmount() == row.getAmount())
+								continue;
 
-					removed.add(row);
-					added.add(new GalleryRow(owner, sortNum, item, new Date(itemPlaced)));
+							row.setAmount(item.getAmount());
+							changed.add(row.withAmountUpdate());
+							continue;
+						}
+
+						removed.add(row);
+						added.add(new GalleryRow(owner, sortNum, item, new Date(itemPlaced)));
+					}
 				}
 			}
-		}
 
-		final MupDB db = MupPlugin.get().getDB();
-		db.upsertGalleryUserdata(userdata.get());
-		db.updateGalleryData(changed);
-		db.insertGalleryData(added);
-		db.deleteGalleryData(removed);
+			final MupDB db = MupPlugin.get().getDB();
+			db.upsertGalleryUserdata(userdata.get());
+			db.updateGalleryData(changed);
+			db.insertGalleryData(added);
+			db.deleteGalleryData(removed);
 
-		final String logstr = "saveData %d, %d, %d items in %dms".formatted(changed.size(), added.size(), removed.size(), System.currentTimeMillis() - start);
-		MupPlugin.log().warning(logstr);
-		player.sendMessage(logstr);
+			final String logstr = "async saveData %d, %d, %d items in %dms".formatted(changed.size(), added.size(), removed.size(), System.currentTimeMillis() - start);
+			MupPlugin.log().warning(logstr);
+			player.sendMessage(logstr);
+		});
 	}
 
 	private ItemStack addTag(ItemStack item, long placed)
