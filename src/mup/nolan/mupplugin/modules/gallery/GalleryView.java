@@ -143,7 +143,10 @@ public class GalleryView
 		{
 			if (!editmode) // viewonly mode
 				e.setCancelled(true);
-			else if ((e.getClickedInventory() == inv && isBorder(i)) || border.get().isSimilar(e.getCurrentItem()) || lockedSlot.get().isSimilar(e.getCurrentItem()))
+			else if ((e.getClickedInventory() == inv && isBorder(i)) ||
+					border.get().isSimilar(e.getCurrentItem()) ||
+					lockedSlot.get().isSimilar(e.getCurrentItem()) ||
+					e.getAction().toString().startsWith("DROP"))
 				e.setCancelled(true);
 		}
 		else
