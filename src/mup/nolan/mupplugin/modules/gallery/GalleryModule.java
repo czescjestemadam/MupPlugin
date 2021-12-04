@@ -57,7 +57,7 @@ public class GalleryModule extends Module
 		if ((view = viewMap.get(p)) == null)
 			return;
 
-		if (view.onClose(e))
+		if (view.onClose())
 			viewMap.remove(p);
 
 		if (reminded.add(p)) // exec once

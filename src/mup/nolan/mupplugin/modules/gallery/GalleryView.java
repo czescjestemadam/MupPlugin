@@ -150,7 +150,7 @@ public class GalleryView
 			e.setCancelled(true);
 	}
 
-	public boolean onClose(InventoryCloseEvent e)
+	public boolean onClose()
 	{
 		if (view.canClose())
 		{
