@@ -73,7 +73,7 @@ public class MupDB
 		{
 			ResultSet rs = st.executeQuery("select * from mup_gallery where owner = '" + owner.getName() + "' " + (editmode ? "and lock_id is null" : "") + " order by sort_num");
 			while (rs.next())
-				items.get().add(new GalleryRow(rs.getInt("id"), owner, rs.getInt("sort_num"), ItemBuilder.fromString(rs.getString("item")), rs.getDate("placed"), rs.getString("lock_id")));
+				items.get().add(new GalleryRow(rs.getInt("id"), owner, rs.getInt("sort_num"), ItemBuilder.fromString(rs.getString("item")), rs.getInt("amount"), rs.getDate("placed"), rs.getString("lock_id")));
 
 			rs = st.executeQuery("select " + (editmode ? "*" : "unlocked_slots, current_border") + " from mup_gallery_userdata where player = '" + owner.getName() + "'");
 			if (rs.next())
@@ -85,8 +85,10 @@ public class MupDB
 						new GalleryUserdataRow(-1, owner, slots, null, Material.getMaterial(rs.getString("current_border")), null, null));
 			}
 
+			final Material defaultBorder = MupPlugin.get().getConfigManager().getConfig("gallery").getMaterial("gui-items.default-border");
+
 			if (userdata.isNull())
-				userdata.set(new GalleryUserdataRow(-1, owner, 0, "", MupPlugin.get().getConfigManager().getConfig("gallery").getMaterial("gui-items.default-border"), null, null));
+				userdata.set(new GalleryUserdataRow(-1, owner, 0, defaultBorder.name(), defaultBorder, null, null));
 		} catch (SQLException e)
 		{
 			e.printStackTrace();
@@ -96,11 +98,18 @@ public class MupDB
 
 	public void updateGalleryData(List<GalleryRow> rows)
 	{
+		if (rows.isEmpty())
+			return;
+
 		final Statement st = getStatement();
 		try
 		{
 			for (GalleryRow row : rows)
-				st.addBatch("update mup_gallery set sort_num = " + row.getSortNum() + " where id = " + row.getId());
+				st.addBatch("update mup_gallery set sort_num = %d%s where id = %d".formatted(
+						row.getSortNum(),
+						row.isAmountUpdate() ? ", amount = " + row.getAmount() : "",
+						row.getId()
+				));
 			st.executeBatch();
 		} catch (SQLException e)
 		{
@@ -111,17 +120,27 @@ public class MupDB
 
 	public void insertGalleryData(List<GalleryRow> rows)
 	{
+		if (rows.isEmpty())
+			return;
+
 		final Statement st = getStatement();
 		try
 		{
 			for (GalleryRow row : rows)
 			{
+				final long placed;
+				if (row.getPlaced() == null || (row.getPlaced() != null && row.getPlaced().getTime() == -1))
+					placed = System.currentTimeMillis();
+				else
+					placed = row.getPlaced().getTime();
+
 				st.addBatch(String.format(
-						"insert into mup_gallery values(null, '%s', %d, '%s', %d, null)",
+						"insert into mup_gallery values(null, '%s', %d, '%s', %d, %d, null)",
 						row.getOwner().getName(),
 						row.getSortNum(),
 						ItemBuilder.toString(row.getItem()),
-						System.currentTimeMillis()
+						row.getAmount(),
+						placed
 				));
 			}
 			st.executeBatch();
@@ -134,6 +153,9 @@ public class MupDB
 
 	public void deleteGalleryData(List<GalleryRow> rows)
 	{
+		if (rows.isEmpty())
+			return;
+
 		final Statement st = getStatement();
 		try
 		{
@@ -147,14 +169,36 @@ public class MupDB
 		closeStatement(st);
 	}
 
-	public void updateGalleryUserdata(GalleryUserdataRow userdata)
+	public void upsertGalleryUserdata(GalleryUserdataRow userdata)
 	{
+		final Statement st = getStatement();
+		try
+		{
+			if (userdata.getId() < 0)
+			{
+				st.execute("insert into mup_gallery_userdata values (null, '%s', %d, '%s', '%s', null, null)".formatted(
+						userdata.getPlayer().getName(),
+						userdata.getUnlockedSlots(),
+						userdata.getUnlockedBorders(),
+						userdata.getCurrentBorder().name()
+				));
+			}
+			else
+			{
+				st.execute(("update mup_gallery_userdata set " +
+						"unlocked_slots = %d, unlocked_borders = '%s', current_border = '%s' where id = %d").formatted(
+						userdata.getUnlockedSlots(),
+						userdata.getUnlockedBorders(),
+						userdata.getCurrentBorder().name(),
+						userdata.getId()
+				));
+			}
 
-	}
-
-	public void insertGalleryUserdata(GalleryUserdataRow userdata)
-	{
-
+		} catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		closeStatement(st);
 	}
 
 	public Statement getStatement()

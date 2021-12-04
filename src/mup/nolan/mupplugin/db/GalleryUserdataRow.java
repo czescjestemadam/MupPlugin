@@ -1,7 +1,10 @@
 package mup.nolan.mupplugin.db;
 
+import mup.nolan.mupplugin.MupPlugin;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+
+import java.util.Arrays;
 
 // create table if not exists mup_gallery_userdata (
 //    id integer primary key autoincrement,
@@ -54,6 +57,11 @@ public class GalleryUserdataRow
 		this.unlockedSlots = unlockedSlots;
 	}
 
+	public void unlockSlot()
+	{
+		unlockedSlots++;
+	}
+
 	public String getUnlockedBorders()
 	{
 		return unlockedBorders;
@@ -62,6 +70,16 @@ public class GalleryUserdataRow
 	public void setUnlockedBorders(String unlockedBorders)
 	{
 		this.unlockedBorders = unlockedBorders;
+	}
+
+	public boolean isBorderUnlocked(Material m)
+	{
+		return Arrays.stream(unlockedBorders.split(";")).anyMatch(s -> s.equalsIgnoreCase(m.name()));
+	}
+
+	public void unlockBorder(Material m)
+	{
+		unlockedBorders += (unlockedBorders.isEmpty() ? "" : ";") + m.name();
 	}
 
 	public Material getCurrentBorder()

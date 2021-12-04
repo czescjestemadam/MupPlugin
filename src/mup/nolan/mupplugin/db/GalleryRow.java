@@ -1,5 +1,6 @@
 package mup.nolan.mupplugin.db;
 
+import mup.nolan.mupplugin.utils.ItemBuilder;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 
@@ -20,17 +21,28 @@ public class GalleryRow
 	private final OfflinePlayer owner;
 	private int sortNum;
 	private final ItemStack item;
+	private int amount;
 	private final Date placed;
 	private String lockId;
 
-	public GalleryRow(int id, OfflinePlayer owner, int sortNum, ItemStack item, Date placed, String lockId)
+	private boolean amountUpdate = false;
+
+	// from db
+	public GalleryRow(int id, OfflinePlayer owner, int sortNum, ItemStack item, int amount, Date placed, String lockId)
 	{
 		this.id = id;
 		this.owner = owner;
 		this.sortNum = sortNum;
 		this.item = item;
+		this.amount = amount;
 		this.placed = placed;
 		this.lockId = lockId;
+	}
+
+	// from inv
+	public GalleryRow(OfflinePlayer owner, int sortNum, ItemStack item, Date placed)
+	{
+		this(-1, owner, sortNum, new ItemBuilder(item.clone()).withAmount(1).build(), item.getAmount(), placed, null);
 	}
 
 	public int getId()
@@ -58,6 +70,16 @@ public class GalleryRow
 		return item;
 	}
 
+	public int getAmount()
+	{
+		return amount;
+	}
+
+	public void setAmount(int amount)
+	{
+		this.amount = amount;
+	}
+
 	public Date getPlaced()
 	{
 		return placed;
@@ -73,6 +95,17 @@ public class GalleryRow
 		this.lockId = lockId;
 	}
 
+	public GalleryRow withAmountUpdate()
+	{
+		amountUpdate = true;
+		return this;
+	}
+
+	public boolean isAmountUpdate()
+	{
+		return amountUpdate;
+	}
+
 	@Override
 	public String toString()
 	{
@@ -81,13 +114,10 @@ public class GalleryRow
 				", owner=" + owner +
 				", sortNum=" + sortNum +
 				", item=" + item +
+				", amount=" + amount +
 				", placed=" + placed +
 				", lockId='" + lockId + '\'' +
+				", amountUpdate=" + amountUpdate +
 				'}';
-	}
-
-	public static GalleryRow justItem(ItemStack item)
-	{
-		return new GalleryRow(-1, null, -1, item, null, null);
 	}
 }

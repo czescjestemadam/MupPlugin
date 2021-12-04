@@ -1,5 +1,6 @@
 package mup.nolan.mupplugin.config;
 
+import mup.nolan.mupplugin.MupPlugin;
 import mup.nolan.mupplugin.utils.StrUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;

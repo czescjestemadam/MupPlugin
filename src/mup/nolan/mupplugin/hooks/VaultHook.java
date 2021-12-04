@@ -20,14 +20,29 @@ public class VaultHook
 		eco = (Economy)getProvider(Economy.class);
 	}
 
+	public static boolean hasPerms()
+	{
+		return perms != null;
+	}
+
 	public static Permission getPerms()
 	{
 		return perms;
 	}
 
+	public static boolean hasChat()
+	{
+		return chat != null;
+	}
+
 	public static Chat getChat()
 	{
 		return chat;
+	}
+
+	public static boolean hasEco()
+	{
+		return eco != null;
 	}
 
 	public static Economy getEco()

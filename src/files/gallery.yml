@@ -32,12 +32,14 @@ gui-items:
   slot-buymenu-pos: 52
   cancel-submenu: RED_STAINED_GLASS
   cancel-submenu-pos: 46
-  accpet-submenu: LIME_STAINED_GLASS
+  accept-submenu: LIME_STAINED_GLASS
   accept-submenu-pos: 52
 
 messages:
   edit-reminder: '&7By edytować zawartość galerii użyj komendy &a/galeria -edytuj'
   no-player-found: '&cNie znaleziono takiego gracza'
+  no-money: '&cNie masz tylu pieniędzy'
+  bought: '&aKupiono {item} za {price} monet'
   gui:
     win-name:
       own: '&aTwoja galeria'
@@ -63,5 +65,5 @@ messages:
       lore:
         - '&aDodano: {added}'
         - '&aEdycja: {lockId}'
-      added-fmt: 'hh:mm:ss dd.MM.yyyy'
+      added-fmt: 'HH:mm:ss dd.MM.yyyy' # hh - 12h, HH - 24h
       null-lockid: 'obecna'
