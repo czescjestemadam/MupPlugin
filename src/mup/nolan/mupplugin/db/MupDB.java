@@ -7,6 +7,7 @@ import mup.nolan.mupplugin.utils.ItemBuilder;
 import mup.nolan.mupplugin.utils.Resrc;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -61,6 +62,37 @@ public class MupDB
 		{
 			e.printStackTrace();
 		}
+	}
+
+	public boolean itemsortEnabled(Player player)
+	{
+		final Statement st = getStatement();
+		try
+		{
+			final ResultSet rs = st.executeQuery("select id from mup_itemsort where player = '" + player.getName() + "'");
+			if (rs.next())
+				return true;
+		} catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		closeStatement(st);
+		return false;
+	}
+
+	public void setItemsort(Player player, boolean enabled)
+	{
+		final Statement st = getStatement();
+		try
+		{
+			st.executeUpdate(enabled ?
+					"insert into mup_itemsort values (null, '" + player.getName() + "')" :
+					"delete from mup_itemsort where player = '" + player.getName() + "'");
+		} catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		closeStatement(st);
 	}
 
 	public void getGalleryData(OfflinePlayer owner, boolean editmode, Resrc<List<GalleryRow>> items, Resrc<GalleryUserdataRow> userdata)

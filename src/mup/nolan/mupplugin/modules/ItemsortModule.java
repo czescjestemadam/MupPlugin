@@ -1,7 +1,6 @@
 package mup.nolan.mupplugin.modules;
 
 import mup.nolan.mupplugin.MupPlugin;
-import mup.nolan.mupplugin.db.MupDB;
 import mup.nolan.mupplugin.utils.StrUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -9,9 +8,6 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.*;
 
 // create table if not exists mup_itemsort (
@@ -21,13 +17,11 @@ import java.util.*;
 
 public class ItemsortModule extends Module
 {
-	private final MupPlugin mupPlugin;
 	private final Set<Player> reminded = new HashSet<>();
 
 	public ItemsortModule(MupPlugin mupPlugin)
 	{
 		super(mupPlugin, "itemsort");
-		this.mupPlugin = mupPlugin;
 	}
 
 	public void onChest(InventoryCloseEvent e)
@@ -40,47 +34,16 @@ public class ItemsortModule extends Module
 
 		final Player p = (Player)e.getPlayer();
 
-		if (!isSort(p))
+		if (!mup().getDB().itemsortEnabled(p))
 		{
 			if (reminded.add(p))
-				p.sendMessage(StrUtils.replaceColors(mupPlugin.getConfigManager().getConfig("itemsort").getString("messages.reminder")));
+				p.sendMessage(StrUtils.replaceColors(mup().getConfigManager().getConfig("itemsort").getString("messages.reminder")));
 			return;
 		}
 
 		sort(e.getInventory());
 
 		p.sendMessage("sortowanie mup " + (System.nanoTime() - started) + "nanosekumd " + (System.currentTimeMillis() - startedms) + "ms");
-	}
-
-	public void setSort(Player player, boolean enabled)
-	{
-		final Statement st = mupPlugin.getDB().getStatement();
-		try
-		{
-			st.executeUpdate(enabled ?
-					"insert into mup_itemsort values (null, '" + player.getName() + "')" :
-					"delete from mup_itemsort where player = '" + player.getName() + "'");
-		} catch (SQLException e)
-		{
-			e.printStackTrace();
-		}
-		MupDB.closeStatement(st);
-	}
-
-	public boolean isSort(Player player)
-	{
-		final Statement st = mupPlugin.getDB().getStatement();
-		try
-		{
-			final ResultSet rs = st.executeQuery("select id from mup_itemsort where player = '" + player.getName() + "'");
-			if (rs.next())
-				return true;
-		} catch (SQLException e)
-		{
-			e.printStackTrace();
-		}
-		MupDB.closeStatement(st);
-		return false;
 	}
 
 	public void clearReminder(Player player)

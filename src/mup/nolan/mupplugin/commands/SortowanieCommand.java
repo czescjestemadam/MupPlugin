@@ -2,7 +2,7 @@ package mup.nolan.mupplugin.commands;
 
 import mup.nolan.mupplugin.MupPlugin;
 import mup.nolan.mupplugin.config.Config;
-import mup.nolan.mupplugin.modules.ItemsortModule;
+import mup.nolan.mupplugin.db.MupDB;
 import mup.nolan.mupplugin.utils.CommandUtils;
 import mup.nolan.mupplugin.utils.PermsUtils;
 import mup.nolan.mupplugin.utils.StrUtils;
@@ -21,19 +21,18 @@ public class SortowanieCommand implements TabExecutor
 		if (CommandUtils.playerOnlyCheck(sender) || MupPlugin.get().getModuleManager().checkEnabled("itemsort", sender) || !PermsUtils.hasCmd(sender, "itemsort", true))
 			return true;
 
-		final ItemsortModule ism = (ItemsortModule)MupPlugin.get().getModuleManager().getModule("itemsort");
+		final MupDB db = MupPlugin.get().getDB();
 		final Player p = (Player)sender;
 
-		boolean val = !ism.isSort(p);
-		if (args.length > 0)
-		{
-			if (args[0].equalsIgnoreCase("on"))
-				val = true;
-			else if (args[0].equalsIgnoreCase("off"))
-				val = false;
-		}
+		final boolean val;
+		if (args.length > 0 && args[0].equalsIgnoreCase("on"))
+			val = true;
+		else if (args.length > 0 && args[0].equalsIgnoreCase("off"))
+			val = false;
+		else
+			val = !db.itemsortEnabled(p);
 
-		ism.setSort(p, val);
+		db.setItemsort(p, val);
 
 		final Config msgs = MupPlugin.get().getConfigManager().getConfig("itemsort");
 		final String strval = msgs.getString(val ? "messages.enabled" : "messages.disabled");
