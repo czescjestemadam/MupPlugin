@@ -1,4 +1,4 @@
-package mup.nolan.mupplugin.modules;
+package mup.nolan.mupplugin.modules.antiafk;
 
 import mup.nolan.mupplugin.MupPlugin;
 import mup.nolan.mupplugin.config.Config;

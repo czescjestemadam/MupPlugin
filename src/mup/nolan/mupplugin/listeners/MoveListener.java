@@ -1,7 +1,7 @@
 package mup.nolan.mupplugin.listeners;
 
 import mup.nolan.mupplugin.MupPlugin;
-import mup.nolan.mupplugin.modules.AntiafkModule;
+import mup.nolan.mupplugin.modules.antiafk.AntiafkModule;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
