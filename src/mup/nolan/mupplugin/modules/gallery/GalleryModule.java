@@ -15,14 +15,12 @@ import java.util.Set;
 
 public class GalleryModule extends Module
 {
-	private final MupPlugin mupPlugin;
 	private final Map<Player, GalleryView> viewMap = new HashMap<>();
 	private final Set<Player> reminded = new HashSet<>();
 
 	public GalleryModule(MupPlugin mupPlugin)
 	{
 		super(mupPlugin, "gallery");
-		this.mupPlugin = mupPlugin;
 	}
 
 	@Override
@@ -61,7 +59,7 @@ public class GalleryModule extends Module
 			viewMap.remove(p);
 
 		if (reminded.add(p)) // exec once
-			e.getPlayer().sendMessage(StrUtils.replaceColors(mupPlugin.getConfigManager().getConfig("gallery").getString("messages.edit-reminder")));
+			e.getPlayer().sendMessage(StrUtils.replaceColors(mup().getConfigManager().getConfig("gallery").getString("messages.edit-reminder")));
 	}
 
 	public void clearReminder(Player player)

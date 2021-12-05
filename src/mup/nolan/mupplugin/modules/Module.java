@@ -51,7 +51,7 @@ public abstract class Module
 		MupPlugin.log().info(StrUtils.replaceColors(mupPlugin.getConfigManager().getConfig("modules").getString(cfgStr).replace("{}", name)));
 	}
 
-	public MupPlugin getMupPlugin()
+	public MupPlugin mup()
 	{
 		return mupPlugin;
 	}
