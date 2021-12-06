@@ -13,10 +13,8 @@ import java.util.Map;
 
 public class AntiafkModule extends Module
 {
-	private final MupPlugin mupPlugin;
-	private final Map<Player, Long> lastMovePithc = new HashMap<>();
-	private final Map<Player, Long> lastMoveYaw = new HashMap<>();
-	private final Map<Player, Long> lastMovePos = new HashMap<>();
+	private final Config cfg;
+	private final Map<Player, AntiafkMove> lastMove = new HashMap<>();
 	private BukkitRunnable runnable;
 
 	public AntiafkModule(MupPlugin mupPlugin)
@@ -51,6 +49,7 @@ public class AntiafkModule extends Module
 	{
 		if (runnable != null && !runnable.isCancelled())
 			runnable.cancel();
+		lastMove.clear();
 	}
 
 	public void move(PlayerMoveEvent e)
@@ -58,14 +57,10 @@ public class AntiafkModule extends Module
 		if (!this.isEnabled() || e.getTo() == null)
 			return;
 
-		if (e.getFrom().getPitch() != e.getTo().getPitch())
-			lastMovePithc.put(e.getPlayer(), System.currentTimeMillis());
-
-		if (e.getFrom().getYaw() != e.getTo().getYaw())
-			lastMoveYaw.put(e.getPlayer(), System.currentTimeMillis());
-
-		if (e.getFrom().getBlockX() != e.getTo().getBlockX() || e.getFrom().getBlockY() != e.getTo().getBlockY() || e.getFrom().getBlockZ() != e.getTo().getBlockZ())
-			lastMovePos.put(e.getPlayer(), System.currentTimeMillis());
+		if (lastMove.containsKey(e.getPlayer()))
+			lastMove.get(e.getPlayer()).move(e.getFrom(), e.getTo());
+		else
+			lastMove.put(e.getPlayer(), new AntiafkMove());
 	}
 
 	private void warn(Player player)
