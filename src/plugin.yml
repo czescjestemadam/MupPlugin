@@ -46,3 +46,5 @@ permissions:
     default: op
   mup.cmd.gallery.edit-others:
     default: op
+  mup.antiafk.exempt:
+    default: op
