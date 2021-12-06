@@ -2,6 +2,9 @@ package mup.nolan.mupplugin.modules.antiafk;
 
 import mup.nolan.mupplugin.MupPlugin;
 import mup.nolan.mupplugin.config.Config;
+import mup.nolan.mupplugin.modules.Module;
+import mup.nolan.mupplugin.utils.StrUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -20,7 +23,7 @@ public class AntiafkModule extends Module
 	public AntiafkModule(MupPlugin mupPlugin)
 	{
 		super(mupPlugin, "antiafk");
-		this.mupPlugin = mupPlugin;
+		cfg = mupPlugin.getConfigManager().getConfig("antiafk");
 	}
 
 	@Override
@@ -33,15 +36,23 @@ public class AntiafkModule extends Module
 			{
 				final List<Player> toKick = new ArrayList<>();
 
+				Bukkit.getOnlinePlayers().stream().filter(p -> !p.hasPermission("mup.antiafk.exempt")).forEach(p -> {
+					if (!lastMove.containsKey(p))
+						return;
 
+					final int afkTime = (int)(System.currentTimeMillis() - lastMove.get(p).last()) / 1000;
+
+					if (afkTime > cfg.getInt("kick.time"))
+						toKick.add(p);
+					else
+						warn(p, afkTime);
+				});
 
 				toKick.forEach(AntiafkModule.this::kick);
 				toKick.clear();
 			}
 		};
-
-		final Config cfg = mupPlugin.getConfigManager().getConfig("antiafk");
-		runnable.runTaskTimer(mupPlugin, cfg.getInt("check-interval") * 20L, cfg.getInt("check-interval") * 20L);
+		runnable.runTaskTimer(mup(), cfg.getInt("check-interval") * 20L, cfg.getInt("check-interval") * 20L);
 	}
 
 	@Override
@@ -63,13 +74,24 @@ public class AntiafkModule extends Module
 			lastMove.put(e.getPlayer(), new AntiafkMove());
 	}
 
-	private void warn(Player player)
+	private void warn(Player player, int afkTime)
 	{
-
+		final String title = StrUtils.replaceColors((String)cfg.getNearest("warn-titles", afkTime, cfg.getInt("check-interval")));
+		if (title != null)
+		{
+			final int splitterIndex = title.indexOf(";;");
+			player.sendTitle(title.substring(0, splitterIndex).trim(), title.substring(splitterIndex + 2).trim());
+		}
 	}
 
 	private void kick(Player player)
 	{
-
+		final Object val = cfg.get("kick.command");
+		if (val instanceof String cmd)
+			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd.replaceAll("\\{player}", player.getName()));
+		else if (val instanceof List<?> cmdList)
+			cmdList.forEach(cmd -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), ((String)cmd).replaceAll("\\{player}", player.getName())));
+		else
+			player.kickPlayer("§aWyrzucono Cię z powodu AFK!");
 	}
 }

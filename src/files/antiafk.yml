@@ -1,1 +1,11 @@
-check-interval: 15
+check-interval: 1 # seconds
+kick:
+  time: 600 # seconds
+  command: 'kick {player} -S Wyrzucono Cię z powodu AFK!'
+warn-titles:
+  480: '&c&lAFK ;; &eZostaniesz wyrzucony za 2 minuty!'
+  595: '&c&lAFK ;; &eZostaniesz wyrzucony za &c5 &esekund!'
+  596: '&c&lAFK ;; &eZostaniesz wyrzucony za &c4 &esekundy!'
+  597: '&c&lAFK ;; &eZostaniesz wyrzucony za &c3 &esekundy!'
+  598: '&c&lAFK ;; &eZostaniesz wyrzucony za &c2 &esekundy!'
+  599: '&c&lAFK ;; &eZostaniesz wyrzucony za &c1 &esekundę!'
