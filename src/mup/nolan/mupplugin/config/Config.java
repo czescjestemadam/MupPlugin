@@ -1,8 +1,8 @@
 package mup.nolan.mupplugin.config;
 
-import mup.nolan.mupplugin.MupPlugin;
 import mup.nolan.mupplugin.utils.StrUtils;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.Set;
 
 public class Config
 {
@@ -49,6 +50,32 @@ public class Config
 		{
 			e.printStackTrace();
 		}
+	}
+
+	public Object get(String path)
+	{
+		return cfg.get(path);
+	}
+
+	public Object getNearest(String path, int key, int limit)
+	{
+		final ConfigurationSection section = cfg.getConfigurationSection(path);
+		if (section == null)
+			return null;
+
+		final Set<String> keys = section.getKeys(false);
+		if (keys.isEmpty())
+			return null;
+
+		for (int i = 0; i < limit; i++)
+		{
+			if (keys.contains(String.valueOf(key - i)))
+				return section.get(String.valueOf(key - i));
+			if (keys.contains(String.valueOf(key + i)))
+				return section.get(String.valueOf(key + i));
+		}
+
+		return null;
 	}
 
 	public boolean getBool(String path)
