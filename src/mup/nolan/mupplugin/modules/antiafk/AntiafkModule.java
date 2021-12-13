@@ -74,6 +74,11 @@ public class AntiafkModule extends Module
 			lastMove.put(e.getPlayer(), new AntiafkMove());
 	}
 
+	public AntiafkMove getLastMove(Player player)
+	{
+		return lastMove.containsKey(player) ? lastMove.get(player) : new AntiafkMove();
+	}
+
 	private void warn(Player player, int afkTime)
 	{
 		final String title = StrUtils.replaceColors((String)cfg.getNearest("warn-titles", afkTime, cfg.getInt("check-interval")));

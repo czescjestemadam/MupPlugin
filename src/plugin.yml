@@ -22,6 +22,8 @@ commands:
     description: zycko
   galeria:
     description: poka ity
+  check:
+    description: co my tu mamy
 
 permissions:
   mup.cmd.mupplugin:
@@ -47,4 +49,6 @@ permissions:
   mup.cmd.gallery.edit-others:
     default: op
   mup.antiafk.exempt:
+    default: op
+  mup.cmd.check:
     default: op

@@ -23,6 +23,7 @@ public class CommandManager
 		register(mupPlugin.getCommand("feed"), new FeedCommand());
 		register(mupPlugin.getCommand("heal"), new HealCommand());
 		register(mupPlugin.getCommand("galeria"), new GalleryCommand());
+		register(mupPlugin.getCommand("check"), new CheckCommand());
 	}
 
 	private void register(PluginCommand pc, TabExecutor cmd)
