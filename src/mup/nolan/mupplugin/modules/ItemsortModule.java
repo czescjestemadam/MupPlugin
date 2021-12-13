@@ -29,9 +29,6 @@ public class ItemsortModule extends Module
 		if (!this.isEnabled() || !isChest(e.getView().getTopInventory()))
 			return;
 
-		final long started = System.nanoTime();
-		final long startedms = System.currentTimeMillis();
-
 		final Player p = (Player)e.getPlayer();
 
 		if (!mup().getDB().itemsortEnabled(p))
@@ -42,8 +39,6 @@ public class ItemsortModule extends Module
 		}
 
 		sort(e.getInventory());
-
-		p.sendMessage("sortowanie mup " + (System.nanoTime() - started) + "nanosekumd " + (System.currentTimeMillis() - startedms) + "ms");
 	}
 
 	public void clearReminder(Player player)
