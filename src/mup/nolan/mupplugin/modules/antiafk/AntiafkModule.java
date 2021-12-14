@@ -63,6 +63,16 @@ public class AntiafkModule extends Module
 		lastMove.clear();
 	}
 
+	public void onJoin(Player player)
+	{
+		lastMove.put(player, new AntiafkMove());
+	}
+
+	public void onQuit(Player player)
+	{
+		lastMove.remove(player);
+	}
+
 	public void move(PlayerMoveEvent e)
 	{
 		if (!this.isEnabled() || e.getTo() == null)
@@ -76,7 +86,7 @@ public class AntiafkModule extends Module
 
 	public AntiafkMove getLastMove(Player player)
 	{
-		return lastMove.containsKey(player) ? lastMove.get(player) : new AntiafkMove();
+		return lastMove.get(player);
 	}
 
 	private void warn(Player player, int afkTime)
