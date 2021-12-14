@@ -2,7 +2,7 @@ package mup.nolan.mupplugin.commands;
 
 import mup.nolan.mupplugin.MupPlugin;
 import mup.nolan.mupplugin.config.Config;
-import mup.nolan.mupplugin.modules.ButelkaModule;
+import mup.nolan.mupplugin.modules.BottlexpModule;
 import mup.nolan.mupplugin.utils.PermsUtils;
 import mup.nolan.mupplugin.utils.StrUtils;
 import mup.nolan.mupplugin.utils.CommandUtils;
@@ -20,25 +20,25 @@ public class ButelkaCommand implements TabExecutor
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String alias, String[] args)
 	{
-		if (CommandUtils.playerOnlyCheck(sender) || MupPlugin.get().getModuleManager().checkEnabled("butelka", sender) || !PermsUtils.hasCmd(sender, "butelka", true))
+		if (CommandUtils.playerOnlyCheck(sender) || MupPlugin.get().getModuleManager().checkEnabled("bottlexp", sender) || !PermsUtils.hasCmd(sender, "bottlexp", true))
 			return true;
 
 		final Player p = ((Player)sender);
-		final Config msgcfg = MupPlugin.get().getConfigManager().getConfig("butelka");
+		final Config msgcfg = MupPlugin.get().getConfigManager().getConfig("bottlexp");
 
 		if (args.length == 0)
 		{
-			p.sendMessage(StrUtils.replaceColors(msgcfg.getString("messages.uzycie")));
+			p.sendMessage(StrUtils.replaceColors(msgcfg.getString("messages.usage")));
 			return true;
 		}
 
 		final int i = args[0].equalsIgnoreCase("max") ? Integer.MAX_VALUE : CommandUtils.parseInt(args[0]);
-		final int fi = ((ButelkaModule)MupPlugin.get().getModuleManager().getModule("butelka")).cashouu(p, i);
+		final int fi = ((BottlexpModule)MupPlugin.get().getModuleManager().getModule("bottlexp")).cashouu(p, i);
 
 		if (fi > 0)
-			p.sendMessage(StrUtils.replaceColors(msgcfg.getString("messages.wyplacono").replace("{}", String.valueOf(fi))));
+			p.sendMessage(StrUtils.replaceColors(msgcfg.getString("messages.given").replace("{}", String.valueOf(fi))));
 		else
-			p.sendMessage(StrUtils.replaceColors(msgcfg.getString("messages.nie-ma")));
+			p.sendMessage(StrUtils.replaceColors(msgcfg.getString("messages.not-enough")));
 
 		return true;
 	}

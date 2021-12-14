@@ -1,0 +1,4 @@
+messages:
+  usage: '&cUżycie: /butelka <ilość | max>'
+  given: '&aWyplacono {} butelek'
+  not-enough: '&cNie masz wystarczającej ilości expa'

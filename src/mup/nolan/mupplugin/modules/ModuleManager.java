@@ -22,7 +22,7 @@ public class ModuleManager
 	public void registerModules()
 	{
 		register(new ItemsortModule(mupPlugin));
-		register(new ButelkaModule(mupPlugin));
+		register(new BottlexpModule(mupPlugin));
 		register(new GalleryModule(mupPlugin));
 		register(new AntiafkModule(mupPlugin));
 		register(new CheatnonoModule(mupPlugin));

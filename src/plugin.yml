@@ -15,7 +15,7 @@ commands:
   sortowanie:
     aliases: sort
   butelka:
-    aliases: exp
+    description: dajexp
   feed:
     description: amciu
   heal:
@@ -30,7 +30,7 @@ permissions:
     default: op
   mup.cmd.sortowanie:
     default: op
-  mup.cmd.butelka:
+  mup.cmd.bottlexp:
     default: op
   mup.cmd.feed:
     default: op

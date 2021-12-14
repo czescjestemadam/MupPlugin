@@ -8,11 +8,11 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Arrays;
 import java.util.Objects;
 
-public class ButelkaModule extends Module
+public class BottlexpModule extends Module
 {
-	public ButelkaModule(MupPlugin mupPlugin)
+	public BottlexpModule(MupPlugin mupPlugin)
 	{
-		super(mupPlugin, "butelka");
+		super(mupPlugin, "bottlexp");
 	}
 
 	public int cashouu(Player player, int i)

@@ -19,7 +19,7 @@ public class ConfigManager
 	public void loadConfigs()
 	{
 		load("antiafk");
-		load("butelka");
+		load("bottlexp");
 		load("commands");
 		load("db");
 		load("gallery");
