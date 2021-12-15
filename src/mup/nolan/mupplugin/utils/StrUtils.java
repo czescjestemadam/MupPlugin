@@ -6,15 +6,16 @@ import org.bukkit.Material;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class StrUtils
 {
 	public static String replaceColors(String str)
 	{
+		if (str == null)
+			return null;
+
 		final Matcher matcher = Pattern.compile("&([0-9a-f]|k|l|m|n|o|r|#[0-9a-f]{6})", Pattern.CASE_INSENSITIVE).matcher(str);
 
 		while (matcher.find())
