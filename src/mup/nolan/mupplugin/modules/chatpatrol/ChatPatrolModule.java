@@ -176,9 +176,16 @@ public class ChatPatrolModule extends Module
 		if (e.isCancelled() || e.getPlayer().hasPermission("mup.chatpatrol.exempt.caps"))
 			return;
 
+		String msg = e.getMessage();
+		for (Player p : Bukkit.getOnlinePlayers())
+			msg = msg.replaceAll(p.getName(), "");
+
+		if (msg.trim().isEmpty())
+			return;
+
 		final int maxCaps = cfg.getInt("caps.max-letters");
 		int caps = 0;
-		for (char c : e.getMessage().toCharArray())
+		for (char c : msg.toCharArray())
 		{
 			if (Character.isUpperCase(c))
 				caps++;
@@ -189,16 +196,17 @@ public class ChatPatrolModule extends Module
 		if (caps < maxCaps)
 			return;
 
-		final StringBuilder msg = new StringBuilder();
+		final StringBuilder low = new StringBuilder();
 		for (String s : e.getMessage().split(" "))
 		{
 			if (Bukkit.getPlayerExact(s) != null)
-				msg.append(s);
+				low.append(s);
 			else
-				msg.append(s.toLowerCase());
-			msg.append(" ");
+				low.append(s.toLowerCase());
+			low.append(" ");
 		}
-		e.setMessage(msg.toString().trim());
+		e.setMessage(low.toString().trim());
+		e.getPlayer().sendMessage(cfg.getStringF("messages.caps"));
 	}
 
 	private void checkFlood(AsyncPlayerChatEvent e)
