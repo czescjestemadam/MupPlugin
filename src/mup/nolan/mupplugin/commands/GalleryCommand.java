@@ -40,7 +40,7 @@ public class GalleryCommand implements TabExecutor
 
 		if (!owner.hasPlayedBefore())
 		{
-			p.sendMessage(StrUtils.replaceColors(MupPlugin.get().getConfigManager().getConfig("gallery").getString("messages.no-player-found")));
+			p.sendMessage(MupPlugin.get().getConfigManager().getConfig("gallery").getStringF("messages.no-player-found"));
 			return true;
 		}
 

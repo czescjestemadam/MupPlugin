@@ -1,7 +1,6 @@
 package mup.nolan.mupplugin.modules;
 
 import mup.nolan.mupplugin.MupPlugin;
-import mup.nolan.mupplugin.utils.StrUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -34,7 +33,7 @@ public class ItemsortModule extends Module
 		if (!mup().getDB().itemsortEnabled(p))
 		{
 			if (reminded.add(p))
-				p.sendMessage(StrUtils.replaceColors(mup().getConfigManager().getConfig("itemsort").getString("messages.reminder")));
+				p.sendMessage(mup().getConfigManager().getConfig("itemsort").getStringF("messages.reminder"));
 			return;
 		}
 

@@ -3,7 +3,6 @@ package mup.nolan.mupplugin.modules;
 import mup.nolan.mupplugin.MupPlugin;
 import mup.nolan.mupplugin.modules.antiafk.AntiafkModule;
 import mup.nolan.mupplugin.modules.gallery.GalleryModule;
-import mup.nolan.mupplugin.utils.StrUtils;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
@@ -47,7 +46,7 @@ public class ModuleManager
 	{
 		if (isModuleEnabled(moduleName))
 			return false;
-		sender.sendMessage(StrUtils.replaceColors(mupPlugin.getConfigManager().getConfig("modules").getString("messages.on-command-disabled").replace("{}", moduleName)));
+		sender.sendMessage(mupPlugin.getConfigManager().getConfig("modules").getStringF("messages.on-command-disabled").replace("{}", moduleName));
 		return true;
 	}
 

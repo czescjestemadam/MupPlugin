@@ -90,7 +90,7 @@ public class MupCommand implements TabExecutor
 			if (sender instanceof Player)
 			{
 				final String cfgStr = action == 'e' ? "messages.on-enable" : (action == 'd' ? "messages.on-disable" : "messages.on-reload");
-				sender.sendMessage(StrUtils.replaceColors(mp.getConfigManager().getConfig("modules").getString(cfgStr).replace("{}", mod.getName())));
+				sender.sendMessage(mp.getConfigManager().getConfig("modules").getStringF(cfgStr).replace("{}", mod.getName()));
 			}
 		}
 

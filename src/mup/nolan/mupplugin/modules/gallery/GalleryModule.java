@@ -2,7 +2,6 @@ package mup.nolan.mupplugin.modules.gallery;
 
 import mup.nolan.mupplugin.MupPlugin;
 import mup.nolan.mupplugin.modules.Module;
-import mup.nolan.mupplugin.utils.StrUtils;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -59,7 +58,7 @@ public class GalleryModule extends Module
 			viewMap.remove(p);
 
 		if (reminded.add(p)) // exec once
-			e.getPlayer().sendMessage(StrUtils.replaceColors(mup().getConfigManager().getConfig("gallery").getString("messages.edit-reminder")));
+			e.getPlayer().sendMessage(mup().getConfigManager().getConfig("gallery").getStringF("messages.edit-reminder"));
 	}
 
 	public void clearReminder(Player player)

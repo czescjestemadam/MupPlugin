@@ -1,7 +1,6 @@
 package mup.nolan.mupplugin.modules;
 
 import mup.nolan.mupplugin.MupPlugin;
-import mup.nolan.mupplugin.utils.StrUtils;
 
 public abstract class Module
 {
@@ -24,7 +23,7 @@ public abstract class Module
 		onDisable();
 		onEnable();
 		enabled = true;
-		MupPlugin.log().info(StrUtils.replaceColors(mupPlugin.getConfigManager().getConfig("modules").getString("messages.on-reload").replace("{}", name)));
+		MupPlugin.log().info(mupPlugin.getConfigManager().getConfig("modules").getStringF("messages.on-reload").replace("{}", name));
 	}
 
 	public String getName()
@@ -48,7 +47,7 @@ public abstract class Module
 			onDisable();
 
 		final String cfgStr = enabled ? "messages.on-enable" : "messages.on-disable";
-		MupPlugin.log().info(StrUtils.replaceColors(mupPlugin.getConfigManager().getConfig("modules").getString(cfgStr).replace("{}", name)));
+		MupPlugin.log().info(mupPlugin.getConfigManager().getConfig("modules").getStringF(cfgStr).replace("{}", name));
 	}
 
 	public MupPlugin mup()

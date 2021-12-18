@@ -3,9 +3,8 @@ package mup.nolan.mupplugin.commands;
 import mup.nolan.mupplugin.MupPlugin;
 import mup.nolan.mupplugin.config.Config;
 import mup.nolan.mupplugin.modules.BottlexpModule;
-import mup.nolan.mupplugin.utils.PermsUtils;
-import mup.nolan.mupplugin.utils.StrUtils;
 import mup.nolan.mupplugin.utils.CommandUtils;
+import mup.nolan.mupplugin.utils.PermsUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -24,11 +23,11 @@ public class ButelkaCommand implements TabExecutor
 			return true;
 
 		final Player p = ((Player)sender);
-		final Config msgcfg = MupPlugin.get().getConfigManager().getConfig("bottlexp");
+		final Config cfg = MupPlugin.get().getConfigManager().getConfig("bottlexp");
 
 		if (args.length == 0)
 		{
-			p.sendMessage(StrUtils.replaceColors(msgcfg.getString("messages.usage")));
+			p.sendMessage(cfg.getStringF("messages.usage"));
 			return true;
 		}
 
@@ -36,9 +35,9 @@ public class ButelkaCommand implements TabExecutor
 		final int fi = ((BottlexpModule)MupPlugin.get().getModuleManager().getModule("bottlexp")).cashouu(p, i);
 
 		if (fi > 0)
-			p.sendMessage(StrUtils.replaceColors(msgcfg.getString("messages.given").replace("{}", String.valueOf(fi))));
+			p.sendMessage(cfg.getStringF("messages.given").replace("{}", String.valueOf(fi)));
 		else
-			p.sendMessage(StrUtils.replaceColors(msgcfg.getString("messages.not-enough")));
+			p.sendMessage(cfg.getStringF("messages.not-enough"));
 
 		return true;
 	}
