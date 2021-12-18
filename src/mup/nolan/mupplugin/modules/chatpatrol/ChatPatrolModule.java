@@ -5,6 +5,7 @@ import mup.nolan.mupplugin.config.Config;
 import mup.nolan.mupplugin.hooks.VaultHook;
 import mup.nolan.mupplugin.modules.Module;
 import mup.nolan.mupplugin.utils.StrUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -107,7 +108,32 @@ public class ChatPatrolModule extends Module
 
 	private void checkCaps(AsyncPlayerChatEvent e)
 	{
+		if (e.isCancelled() || e.getPlayer().hasPermission("mup.chatpatrol.exempt.caps"))
+			return;
 
+		final int maxCaps = cfg.getInt("caps.max-letters");
+		int caps = 0;
+		for (char c : e.getMessage().toCharArray())
+		{
+			if (Character.isUpperCase(c))
+				caps++;
+			if (caps > maxCaps)
+				break;
+		}
+
+		if (caps < maxCaps)
+			return;
+
+		final StringBuilder msg = new StringBuilder();
+		for (String s : e.getMessage().split(" "))
+		{
+			if (Bukkit.getPlayerExact(s) != null)
+				msg.append(s);
+			else
+				msg.append(s.toLowerCase());
+			msg.append(" ");
+		}
+		e.setMessage(msg.toString().trim());
 	}
 
 	private void checkFlood(AsyncPlayerChatEvent e)
