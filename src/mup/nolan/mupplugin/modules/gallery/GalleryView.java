@@ -141,18 +141,23 @@ public class GalleryView
 			}
 		}
 
+		final Runnable cancel = () -> {
+			e.setCancelled(true);
+			e.setCursor(null);
+		};
+
 		if (view == GalleryViewType.MAIN)
 		{
 			if (!editmode) // viewonly mode
-				e.setCancelled(true);
+				cancel.run();
 			else if ((e.getClickedInventory() == inv && isBorder(i)) ||
 					border.get().isSimilar(e.getCurrentItem()) ||
 					lockedSlot.get().isSimilar(e.getCurrentItem()) ||
 					e.getAction().toString().startsWith("DROP"))
-				e.setCancelled(true);
+				cancel.run();
 		}
 		else
-			e.setCancelled(true);
+			cancel.run();
 	}
 
 	public boolean onClose()
@@ -164,6 +169,11 @@ public class GalleryView
 				saveData();
 				for (ItemStack item : player.getInventory().getContents()) // remove tag from taken items
 					removeTag(item);
+			}
+			else
+			{
+				player.getOpenInventory().setCursor(null);
+				Bukkit.getScheduler().scheduleSyncDelayedTask(MupPlugin.get(), player::updateInventory, 1);
 			}
 			return true;
 		}
