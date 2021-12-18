@@ -3,6 +3,7 @@ bottlexp: true
 gallery: true
 antiafk: true
 cheatnono: true
+chatpatrol: true
 
 messages:
   on-command-disabled: '&c&o{} &cjest chwilowo wyłączony'

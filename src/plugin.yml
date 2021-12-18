@@ -52,3 +52,13 @@ permissions:
     default: op
   mup.cmd.check:
     default: op
+  mup.chatpatrol.exempt.punish:
+    default: op
+  mup.chatpatrol.exempt.replace:
+    description: omija cenzurowanie
+  mup.chatpatrol.exempt.caps:
+    default: op
+  mup.chatpatrol.exempt.cooldown:
+    default: op
+  mup.chatpatrol.exempt.flood:
+    default: op

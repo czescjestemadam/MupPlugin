@@ -1,0 +1,90 @@
+replacement: '****'
+dns-lookup: true
+one-command-per-message: false
+categories:
+  swear-words:
+    apply-to:
+      - chat
+      - sign
+      - book
+      - command:podpis
+      - command:autograf
+    action: replace
+    command: warn {} Wulgaryzmy
+    message: '&cNie przeklinaj'
+    blacklist:
+      - '(s|z|wy*)*k+(u|ó)+r+(w|v)+(a|i|o|y)*(my*|e|n+y+|((c|ć)(a|i+e+)*)|s+(z+(o+n+)*|y+n+(y|i+e+)*|k+o+))*' # *kurw*
+      - 'k+u+r+e+w+(s+k+o+|k+(i|o)+)*' # kurew*
+      - k+u+h+w+a+
+      - '(j+a+ *|n+a+|o+d*|s+|w+y*|z+a+|r+o+z+)*(p+i+e+r+d)((a|o)+l+(a|e|i)*(a|c(ie)*|ć|sz|(l|ł)(em|y)|on(a|y)|j(my|cie)*|my*|l)*)' # *pierd*
+      - j+a+p+i+e+r+o+d+l+e+
+      - 'c*h+(u|ó)+(j|i)+(u|e+k*|o+w+o*|n+i+a*)*' # huk*
+      - c+h+o+j+
+      - 'd+z+i+w+(k+(a|i|o|e)+|e+c+z+k+i+)' # dziw*
+      - 's+u+k+(a|e|o|i(n+s+y+n+(y|ów)*)*)+' # suk*
+      - 's+z+m+a+t+(a|o|y)+' # szmat*
+      - 'k+u+t+a+s(y|i+e+)*' # kutas*
+      - 'c+i+p+(a|o|y|e(c+z+k+i+)*|ki*)+' # cip*
+      # *jeb*
+      - '(d+o+|n+a+|o+d*|p+(o+|r+z+e+)|w+y+|z+a*)*j+e+b+(a+((l|ł)(o|a|ą|e(s|ś)*|i((s|ś)cie)*)*m*|c|ć|n(a|e|i(u+(t+k+(i|a)+)*)*|y)*)+|y|i+(e|ę)+|n(i+j+|e+|ą(ć|ł))*|c+i+e+)*'
+      - 'p+i+z+d(a|e|o|y)+' # pizd*
+      - b+i+t+c+h+
+      - d+i+c+k+
+      - f+u+c+k+
+      - f+u+c+k+e+r+
+    whitelist:
+      - kurwcze
+      - pierdoly
+      - '(((c|k)ras|glit)(c|z|h)*|(nie ?)*(pods(l|ł)u|podko|pora|wyma|zako|zcrus)c*)huj(e(my)*|a|ą)*' # huk
+      - prawdziwki
+      - 'borsuk\S*'
+      - 'suk(am|i(ca|enk\S*))'
+      - 'zajebi(s|ś)(c|t)\S*'
+  adverts:
+    action: replace
+    command: warn {} reklama
+    message: '&cNie reklamuj'
+    dns-lookup:
+      format: '\w+( ?(\.|,| )+ ?(a ?t ?e ?r ?n ?o ?s|p ?l|c ?o ?m|n ?e ?t|o ?r ?g|m ?e|m ?a ?x ?c|c ?s ?r ?v|t ?a ?s ?r ?v))+' # domain
+      found:
+        action: cancel
+        command: mute {} 1w reklama
+    blacklist:
+      - '(\d{1,3}(\.|,| )+){3}\d{1,3}' # ipv4
+      - '\w+( ?(\.|,| )+ ?(a ?t ?e ?r ?n ?o ?s|p ?l|c ?o ?m|n ?e ?t|o ?r ?g|m ?e|m ?a ?x ?c|c ?s ?r ?v|t ?a ?s ?r ?v))+' # domain
+      - '(zapraszamy*|wbijajcie) na ser(w|v)er'
+caps:
+  command: none
+  max-letters: 5
+cooldown:
+  default:
+    time: 3000
+    repeat-time: 10000
+  moderator:
+    time: 2000
+    repeat-time: 4000
+flood:
+  action: replace
+  command: none
+  allow-usernames: true
+  pattern: '\S{3,}'
+  reduce-to: 2
+spam:
+  action: none
+  command: warn {} spam
+  max: 3
+  chatlog-size: 32
+  matching:
+    min-words: 4
+    min-percent: 80
+  cheat-spammer:
+    action: none
+    command: banip {} 2w cheaty
+    blacklist:
+      - "^Use Sigma Client, it's free ! \d+"
+
+messages:
+  caps: '&cNIE PISZ CAPSEM!'
+  cooldown: '&cPoczekaj {} zanim napiszesz kolejną wiadomość'
+  flood: '&cNie flooduj'
+  spam: '&cNie spam'

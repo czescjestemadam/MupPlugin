@@ -20,6 +20,9 @@ public class ListenerManager
 		register(new InventoryListener(mupPlugin));
 		register(new ExpListener(mupPlugin));
 		register(new MoveListener(mupPlugin));
+		register(new BlockListener(mupPlugin));
+		register(new BookListener(mupPlugin));
+		register(new ChatListener(mupPlugin));
 	}
 
 	private void register(Listener listener)

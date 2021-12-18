@@ -2,6 +2,7 @@ package mup.nolan.mupplugin.modules;
 
 import mup.nolan.mupplugin.MupPlugin;
 import mup.nolan.mupplugin.modules.antiafk.AntiafkModule;
+import mup.nolan.mupplugin.modules.chatpatrol.ChatPatrolModule;
 import mup.nolan.mupplugin.modules.gallery.GalleryModule;
 import org.bukkit.command.CommandSender;
 
@@ -25,6 +26,7 @@ public class ModuleManager
 		register(new GalleryModule(mupPlugin));
 		register(new AntiafkModule(mupPlugin));
 		register(new CheatnonoModule(mupPlugin));
+		register(new ChatPatrolModule(mupPlugin));
 	}
 
 	public List<String> getModules(boolean enabledOnly)

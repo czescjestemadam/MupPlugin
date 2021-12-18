@@ -27,6 +27,7 @@ public class ConfigManager
 		load("modules");
 		load("placeholders");
 		load("cheatnono");
+		load("chatpatrol");
 	}
 
 	public List<String> getConfigs()
