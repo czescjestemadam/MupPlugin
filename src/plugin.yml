@@ -62,3 +62,5 @@ permissions:
     default: op
   mup.chatpatrol.exempt.flood:
     default: op
+  mup.chatpatrol.exempt.spam:
+    default: op

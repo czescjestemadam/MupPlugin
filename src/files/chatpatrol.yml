@@ -75,13 +75,13 @@ spam:
   max: 3
   chatlog-size: 32
   matching:
-    min-words: 4
+    min-words: 3
     min-percent: 80
   cheat-spammer:
     action: none
-    command: banip {} 2w cheaty
+    command: ban {} 2w cheaty
     blacklist:
-      - "^Use Sigma Client, it's free ! \d+"
+      - '^Use Sigma Client, it''s free ! \d+'
 
 messages:
   caps: '&cNIE PISZ CAPSEM!'

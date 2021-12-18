@@ -7,6 +7,7 @@ public class ChatPatrolLogMessage
 	final OfflinePlayer sender;
 	final String content;
 	final long timestamp = System.currentTimeMillis();
+	boolean warned = false;
 
 	public ChatPatrolLogMessage(OfflinePlayer sender, String content)
 	{
@@ -21,6 +22,7 @@ public class ChatPatrolLogMessage
 				"sender=" + sender +
 				", content='" + content + '\'' +
 				", timestamp=" + timestamp +
+				", warned=" + warned +
 				'}';
 	}
 }

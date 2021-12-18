@@ -4,6 +4,7 @@ import mup.nolan.mupplugin.MupPlugin;
 import mup.nolan.mupplugin.config.Config;
 import mup.nolan.mupplugin.hooks.VaultHook;
 import mup.nolan.mupplugin.modules.Module;
+import mup.nolan.mupplugin.utils.CommandUtils;
 import mup.nolan.mupplugin.utils.StrUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -13,6 +14,7 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerEditBookEvent;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 public class ChatPatrolModule extends Module
 {
@@ -43,8 +45,9 @@ public class ChatPatrolModule extends Module
 		checkFlood(e);
 		if (!e.isCancelled())
 		{
-			if (chatLog.size() > cfg.getInt("spam.messages.chatlog-size"))
 			chatLog.add(new ChatPatrolLogMessage(e.getPlayer(), e.getMessage()));
+			if (chatLog.size() >= cfg.getInt("spam.chatlog-size"))
+				chatLog.remove();
 		}
 	}
 
@@ -103,7 +106,69 @@ public class ChatPatrolModule extends Module
 
 	private void checkSpam(AsyncPlayerChatEvent e)
 	{
+		if (e.isCancelled() || e.getPlayer().hasPermission("mup.chatpatrol.exempt.spam"))
+			return;
 
+		final List<ChatPatrolLogMessage> messages = chatLog.stream().filter(m -> m.sender == e.getPlayer() && !m.warned).toList();
+
+		final int minWords = cfg.getInt("spam.matching.min-words");
+		final int minPerc = cfg.getInt("spam.matching.min-percent");
+
+		final List<String> matching = new ArrayList<>(Arrays.asList(e.getMessage()));
+		for (ChatPatrolLogMessage msg : messages)
+		{
+			if (e.getMessage().equalsIgnoreCase(msg.content))
+			{
+				matching.add(msg.content);
+				continue;
+			}
+
+			final String[] msgArr = e.getMessage().toLowerCase().split(" ");
+			final String[] logArr = msg.content.toLowerCase().split(" ");
+
+			if (msgArr.length < minWords)
+				break;
+
+			final List<String> from = Arrays.asList(msgArr.length > logArr.length ? logArr : msgArr); // smaller
+			final List<String> toCheck = Arrays.asList(msgArr.length > logArr.length ? msgArr : logArr); // bigger
+
+			int matchingWords = 0;
+			for (String fromStr : from)
+			{
+				if (toCheck.contains(fromStr))
+					matchingWords++;
+			}
+
+			if (matchingWords >= minWords && 100 * matchingWords / from.size() >= minPerc)
+				matching.add(msg.content);
+		}
+
+		if (matching.size() < cfg.getInt("spam.max"))
+			return;
+
+		final Consumer<String> execCommand = cmd -> {
+			if (cmd != null && !cmd.equalsIgnoreCase("none"))
+			{
+				e.getPlayer().sendMessage(cfg.getStringF("messages.spam"));
+				CommandUtils.execAsync(Bukkit.getConsoleSender(), cmd.replaceAll("\\{}", e.getPlayer().getName()));
+				chatLog.stream().filter(m -> m.sender == e.getPlayer()).forEach(m -> m.warned = true);
+			}
+		};
+
+		for (String filter : cfg.getStringList("spam.cheat-spammer.blacklist"))
+		{
+			if (matching.stream().allMatch(m -> m.matches(filter)))
+			{
+				if (cfg.getString("spam.cheat-spammer.action").equalsIgnoreCase("cancel"))
+					e.setCancelled(true);
+				execCommand.accept(cfg.getString("spam.cheat-spammer.command"));
+				return;
+			}
+		}
+
+		if (cfg.getString("spam.action").equalsIgnoreCase("cancel"))
+			e.setCancelled(true);
+		execCommand.accept(cfg.getString("spam.command"));
 	}
 
 	private void checkCaps(AsyncPlayerChatEvent e)
