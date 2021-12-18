@@ -61,4 +61,10 @@ public class StrUtils
 	{
 		return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
 	}
+
+	public static String roundNum(double val, int place)
+	{
+		final int scale = (int)Math.pow(10, place);
+		return String.valueOf((double)Math.round(val * scale) / scale);
+	}
 }

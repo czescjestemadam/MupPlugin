@@ -2,7 +2,10 @@ package mup.nolan.mupplugin.modules.chatpatrol;
 
 import mup.nolan.mupplugin.MupPlugin;
 import mup.nolan.mupplugin.config.Config;
+import mup.nolan.mupplugin.hooks.VaultHook;
 import mup.nolan.mupplugin.modules.Module;
+import mup.nolan.mupplugin.utils.StrUtils;
+import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -19,12 +22,6 @@ public class ChatPatrolModule extends Module
 	{
         super(mupPlugin, "chatpatrol");
 		cfg = mupPlugin.getConfigManager().getConfig("chatpatrol");
-	}
-
-	@Override
-	public void onEnable()
-	{
-
 	}
 
 	@Override
@@ -85,11 +82,22 @@ public class ChatPatrolModule extends Module
 
 	private void checkCooldown(AsyncPlayerChatEvent e)
 	{
+		if (e.getPlayer().hasPermission("mup.chatpatrol.exempt.cooldown"))
+			return;
+
 		final ChatPatrolLogMessage lastMessage = chatLog.stream().filter(m -> m.sender == e.getPlayer()).max(Comparator.comparingLong(v -> v.timestamp)).orElse(null);
 		if (lastMessage == null)
 			return;
 
+		final String valName = (e.getMessage().equalsIgnoreCase(lastMessage.content) ? "repeat-" : "") + "time";
+		final int cooldown = cfg.getInt("cooldown." + VaultHook.getPerms().getPrimaryGroup(e.getPlayer()).toLowerCase() + "." + valName, cfg.getInt("cooldown.default." + valName));
 
+		final int lastDiff = (int)(System.currentTimeMillis() - lastMessage.timestamp);
+		if (lastDiff > cooldown)
+			return;
+
+		e.setCancelled(true);
+		e.getPlayer().sendMessage(cfg.getStringF("messages.cooldown").replaceAll("\\{}", StrUtils.roundNum((cooldown - (double)lastDiff) / 1000, 1)));
 	}
 
 	private void checkSpam(AsyncPlayerChatEvent e)
