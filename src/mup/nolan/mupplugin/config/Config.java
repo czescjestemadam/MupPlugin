@@ -52,6 +52,11 @@ public class Config
 		}
 	}
 
+	public boolean has(String path)
+	{
+		return cfg.contains(path, true);
+	}
+
 	public Object get(String path)
 	{
 		return cfg.get(path);
@@ -116,7 +121,7 @@ public class Config
 
 	public List<Material> getMaterialList(String path, boolean includeNulls)
 	{
-		return StrUtils.getMaterials(cfg.getStringList(path), false);
+		return StrUtils.getMaterials(cfg.getStringList(path), includeNulls);
 	}
 
 	public List<Material> getMaterialList(String path)
@@ -132,5 +137,10 @@ public class Config
 	public List<String> getStringList(String path)
 	{
 		return cfg.getStringList(path);
+	}
+
+	public Set<String> list(String path)
+	{
+		return cfg.getConfigurationSection(path).getKeys(false);
 	}
 }

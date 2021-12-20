@@ -12,8 +12,7 @@ public class NetUtils
             return InetAddress.getByName(host);
         } catch (UnknownHostException e)
         {
-            e.printStackTrace();
+            return null;
         }
-        return null;
     }
 }
