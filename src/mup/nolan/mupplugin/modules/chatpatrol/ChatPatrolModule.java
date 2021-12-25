@@ -91,12 +91,16 @@ public class ChatPatrolModule extends Module
 				m.setPage(i, page.get());
 		}
 		e.setNewBookMeta(m);
+		Bukkit.getScheduler().scheduleSyncDelayedTask(mup(), () -> e.getPlayer().updateInventory(), 1);
 	}
 
 	public void onCommand(PlayerCommandPreprocessEvent e)
 	{
 		final String msg = e.getMessage().substring(1);
-		final String cmd = msg.substring(0, msg.indexOf(" "));
+		final int idx = msg.indexOf(" ");
+		if (idx < 0)
+			return;
+		final String cmd = msg.substring(0, idx);
 		final Resrc<String> args = new Resrc<>(msg.substring(msg.indexOf(" ")).trim());
 		checkCategories("command:" + cmd, e.getPlayer(), args, e);
 		e.setMessage("/" + cmd + " " + args.get());
