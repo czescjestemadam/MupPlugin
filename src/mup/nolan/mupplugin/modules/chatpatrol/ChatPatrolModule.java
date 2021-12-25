@@ -1,5 +1,6 @@
 package mup.nolan.mupplugin.modules.chatpatrol;
 
+import com.google.common.primitives.Chars;
 import mup.nolan.mupplugin.MupPlugin;
 import mup.nolan.mupplugin.config.Config;
 import mup.nolan.mupplugin.hooks.VaultHook;
@@ -21,6 +22,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class ChatPatrolModule extends Module
 {
@@ -29,7 +31,7 @@ public class ChatPatrolModule extends Module
 
 	public ChatPatrolModule(MupPlugin mupPlugin)
 	{
-        super(mupPlugin, "chatpatrol");
+		super(mupPlugin, "chatpatrol");
 		cfg = mupPlugin.getConfigManager().getConfig("chatpatrol");
 	}
 
@@ -227,7 +229,68 @@ public class ChatPatrolModule extends Module
 
 	private void checkFlood(AsyncPlayerChatEvent e)
 	{
+		if (e.isCancelled())
+			return;
 
+		final int maxRepeats = cfg.getInt("flood.max-repeats");
+		final int reduceTo = cfg.getInt("flood.reduce-to");
+		final boolean allowUsernames = cfg.getBool("flood.allow-usernames");
+
+		boolean command = false;
+		final String[] msgArr = e.getMessage().split(" ");
+		for (int argIdx = 0; argIdx < msgArr.length; argIdx++)
+		{
+			if (msgArr[argIdx].length() <= maxRepeats)
+				continue;
+
+			final List<Character> arg = new ArrayList<>(Chars.asList(msgArr[argIdx].toCharArray()));
+			if (allowUsernames && Bukkit.getPlayerExact(msgArr[argIdx]) != null)
+				continue;
+
+			System.out.println("\targ " + arg);
+
+			for (int letterIdx = 0; letterIdx < arg.size(); letterIdx++)
+			{
+				final char letter = arg.get(letterIdx);
+				int matching = 1;
+
+				for (int nextLetterIdx = letterIdx; nextLetterIdx < arg.size() - 1; nextLetterIdx++)
+				{
+					if (letter == arg.get(nextLetterIdx))
+						matching++;
+				}
+
+				System.out.println("\tletter " + letter + " idx " + letterIdx + " matching " + matching);
+
+				if (maxRepeats > matching)
+					continue;
+
+				for (int removeIdx = 0; removeIdx < matching - reduceTo; removeIdx++)
+				{
+					if (arg.get(letterIdx) != letter)
+						break;
+					System.out.println("\t\t\tremoving " + arg.get(letterIdx) + " idx " + (letterIdx));
+					arg.remove(letterIdx);
+				}
+
+				command = true;
+			}
+
+			msgArr[argIdx] = arg.stream().map(String::valueOf).collect(Collectors.joining());
+		}
+
+		if (!command)
+			return;
+
+		final String action = cfg.getString("flood.action");
+		if (action.equalsIgnoreCase("replace"))
+			e.setMessage(String.join(" ", msgArr));
+		else if (action.equalsIgnoreCase("cancel"))
+			e.setCancelled(true);
+		e.getPlayer().sendMessage(cfg.getStringF("messages.flood"));
+		final String cmd = cfg.getString("flood.command");
+		if (cmd != null && !cmd.equalsIgnoreCase("none"))
+			CommandUtils.execAsync(Bukkit.getConsoleSender(), cfg.getString("flood.command"));
 	}
 
 	private void checkCategories(String from, Player player, Resrc<String> content, Cancellable event)

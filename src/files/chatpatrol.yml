@@ -74,7 +74,7 @@ flood:
   action: replace
   command: none
   allow-usernames: true
-  pattern: '\S{3,}'
+  max-repeats: 3
   reduce-to: 2
 spam:
   action: none
