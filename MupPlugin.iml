@@ -19,15 +19,6 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../APIs/spigot-api-1.17.1-R0.1-20210727.081333-35.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
           <root url="jar://$MODULE_DIR$/../APIs/BungeeCord.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -65,6 +56,15 @@
       <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/../APIs/Vault.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../APIs/spigot-api-1.18.1-R0.1-20211224.224502-17.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
