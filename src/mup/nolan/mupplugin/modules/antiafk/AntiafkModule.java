@@ -1,7 +1,6 @@
 package mup.nolan.mupplugin.modules.antiafk;
 
 import mup.nolan.mupplugin.MupPlugin;
-import mup.nolan.mupplugin.config.Config;
 import mup.nolan.mupplugin.modules.Module;
 import mup.nolan.mupplugin.utils.StrUtils;
 import org.bukkit.Bukkit;
@@ -16,14 +15,12 @@ import java.util.Map;
 
 public class AntiafkModule extends Module
 {
-	private final Config cfg;
 	private final Map<Player, AntiafkMove> lastMove = new HashMap<>();
 	private BukkitRunnable runnable;
 
 	public AntiafkModule(MupPlugin mupPlugin)
 	{
 		super(mupPlugin, "antiafk");
-		cfg = mupPlugin.getConfigManager().getConfig("antiafk");
 	}
 
 	@Override
@@ -42,7 +39,7 @@ public class AntiafkModule extends Module
 
 					final int afkTime = (int)(System.currentTimeMillis() - lastMove.get(p).last()) / 1000;
 
-					if (afkTime > cfg.getInt("kick.time"))
+					if (afkTime > cfg().getInt("kick.time"))
 						toKick.add(p);
 					else
 						warn(p, afkTime);
@@ -52,7 +49,7 @@ public class AntiafkModule extends Module
 				toKick.clear();
 			}
 		};
-		runnable.runTaskTimer(mup(), cfg.getInt("check-interval") * 20L, cfg.getInt("check-interval") * 20L);
+		runnable.runTaskTimer(mup(), cfg().getInt("check-interval") * 20L, cfg().getInt("check-interval") * 20L);
 	}
 
 	@Override
@@ -91,7 +88,7 @@ public class AntiafkModule extends Module
 
 	private void warn(Player player, int afkTime)
 	{
-		final String title = StrUtils.replaceColors((String)cfg.getNearest("warn-titles", afkTime, cfg.getInt("check-interval")));
+		final String title = StrUtils.replaceColors((String)cfg().getNearest("warn-titles", afkTime, cfg().getInt("check-interval")));
 		if (title != null)
 		{
 			final int splitterIndex = title.indexOf(";;");
@@ -101,7 +98,7 @@ public class AntiafkModule extends Module
 
 	private void kick(Player player)
 	{
-		final Object val = cfg.get("kick.command");
+		final Object val = cfg().get("kick.command");
 		if (val instanceof String cmd)
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd.replaceAll("\\{player}", player.getName()));
 		else if (val instanceof List<?> cmdList)

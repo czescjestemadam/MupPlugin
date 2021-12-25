@@ -58,7 +58,7 @@ public class GalleryModule extends Module
 			viewMap.remove(p);
 
 		if (reminded.add(p)) // exec once
-			e.getPlayer().sendMessage(mup().getConfigManager().getConfig("gallery").getStringF("messages.edit-reminder"));
+			e.getPlayer().sendMessage(cfg().getStringF("messages.edit-reminder"));
 	}
 
 	public void clearReminder(Player player)

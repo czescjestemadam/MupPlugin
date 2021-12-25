@@ -2,7 +2,6 @@ package mup.nolan.mupplugin.modules.chatpatrol;
 
 import com.google.common.primitives.Chars;
 import mup.nolan.mupplugin.MupPlugin;
-import mup.nolan.mupplugin.config.Config;
 import mup.nolan.mupplugin.hooks.VaultHook;
 import mup.nolan.mupplugin.modules.Module;
 import mup.nolan.mupplugin.utils.CommandUtils;
@@ -26,13 +25,11 @@ import java.util.stream.Collectors;
 
 public class ChatPatrolModule extends Module
 {
-	private final Config cfg;
 	private final Queue<ChatPatrolLogMessage> chatLog = new LinkedList<>();
 
 	public ChatPatrolModule(MupPlugin mupPlugin)
 	{
 		super(mupPlugin, "chatpatrol");
-		cfg = mupPlugin.getConfigManager().getConfig("chatpatrol");
 	}
 
 	@Override
@@ -58,7 +55,7 @@ public class ChatPatrolModule extends Module
 		if (!e.isCancelled())
 		{
 			chatLog.add(new ChatPatrolLogMessage(e.getPlayer(), e.getMessage()));
-			if (chatLog.size() >= cfg.getInt("spam.chatlog-size"))
+			if (chatLog.size() >= cfg().getInt("spam.chatlog-size"))
 				chatLog.remove();
 		}
 	}
@@ -116,14 +113,14 @@ public class ChatPatrolModule extends Module
 			return;
 
 		final String valName = (e.getMessage().equalsIgnoreCase(lastMessage.content) ? "repeat-" : "") + "time";
-		final int cooldown = cfg.getInt("cooldown." + VaultHook.getPerms().getPrimaryGroup(e.getPlayer()).toLowerCase() + "." + valName, cfg.getInt("cooldown.default." + valName));
+		final int cooldown = cfg().getInt("cooldown." + VaultHook.getPerms().getPrimaryGroup(e.getPlayer()).toLowerCase() + "." + valName, cfg().getInt("cooldown.default." + valName));
 
 		final int lastDiff = (int)(System.currentTimeMillis() - lastMessage.timestamp);
 		if (lastDiff > cooldown)
 			return;
 
 		e.setCancelled(true);
-		e.getPlayer().sendMessage(cfg.getStringF("messages.cooldown").replaceAll("\\{}", StrUtils.roundNum((cooldown - (double)lastDiff) / 1000, 1)));
+		e.getPlayer().sendMessage(cfg().getStringF("messages.cooldown").replaceAll("\\{}", StrUtils.roundNum((cooldown - (double)lastDiff) / 1000, 1)));
 	}
 
 	private void checkSpam(AsyncPlayerChatEvent e)
@@ -133,8 +130,8 @@ public class ChatPatrolModule extends Module
 
 		final List<ChatPatrolLogMessage> messages = chatLog.stream().filter(m -> m.sender == e.getPlayer() && !m.warned).toList();
 
-		final int minWords = cfg.getInt("spam.matching.min-words");
-		final int minPerc = cfg.getInt("spam.matching.min-percent");
+		final int minWords = cfg().getInt("spam.matching.min-words");
+		final int minPerc = cfg().getInt("spam.matching.min-percent");
 
 		final List<String> matching = new ArrayList<>(Arrays.asList(e.getMessage()));
 		for (ChatPatrolLogMessage msg : messages)
@@ -165,32 +162,32 @@ public class ChatPatrolModule extends Module
 				matching.add(msg.content);
 		}
 
-		if (matching.size() < cfg.getInt("spam.max"))
+		if (matching.size() < cfg().getInt("spam.max"))
 			return;
 
 		final Consumer<String> execCommand = cmd -> {
 			if (cmd != null && !cmd.equalsIgnoreCase("none"))
 			{
-				e.getPlayer().sendMessage(cfg.getStringF("messages.spam"));
+				e.getPlayer().sendMessage(cfg().getStringF("messages.spam"));
 				CommandUtils.execAsync(Bukkit.getConsoleSender(), cmd.replaceAll("\\{}", e.getPlayer().getName()));
 				chatLog.stream().filter(m -> m.sender == e.getPlayer()).forEach(m -> m.warned = true);
 			}
 		};
 
-		for (String filter : cfg.getStringList("spam.cheat-spammer.blacklist"))
+		for (String filter : cfg().getStringList("spam.cheat-spammer.blacklist"))
 		{
 			if (matching.stream().allMatch(m -> m.matches(filter)))
 			{
-				if (cfg.getString("spam.cheat-spammer.action").equalsIgnoreCase("cancel"))
+				if (cfg().getString("spam.cheat-spammer.action").equalsIgnoreCase("cancel"))
 					e.setCancelled(true);
-				execCommand.accept(cfg.getString("spam.cheat-spammer.command"));
+				execCommand.accept(cfg().getString("spam.cheat-spammer.command"));
 				return;
 			}
 		}
 
-		if (cfg.getString("spam.action").equalsIgnoreCase("cancel"))
+		if (cfg().getString("spam.action").equalsIgnoreCase("cancel"))
 			e.setCancelled(true);
-		execCommand.accept(cfg.getString("spam.command"));
+		execCommand.accept(cfg().getString("spam.command"));
 	}
 
 	private void checkCaps(AsyncPlayerChatEvent e)
@@ -205,7 +202,7 @@ public class ChatPatrolModule extends Module
 		if (msg.trim().isEmpty())
 			return;
 
-		final int maxCaps = cfg.getInt("caps.max-letters");
+		final int maxCaps = cfg().getInt("caps.max-letters");
 		int caps = 0;
 		for (char c : msg.toCharArray())
 		{
@@ -228,7 +225,7 @@ public class ChatPatrolModule extends Module
 			low.append(" ");
 		}
 		e.setMessage(low.toString().trim());
-		e.getPlayer().sendMessage(cfg.getStringF("messages.caps"));
+		e.getPlayer().sendMessage(cfg().getStringF("messages.caps"));
 	}
 
 	private void checkFlood(AsyncPlayerChatEvent e)
@@ -236,9 +233,9 @@ public class ChatPatrolModule extends Module
 		if (e.isCancelled())
 			return;
 
-		final int maxRepeats = cfg.getInt("flood.max-repeats");
-		final int reduceTo = cfg.getInt("flood.reduce-to");
-		final boolean allowUsernames = cfg.getBool("flood.allow-usernames");
+		final int maxRepeats = cfg().getInt("flood.max-repeats");
+		final int reduceTo = cfg().getInt("flood.reduce-to");
+		final boolean allowUsernames = cfg().getBool("flood.allow-usernames");
 
 		boolean command = false;
 		final String[] msgArr = e.getMessage().split(" ");
@@ -286,15 +283,15 @@ public class ChatPatrolModule extends Module
 		if (!command)
 			return;
 
-		final String action = cfg.getString("flood.action");
+		final String action = cfg().getString("flood.action");
 		if (action.equalsIgnoreCase("replace"))
 			e.setMessage(String.join(" ", msgArr));
 		else if (action.equalsIgnoreCase("cancel"))
 			e.setCancelled(true);
-		e.getPlayer().sendMessage(cfg.getStringF("messages.flood"));
-		final String cmd = cfg.getString("flood.command");
+		e.getPlayer().sendMessage(cfg().getStringF("messages.flood"));
+		final String cmd = cfg().getString("flood.command");
 		if (cmd != null && !cmd.equalsIgnoreCase("none"))
-			CommandUtils.execAsync(Bukkit.getConsoleSender(), cfg.getString("flood.command"));
+			CommandUtils.execAsync(Bukkit.getConsoleSender(), cfg().getString("flood.command"));
 	}
 
 	private void checkCategories(String from, Player player, Resrc<String> content, Cancellable event)
@@ -302,9 +299,9 @@ public class ChatPatrolModule extends Module
 		if (event.isCancelled())
 			return;
 
-		for (String category : cfg.list("categories"))
+		for (String category : cfg().list("categories"))
 		{
-			if (cfg.getStringList("categories." + category + ".apply-to").contains(from))
+			if (cfg().getStringList("categories." + category + ".apply-to").contains(from))
 				checkCategory(category, player, content, event);
 		}
 	}
@@ -314,12 +311,12 @@ public class ChatPatrolModule extends Module
 		if (event.isCancelled())
 			return;
 
-		final String replacement = cfg.getString("replacement");
+		final String replacement = cfg().getString("replacement");
 
 		boolean dnsAction = false;
-		if (cfg.has("categories." + category + ".dns-lookup"))
+		if (cfg().has("categories." + category + ".dns-lookup"))
 		{
-			final Matcher m = Pattern.compile(cfg.getString("categories." + category + ".dns-lookup.format"), Pattern.CASE_INSENSITIVE).matcher(content.get());
+			final Matcher m = Pattern.compile(cfg().getString("categories." + category + ".dns-lookup.format"), Pattern.CASE_INSENSITIVE).matcher(content.get());
 			while (m.find())
 			{
 				final String group = m.group();
@@ -328,12 +325,12 @@ public class ChatPatrolModule extends Module
 				if (NetUtils.dnsLookup(group) != null)
 				{
 					System.out.println("dns found addr");
-					final String action = cfg.getString("categories." + category + ".dns-lookup.action");
+					final String action = cfg().getString("categories." + category + ".dns-lookup.action");
 					if (action.equalsIgnoreCase("cancel"))
 						event.setCancelled(true);
 					else if (action.equalsIgnoreCase("replace"))
 						content.set(content.get().replace(group, replacement));
-					final String cmd = cfg.getString("categories." + category + ".dns-lookup.command");
+					final String cmd = cfg().getString("categories." + category + ".dns-lookup.command");
 					if (cmd != null && !cmd.equalsIgnoreCase("none"))
 					{
 						dnsAction = true;
@@ -344,7 +341,7 @@ public class ChatPatrolModule extends Module
 		}
 
 		final List<String> ignores = new ArrayList<>();
-		for (String whiteString : cfg.getStringList("categories." + category + ".whitelist"))
+		for (String whiteString : cfg().getStringList("categories." + category + ".whitelist"))
 		{
 			final Matcher m = Pattern.compile(whiteString, Pattern.CASE_INSENSITIVE).matcher(content.get());
 			while (m.find())
@@ -352,7 +349,7 @@ public class ChatPatrolModule extends Module
 		}
 
 		final List<String> matches = new ArrayList<>();
-		for (String blackString : cfg.getStringList("categories." + category + ".blacklist"))
+		for (String blackString : cfg().getStringList("categories." + category + ".blacklist"))
 		{
 			final Matcher m = Pattern.compile(blackString, Pattern.CASE_INSENSITIVE).matcher(content.get());
 			while (m.find())
@@ -375,14 +372,14 @@ public class ChatPatrolModule extends Module
 		if (matches.isEmpty())
 			return;
 
-		player.sendMessage(cfg.getStringF("categories." + category + ".message"));
-		final String action = cfg.getString("categories." + category + ".action");
+		player.sendMessage(cfg().getStringF("categories." + category + ".message"));
+		final String action = cfg().getString("categories." + category + ".action");
 		if (action.equalsIgnoreCase("cancel"))
 			event.setCancelled(true);
 		else if (action.equalsIgnoreCase("replace"))
 			for (String match : matches)
 				content.set(content.get().replace(match, replacement));
-		final String cmd = cfg.getString("categories." + category + ".command");
+		final String cmd = cfg().getString("categories." + category + ".command");
 		if (cmd != null && !cmd.equalsIgnoreCase("none") && !dnsAction)
 			CommandUtils.execAsync(Bukkit.getConsoleSender(), cmd.replaceAll("\\{}", player.getName()));
 	}

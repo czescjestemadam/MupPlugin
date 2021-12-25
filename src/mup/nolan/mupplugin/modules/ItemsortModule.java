@@ -33,7 +33,7 @@ public class ItemsortModule extends Module
 		if (!mup().getDB().itemsortEnabled(p))
 		{
 			if (reminded.add(p))
-				p.sendMessage(mup().getConfigManager().getConfig("itemsort").getStringF("messages.reminder"));
+				p.sendMessage(cfg().getStringF("messages.reminder"));
 			return;
 		}
 

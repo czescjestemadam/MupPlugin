@@ -1,16 +1,19 @@
 package mup.nolan.mupplugin.modules;
 
 import mup.nolan.mupplugin.MupPlugin;
+import mup.nolan.mupplugin.config.Config;
 
 public abstract class Module
 {
 	private final MupPlugin mupPlugin;
+	private final Config config;
 	private final String name;
 	private boolean enabled = false;
 
 	public Module(MupPlugin mupPlugin, String name)
 	{
 		this.mupPlugin = mupPlugin;
+		config = mupPlugin.getConfigManager().getConfig(name);
 		this.name = name;
 	}
 
@@ -50,8 +53,13 @@ public abstract class Module
 		MupPlugin.log().info(mupPlugin.getConfigManager().getConfig("modules").getStringF(cfgStr).replace("{}", name));
 	}
 
-	public MupPlugin mup()
+	protected MupPlugin mup()
 	{
 		return mupPlugin;
+	}
+
+	protected Config cfg()
+	{
+		return config;
 	}
 }
