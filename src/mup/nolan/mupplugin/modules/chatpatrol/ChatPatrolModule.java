@@ -49,12 +49,12 @@ public class ChatPatrolModule extends Module
 		checkCooldown(e);
 		checkSpam(e);
 		checkCaps(e);
+		checkFlood(e);
 
 		final Resrc<String> msg = new Resrc<>(e.getMessage());
 		checkCategories("chat", e.getPlayer(), msg, e);
 		e.setMessage(msg.get());
 
-		checkFlood(e);
 		if (!e.isCancelled())
 		{
 			chatLog.add(new ChatPatrolLogMessage(e.getPlayer(), e.getMessage()));
