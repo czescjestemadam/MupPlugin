@@ -137,7 +137,7 @@ public class ChatPatrolModule extends Module
 		final int minWords = cfg().getInt("spam.matching.min-words");
 		final int minPerc = cfg().getInt("spam.matching.min-percent");
 
-		final List<String> matching = new ArrayList<>(Arrays.asList(e.getMessage()));
+		final List<String> matching = new ArrayList<>(List.of(e.getMessage()));
 		for (ChatPatrolLogMessage msg : messages)
 		{
 			if (e.getMessage().equalsIgnoreCase(msg.content))
@@ -252,20 +252,18 @@ public class ChatPatrolModule extends Module
 			if (allowUsernames && Bukkit.getPlayerExact(msgArr[argIdx]) != null)
 				continue;
 
-			System.out.println("\targ " + arg);
-
 			for (int letterIdx = 0; letterIdx < arg.size(); letterIdx++)
 			{
 				final char letter = arg.get(letterIdx);
-				int matching = 1;
+				int matching = 0;
 
 				for (int nextLetterIdx = letterIdx; nextLetterIdx < arg.size() - 1; nextLetterIdx++)
 				{
 					if (letter == arg.get(nextLetterIdx))
 						matching++;
+					else
+						break;
 				}
-
-				System.out.println("\tletter " + letter + " idx " + letterIdx + " matching " + matching);
 
 				if (maxRepeats > matching)
 					continue;
@@ -274,7 +272,6 @@ public class ChatPatrolModule extends Module
 				{
 					if (arg.get(letterIdx) != letter)
 						break;
-					System.out.println("\t\t\tremoving " + arg.get(letterIdx) + " idx " + (letterIdx));
 					arg.remove(letterIdx);
 				}
 
@@ -328,12 +325,9 @@ public class ChatPatrolModule extends Module
 			final Matcher m = Pattern.compile(cfg().getString("categories." + category + ".dns-lookup.format"), Pattern.CASE_INSENSITIVE).matcher(content.get());
 			while (m.find())
 			{
-				final String group = m.group();
-				System.out.println("group: " + group);
-
+				final String group = m.group().replaceAll("[ ,-]+", ".");
 				if (NetUtils.dnsLookup(group) != null)
 				{
-					System.out.println("dns found addr");
 					final String action = cfg().getString("categories." + category + ".dns-lookup.action");
 					if (action.equalsIgnoreCase("cancel"))
 						event.setCancelled(true);
@@ -360,7 +354,7 @@ public class ChatPatrolModule extends Module
 		final List<String> matches = new ArrayList<>();
 		for (String blackString : cfg().getStringList("categories." + category + ".blacklist"))
 		{
-			final Matcher m = Pattern.compile(blackString, Pattern.CASE_INSENSITIVE).matcher(content.get());
+			final Matcher m = Pattern.compile("(" + blackString + ")+", Pattern.CASE_INSENSITIVE).matcher(content.get());
 			while (m.find())
 			{
 				final String group = m.group();
