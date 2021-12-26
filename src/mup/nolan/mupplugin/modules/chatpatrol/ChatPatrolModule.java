@@ -8,6 +8,9 @@ import mup.nolan.mupplugin.utils.CommandUtils;
 import mup.nolan.mupplugin.utils.NetUtils;
 import mup.nolan.mupplugin.utils.Resrc;
 import mup.nolan.mupplugin.utils.StrUtils;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -19,6 +22,7 @@ import org.bukkit.inventory.meta.BookMeta;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -301,8 +305,13 @@ public class ChatPatrolModule extends Module
 
 		for (String category : cfg().list("categories"))
 		{
-			if (cfg().getStringList("categories." + category + ".apply-to").contains(from))
-				checkCategory(category, player, content, event);
+			if (!cfg().getStringList("categories." + category + ".apply-to").contains(from))
+				continue;
+
+			final String original = content.get();
+			checkCategory(category, player, content, event);
+			if (event.isCancelled() || !original.equalsIgnoreCase(content.get()))
+				notify(from, category, player, original);
 		}
 	}
 
@@ -382,5 +391,26 @@ public class ChatPatrolModule extends Module
 		final String cmd = cfg().getString("categories." + category + ".command");
 		if (cmd != null && !cmd.equalsIgnoreCase("none") && !dnsAction)
 			CommandUtils.execAsync(Bukkit.getConsoleSender(), cmd.replaceAll("\\{}", player.getName()));
+	}
+
+	private void notify(String from, String category, Player player, String original)
+	{
+		final Function<String, String> placeholders = str -> str.replaceAll("\\{player}", player.getName())
+				.replaceAll("\\{category}", category)
+				.replaceAll("\\{source}", from)
+				.replaceAll("\\{original}", original);
+
+		final String msg = placeholders.apply(cfg().getStringF("notification.message"));
+		final String hover = placeholders.apply(cfg().getStringF("notification.hover"));
+
+		final TextComponent notification = new TextComponent(msg);
+		notification.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, List.of(new Text(hover))));
+
+		MupPlugin.log().info(msg + "§r; " + hover);
+		for (Player p : Bukkit.getOnlinePlayers())
+		{
+			if (p.hasPermission("mup.chatpatrol.notify"))
+				p.spigot().sendMessage(notification);
+		}
 	}
 }

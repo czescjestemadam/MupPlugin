@@ -64,3 +64,5 @@ permissions:
     default: op
   mup.chatpatrol.exempt.spam:
     default: op
+  mup.chatpatrol.notify:
+    default: op

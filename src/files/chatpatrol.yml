@@ -1,6 +1,9 @@
 replacement: '****'
 dns-lookup: true
 one-command-per-message: false
+notification:
+  message: '&c&l[W] &c&o{player} for {category}'
+  hover: '&esrc="&f{source}&e" msg="&f{original}&e"'
 categories:
   swear-words:
     apply-to:
