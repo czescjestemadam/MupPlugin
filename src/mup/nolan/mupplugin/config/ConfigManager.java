@@ -44,11 +44,6 @@ public class ConfigManager
 		return configs.stream().filter(c -> c.getName().equalsIgnoreCase(config)).findFirst().orElse(null);
 	}
 
-	public void reload(String config)
-	{
-		getConfig(config).load();
-	}
-
 	private void load(String name)
 	{
 		final Config config = new Config(name, new File(mupPlugin.getDataFolder(), name + ".yml"), mupPlugin.getResource("files/" + name + ".yml"));
