@@ -4,7 +4,7 @@ author: nołanmup
 description: szypkiplugin2011
 version: 0.2
 
-api-version: 1.17
+api-version: 1.18
 softdepend: [PlaceholderAPI, Vault]
 
 commands:
