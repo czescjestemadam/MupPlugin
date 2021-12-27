@@ -1,6 +1,7 @@
 package mup.nolan.mupplugin.config;
 
 import mup.nolan.mupplugin.MupPlugin;
+import mup.nolan.mupplugin.utils.FileUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -28,6 +29,9 @@ public class ConfigManager
 		load("placeholders");
 		load("cheatnono");
 		load("chatpatrol");
+
+		FileUtils.copyFile(MupPlugin.getRes("files/permissions.txt"), new File(MupPlugin.get().getDataFolder(), "permissions.txt"));
+		FileUtils.copyFile(MupPlugin.getRes("files/placeholders.txt"), new File(MupPlugin.get().getDataFolder(), "placeholders.txt"));
 	}
 
 	public List<String> getConfigs()
