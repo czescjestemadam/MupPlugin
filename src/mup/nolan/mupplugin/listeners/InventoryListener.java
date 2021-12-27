@@ -1,6 +1,8 @@
 package mup.nolan.mupplugin.listeners;
 
 import mup.nolan.mupplugin.MupPlugin;
+import mup.nolan.mupplugin.modules.ModuleManager;
+import mup.nolan.mupplugin.modules.chatpatrol.ChatPatrolModule;
 import mup.nolan.mupplugin.modules.gallery.GalleryModule;
 import mup.nolan.mupplugin.modules.ItemsortModule;
 import org.bukkit.event.EventHandler;
@@ -10,18 +12,19 @@ import org.bukkit.event.inventory.*;
 public class InventoryListener implements Listener
 {
 	private final MupPlugin mupPlugin;
+	private final ModuleManager mm;
 
 	public InventoryListener(MupPlugin mupPlugin)
 	{
 		this.mupPlugin = mupPlugin;
+		mm = mupPlugin.getModuleManager();
 	}
 
 	@EventHandler
 	private void onClose(InventoryCloseEvent e)
 	{
-		((GalleryModule)mupPlugin.getModuleManager().getModule("gallery")).onClose(e);
-
-		((ItemsortModule)mupPlugin.getModuleManager().getModule("itemsort")).onChest(e);
+		((GalleryModule)mm.getModule("gallery")).onClose(e);
+		((ItemsortModule)mm.getModule("itemsort")).onChest(e);
 	}
 
 	@EventHandler
