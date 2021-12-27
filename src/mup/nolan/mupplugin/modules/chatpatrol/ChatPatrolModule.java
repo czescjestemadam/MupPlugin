@@ -184,14 +184,16 @@ public class ChatPatrolModule extends Module
 			{
 				if (cfg().getString("spam.cheat-spammer.action").equalsIgnoreCase("cancel"))
 					e.setCancelled(true);
-				execCommand.accept(cfg().getString("spam.cheat-spammer.command"));
+				if (!e.getPlayer().hasPermission("mup.chatpatrol.exempt.punish"))
+					execCommand.accept(cfg().getString("spam.cheat-spammer.command"));
 				return;
 			}
 		}
 
 		if (cfg().getString("spam.action").equalsIgnoreCase("cancel"))
 			e.setCancelled(true);
-		execCommand.accept(cfg().getString("spam.command"));
+		if (!e.getPlayer().hasPermission("mup.chatpatrol.exempt.punish"))
+			execCommand.accept(cfg().getString("spam.command"));
 	}
 
 	private void checkCaps(AsyncPlayerChatEvent e)
@@ -291,7 +293,7 @@ public class ChatPatrolModule extends Module
 			e.setCancelled(true);
 		e.getPlayer().sendMessage(cfg().getStringF("messages.flood"));
 		final String cmd = cfg().getString("flood.command");
-		if (cmd != null && !cmd.equalsIgnoreCase("none"))
+		if (cmd != null && !cmd.equalsIgnoreCase("none") && !e.getPlayer().hasPermission("mup.chatpatrol.exempt.punish"))
 			CommandUtils.execAsync(Bukkit.getConsoleSender(), cfg().getString("flood.command"));
 	}
 
@@ -331,13 +333,14 @@ public class ChatPatrolModule extends Module
 					final String action = cfg().getString("categories." + category + ".dns-lookup.action");
 					if (action.equalsIgnoreCase("cancel"))
 						event.setCancelled(true);
-					else if (action.equalsIgnoreCase("replace"))
+					else if (action.equalsIgnoreCase("replace") && !player.hasPermission("mup.chatpatrol.exempt.replace"))
 						content.set(content.get().replace(group, replacement));
 					final String cmd = cfg().getString("categories." + category + ".dns-lookup.command");
 					if (cmd != null && !cmd.equalsIgnoreCase("none"))
 					{
 						dnsAction = true;
-						CommandUtils.execAsync(Bukkit.getConsoleSender(), cmd.replaceAll("\\{}", player.getName()));
+						if (!player.hasPermission("mup.chatpatrol.exempt.punish"))
+							CommandUtils.execAsync(Bukkit.getConsoleSender(), cmd.replaceAll("\\{}", player.getName()));
 					}
 				}
 			}
@@ -379,11 +382,11 @@ public class ChatPatrolModule extends Module
 		final String action = cfg().getString("categories." + category + ".action");
 		if (action.equalsIgnoreCase("cancel"))
 			event.setCancelled(true);
-		else if (action.equalsIgnoreCase("replace"))
+		else if (action.equalsIgnoreCase("replace") && !player.hasPermission("mup.chatpatrol.exempt.replace"))
 			for (String match : matches)
 				content.set(content.get().replace(match, replacement));
 		final String cmd = cfg().getString("categories." + category + ".command");
-		if (cmd != null && !cmd.equalsIgnoreCase("none") && !dnsAction)
+		if (cmd != null && !cmd.equalsIgnoreCase("none") && !dnsAction && !player.hasPermission("mup.chatpatrol.exempt.punish"))
 			CommandUtils.execAsync(Bukkit.getConsoleSender(), cmd.replaceAll("\\{}", player.getName()));
 	}
 
