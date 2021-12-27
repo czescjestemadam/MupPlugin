@@ -10,6 +10,7 @@ categories:
       - chat
       - sign
       - book
+      - anvil
       - command:podpis
       - command:autograf
     action: replace
@@ -48,6 +49,7 @@ categories:
       - chat
       - sign
       - book
+      - anvil
       - command:podpis
       - command:autograf
       - command:msg

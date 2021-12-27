@@ -15,10 +15,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerEditBookEvent;
+import org.bukkit.inventory.AnvilInventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -105,6 +109,28 @@ public class ChatPatrolModule extends Module
 		final Resrc<String> args = new Resrc<>(msg.substring(msg.indexOf(" ")).trim());
 		checkCategories("command:" + cmd, e.getPlayer(), args, e);
 		e.setMessage("/" + cmd + " " + args.get());
+	}
+
+	public void onAnvil(InventoryClickEvent e)
+	{
+		final Player player = (Player)e.getView().getPlayer();
+		if (!(e.getClickedInventory() instanceof AnvilInventory inv))
+			return;
+
+		final ItemStack result = inv.getItem(2);
+		if (result == null)
+			return;
+		final ItemMeta im = result.getItemMeta();
+		if (im == null)
+			return;
+
+		final Resrc<String> name = new Resrc<>(im.getDisplayName());
+		checkCategories("anvil", player, name, e);
+		if (!e.isCancelled() && !im.getDisplayName().equalsIgnoreCase(name.get()))
+		{
+			im.setDisplayName(name.get());
+			result.setItemMeta(im);
+		}
 	}
 
 	private void checkCooldown(AsyncPlayerChatEvent e)

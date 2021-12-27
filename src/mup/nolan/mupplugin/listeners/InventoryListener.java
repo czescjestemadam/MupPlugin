@@ -27,6 +27,7 @@ public class InventoryListener implements Listener
 	@EventHandler
 	private void onClick(InventoryClickEvent e)
 	{
-		((GalleryModule)mupPlugin.getModuleManager().getModule("gallery")).onClick(e);
+		((GalleryModule)mm.getModule("gallery")).onClick(e);
+		((ChatPatrolModule)mm.getModule("chatpatrol")).onAnvil(e);
 	}
 }
