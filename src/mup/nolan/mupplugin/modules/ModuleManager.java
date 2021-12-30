@@ -31,7 +31,7 @@ public class ModuleManager
 		register(new CheatnonoModule(mupPlugin));
 		register(new ChatPatrolModule(mupPlugin));
 
-		TurboMeter.end(true);
+		TurboMeter.end(MupPlugin.DEBUG > 0);
 	}
 
 	public List<String> getModules(boolean enabledOnly)

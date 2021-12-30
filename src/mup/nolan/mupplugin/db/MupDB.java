@@ -51,10 +51,10 @@ public class MupDB
 			{
 				e.printStackTrace();
 			}
-			TurboMeter.end(true);
+			TurboMeter.end(MupPlugin.DEBUG > 0);
 		});
 
-		TurboMeter.end(true);
+		TurboMeter.end(MupPlugin.DEBUG > 0);
 	}
 
 	public void disconnect()

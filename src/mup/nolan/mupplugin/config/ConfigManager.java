@@ -3,12 +3,12 @@ package mup.nolan.mupplugin.config;
 import mup.nolan.mupplugin.MupPlugin;
 import mup.nolan.mupplugin.utils.FileUtils;
 import mup.nolan.mupplugin.utils.meter.TurboMeter;
+import org.bukkit.Bukkit;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 public class ConfigManager
 {
@@ -24,22 +24,27 @@ public class ConfigManager
 	{
 		TurboMeter.start("init_config");
 
-		final ExecutorService exec = Executors.newFixedThreadPool(4);
+		final ExecutorService exec = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 		exec.execute(() -> load("db"));
-		exec.submit(() -> load("modules"));
-		exec.submit(() -> load("placeholders"));
-		exec.submit(() -> load("antiafk"));
-		exec.submit(() -> load("bottlexp"));
-		exec.submit(() -> load("commands"));
-		exec.submit(() -> load("gallery"));
-		exec.submit(() -> load("itemsort"));
-		exec.submit(() -> load("cheatnono"));
-		exec.submit(() -> load("chatpatrol"));
+		exec.execute(() -> load("modules"));
+		exec.execute(() -> load("placeholders"));
+		exec.execute(() -> load("antiafk"));
+		exec.execute(() -> load("bottlexp"));
+		exec.execute(() -> load("commands"));
+		exec.execute(() -> load("gallery"));
+		exec.execute(() -> load("itemsort"));
+		exec.execute(() -> load("cheatnono"));
+		exec.execute(() -> load("chatpatrol"));
+		exec.shutdown();
 
-		exec.submit(() -> FileUtils.copyFile(MupPlugin.getRes("files/permissions.txt"), new File(MupPlugin.get().getDataFolder(), "permissions.txt")));
-		exec.submit(() -> FileUtils.copyFile(MupPlugin.getRes("files/placeholders.txt"), new File(MupPlugin.get().getDataFolder(), "placeholders.txt")));
+		Bukkit.getScheduler().runTaskAsynchronously(mupPlugin, () -> {
+			FileUtils.copyFile(MupPlugin.getRes("files/permissions.txt"), new File(MupPlugin.get().getDataFolder(), "permissions.txt"));
+			FileUtils.copyFile(MupPlugin.getRes("files/placeholders.txt"), new File(MupPlugin.get().getDataFolder(), "placeholders.txt"));
+		});
 
-		TurboMeter.end(true);
+		System.out.println("getConfig(\"db\") = " + getConfig("db"));
+
+		TurboMeter.end(MupPlugin.DEBUG > 0);
 	}
 
 	public List<String> getConfigs()
@@ -54,8 +59,10 @@ public class ConfigManager
 
 	private void load(String name)
 	{
+		TurboMeter.start("init_config_" + name);
 		final Config config = new Config(name, new File(mupPlugin.getDataFolder(), name + ".yml"), mupPlugin.getResource("files/" + name + ".yml"));
 		config.load();
 		configs.add(config);
+		TurboMeter.end(MupPlugin.DEBUG > 1);
 	}
 }

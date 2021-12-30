@@ -13,7 +13,7 @@ public class AccountManager
 	public void loadAccounts()
 	{
 		TurboMeter.start("init_accounts");
-		TurboMeter.end(true);
+		TurboMeter.end(MupPlugin.DEBUG > 0);
 	}
 
 	public void saveAccounts()

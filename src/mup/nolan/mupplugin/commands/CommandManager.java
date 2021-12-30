@@ -28,7 +28,7 @@ public class CommandManager
 		register(mupPlugin.getCommand("galeria"), new GalleryCommand());
 		register(mupPlugin.getCommand("check"), new CheckCommand());
 
-		TurboMeter.end(true);
+		TurboMeter.end(MupPlugin.DEBUG > 0);
 	}
 
 	private void register(PluginCommand pc, TabExecutor cmd)

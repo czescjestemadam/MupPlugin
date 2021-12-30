@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 
 public final class MupPlugin extends JavaPlugin
 {
+	public static int DEBUG = 2;
 	private static MupPlugin inst;
 
 	private ConfigManager configManager;

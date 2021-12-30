@@ -23,9 +23,6 @@ public class TurboMeter
 
 	public static void start(String measure, int maxSize)
 	{
-		if (measures.stream().anyMatch(m -> m.getName().equals(measure) && !m.isMulti()))
-			throw new IllegalArgumentException("Measure " + measure + " already exists");
-
 		final Measure m;
 		if (maxSize > 1)
 			m = new MultiMeasure(measure, maxSize);

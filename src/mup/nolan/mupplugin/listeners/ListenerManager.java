@@ -27,7 +27,7 @@ public class ListenerManager
 		register(new BookListener(mupPlugin));
 		register(new ChatListener(mupPlugin));
 
-		TurboMeter.end(true);
+		TurboMeter.end(MupPlugin.DEBUG > 0);
 	}
 
 	private void register(Listener listener)
