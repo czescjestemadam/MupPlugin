@@ -1,4 +1,5 @@
-
+check:
+  default-flags: -afk
 
 
 messages:

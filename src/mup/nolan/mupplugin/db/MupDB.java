@@ -64,7 +64,7 @@ public class MupDB
 		}
 	}
 
-	public boolean itemsortEnabled(Player player)
+	public boolean itemsortEnabled(OfflinePlayer player)
 	{
 		final Statement st = getStatement();
 		try
@@ -80,7 +80,7 @@ public class MupDB
 		return false;
 	}
 
-	public void setItemsort(Player player, boolean enabled)
+	public void setItemsort(OfflinePlayer player, boolean enabled)
 	{
 		final Statement st = getStatement();
 		try
