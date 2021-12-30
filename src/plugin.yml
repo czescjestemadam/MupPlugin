@@ -10,16 +10,16 @@ softdepend: [PlaceholderAPI, Vault]
 commands:
   mupplugin:
     aliases: mup
-  list:
-    aliases: [ls, who]
+#  list:
+#    aliases: [ls, who]
   sortowanie:
     aliases: sort
   butelka:
     description: dajexp
-  feed:
-    description: amciu
-  heal:
-    description: zycko
+#  feed:
+#    description: amciu
+#  heal:
+#    description: zycko
   galeria:
     description: poka ity
   check:

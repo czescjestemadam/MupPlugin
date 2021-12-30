@@ -1,6 +1,7 @@
 package mup.nolan.mupplugin.listeners;
 
 import mup.nolan.mupplugin.MupPlugin;
+import mup.nolan.mupplugin.utils.meter.TurboMeter;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 
@@ -16,6 +17,8 @@ public class ListenerManager
 
 	public void registerListeners()
 	{
+		TurboMeter.start("init_listeners");
+
 		register(new ConnectionListener(mupPlugin));
 		register(new InventoryListener(mupPlugin));
 		register(new ExpListener(mupPlugin));
@@ -23,6 +26,8 @@ public class ListenerManager
 		register(new BlockListener(mupPlugin));
 		register(new BookListener(mupPlugin));
 		register(new ChatListener(mupPlugin));
+
+		TurboMeter.end(true);
 	}
 
 	private void register(Listener listener)

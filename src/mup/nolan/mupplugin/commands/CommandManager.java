@@ -1,6 +1,7 @@
 package mup.nolan.mupplugin.commands;
 
 import mup.nolan.mupplugin.MupPlugin;
+import mup.nolan.mupplugin.utils.meter.TurboMeter;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabExecutor;
 
@@ -16,6 +17,8 @@ public class CommandManager
 
 	public void registerCommands()
 	{
+		TurboMeter.start("init_commands");
+
 		register(mupPlugin.getCommand("mupplugin"), new MupCommand());
 		register(mupPlugin.getCommand("list"), new ListCommand());
 		register(mupPlugin.getCommand("sortowanie"), new SortowanieCommand());
@@ -24,6 +27,8 @@ public class CommandManager
 		register(mupPlugin.getCommand("heal"), new HealCommand());
 		register(mupPlugin.getCommand("galeria"), new GalleryCommand());
 		register(mupPlugin.getCommand("check"), new CheckCommand());
+
+		TurboMeter.end(true);
 	}
 
 	private void register(PluginCommand pc, TabExecutor cmd)
