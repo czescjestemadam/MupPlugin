@@ -2,10 +2,13 @@ package mup.nolan.mupplugin.config;
 
 import mup.nolan.mupplugin.MupPlugin;
 import mup.nolan.mupplugin.utils.FileUtils;
+import mup.nolan.mupplugin.utils.meter.TurboMeter;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ConfigManager
 {
@@ -19,19 +22,24 @@ public class ConfigManager
 
 	public void loadConfigs()
 	{
-		load("antiafk");
-		load("bottlexp");
-		load("commands");
-		load("db");
-		load("gallery");
-		load("itemsort");
-		load("modules");
-		load("placeholders");
-		load("cheatnono");
-		load("chatpatrol");
+		TurboMeter.start("init_config");
 
-		FileUtils.copyFile(MupPlugin.getRes("files/permissions.txt"), new File(MupPlugin.get().getDataFolder(), "permissions.txt"));
-		FileUtils.copyFile(MupPlugin.getRes("files/placeholders.txt"), new File(MupPlugin.get().getDataFolder(), "placeholders.txt"));
+		final ExecutorService exec = Executors.newFixedThreadPool(4);
+		exec.execute(() -> load("db"));
+		exec.submit(() -> load("modules"));
+		exec.submit(() -> load("placeholders"));
+		exec.submit(() -> load("antiafk"));
+		exec.submit(() -> load("bottlexp"));
+		exec.submit(() -> load("commands"));
+		exec.submit(() -> load("gallery"));
+		exec.submit(() -> load("itemsort"));
+		exec.submit(() -> load("cheatnono"));
+		exec.submit(() -> load("chatpatrol"));
+
+		exec.submit(() -> FileUtils.copyFile(MupPlugin.getRes("files/permissions.txt"), new File(MupPlugin.get().getDataFolder(), "permissions.txt")));
+		exec.submit(() -> FileUtils.copyFile(MupPlugin.getRes("files/placeholders.txt"), new File(MupPlugin.get().getDataFolder(), "placeholders.txt")));
+
+		TurboMeter.end(true);
 	}
 
 	public List<String> getConfigs()
