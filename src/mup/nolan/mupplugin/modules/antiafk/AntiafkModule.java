@@ -26,6 +26,9 @@ public class AntiafkModule extends Module
 	@Override
 	public void onEnable()
 	{
+		for (Player player : Bukkit.getOnlinePlayers())
+			lastMove.put(player, new AntiafkMove());
+
 		runnable = new BukkitRunnable()
 		{
 			@Override
