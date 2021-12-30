@@ -1,6 +1,7 @@
 package mup.nolan.mupplugin.accounts;
 
 import mup.nolan.mupplugin.MupPlugin;
+import mup.nolan.mupplugin.utils.meter.TurboMeter;
 
 public class AccountManager
 {
@@ -11,7 +12,8 @@ public class AccountManager
 
 	public void loadAccounts()
 	{
-
+		TurboMeter.start("init_accounts");
+		TurboMeter.end(true);
 	}
 
 	public void saveAccounts()

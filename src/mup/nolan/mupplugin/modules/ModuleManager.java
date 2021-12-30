@@ -4,6 +4,7 @@ import mup.nolan.mupplugin.MupPlugin;
 import mup.nolan.mupplugin.modules.antiafk.AntiafkModule;
 import mup.nolan.mupplugin.modules.chatpatrol.ChatPatrolModule;
 import mup.nolan.mupplugin.modules.gallery.GalleryModule;
+import mup.nolan.mupplugin.utils.meter.TurboMeter;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
@@ -21,12 +22,16 @@ public class ModuleManager
 
 	public void registerModules()
 	{
+		TurboMeter.start("init_modules");
+
 		register(new ItemsortModule(mupPlugin));
 		register(new BottlexpModule(mupPlugin));
 		register(new GalleryModule(mupPlugin));
 		register(new AntiafkModule(mupPlugin));
 		register(new CheatnonoModule(mupPlugin));
 		register(new ChatPatrolModule(mupPlugin));
+
+		TurboMeter.end(true);
 	}
 
 	public List<String> getModules(boolean enabledOnly)

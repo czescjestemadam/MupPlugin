@@ -5,9 +5,10 @@ import mup.nolan.mupplugin.config.Config;
 import mup.nolan.mupplugin.utils.FileUtils;
 import mup.nolan.mupplugin.utils.ItemBuilder;
 import mup.nolan.mupplugin.utils.Resrc;
+import mup.nolan.mupplugin.utils.meter.TurboMeter;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -25,27 +26,35 @@ public class MupDB
 
 	public void connect()
 	{
+		TurboMeter.start("init_db");
+
 		final String type = dbConfig.getString("type");
 		final String address = dbConfig.getString("address");
 		final String user = dbConfig.getString("user");
 		final String passwd = dbConfig.getString("passwd");
 		final String dbName = dbConfig.getString("db-name");
 
-		try
-		{
-			conn = type.equalsIgnoreCase("sqlite") ?
-					DriverManager.getConnection(String.format("jdbc:sqlite:%s/%s", MupPlugin.get().getDataFolder().getPath(), address)) :
-					DriverManager.getConnection(String.format("jdbc:mysql://%s/%s", address, dbName), user, passwd);
+		Bukkit.getScheduler().runTaskAsynchronously(MupPlugin.get(), () -> {
+			TurboMeter.start("init_db_async");
+			try
+			{
+				conn = type.equalsIgnoreCase("sqlite") ?
+						DriverManager.getConnection(String.format("jdbc:sqlite:%s/%s", MupPlugin.get().getDataFolder().getPath(), address)) :
+						DriverManager.getConnection(String.format("jdbc:mysql://%s/%s", address, dbName), user, passwd);
 
-			final Statement stat = conn.createStatement();
-			for (String s : FileUtils.readStr(MupPlugin.getRes("sql/createTables.sql")).split(";"))
-				stat.execute(replaceFor(type, s));
-			stat.close();
+				final Statement stat = conn.createStatement();
+				for (String s : FileUtils.readStr(MupPlugin.getRes("sql/createTables.sql")).split(";"))
+					stat.execute(replaceFor(type, s));
+				stat.close();
 
-		} catch (SQLException e)
-		{
-			e.printStackTrace();
-		}
+			} catch (SQLException e)
+			{
+				e.printStackTrace();
+			}
+			TurboMeter.end(true);
+		});
+
+		TurboMeter.end(true);
 	}
 
 	public void disconnect()

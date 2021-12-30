@@ -4,10 +4,10 @@ import mup.nolan.mupplugin.accounts.AccountManager;
 import mup.nolan.mupplugin.commands.CommandManager;
 import mup.nolan.mupplugin.config.ConfigManager;
 import mup.nolan.mupplugin.db.MupDB;
-import mup.nolan.mupplugin.hooks.PapiHook;
-import mup.nolan.mupplugin.hooks.VaultHook;
+import mup.nolan.mupplugin.hooks.Hooks;
 import mup.nolan.mupplugin.listeners.ListenerManager;
 import mup.nolan.mupplugin.modules.ModuleManager;
+import mup.nolan.mupplugin.utils.meter.TurboMeter;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.InputStream;
@@ -29,6 +29,8 @@ public final class MupPlugin extends JavaPlugin
 	{
 		inst = this;
 
+		TurboMeter.start("init");
+
 		configManager = new ConfigManager(this);
 		configManager.loadConfigs();
 
@@ -47,16 +49,22 @@ public final class MupPlugin extends JavaPlugin
 		commandManager = new CommandManager(this);
 		commandManager.registerCommands();
 
-		PapiHook.init();
-		VaultHook.init();
+		Hooks.init();
+
+		TurboMeter.end(true);
 	}
 
 	@Override
 	public void onDisable()
 	{
+		TurboMeter.start("exit");
+
 		moduleManager.disableAll();
 		accountManager.saveAccounts();
 		mupdb.disconnect();
+
+		TurboMeter.end();
+		TurboMeter.log("exit");
 	}
 
 	public ConfigManager getConfigManager()
