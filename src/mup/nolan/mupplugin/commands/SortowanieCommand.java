@@ -35,7 +35,7 @@ public class SortowanieCommand implements TabExecutor
 		db.setItemsort(p, val);
 
 		final Config msgs = MupPlugin.get().getConfigManager().getConfig("itemsort");
-		final String strval = msgs.getString(val ? "messages.enabled" : "messages.disabled");
+		final String strval = msgs.getStringF(val ? "messages.enabled" : "messages.disabled");
 		p.sendMessage(msgs.getStringF("messages.changed").replace("{}", strval));
 
 		return true;
