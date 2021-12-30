@@ -8,13 +8,13 @@ public interface Measure
 
 	void endTime();
 
-	long getTime();
+	double getTime();
 
-	long getAvg();
+	double getAvg();
 
-	long getMin();
+	double getMin();
 
-	long getMax();
+	double getMax();
 
 	boolean isMulti();
 }

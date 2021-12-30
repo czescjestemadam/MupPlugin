@@ -20,35 +20,35 @@ public class SingleMeasure implements Measure
 	@Override
 	public void startTime()
 	{
-		start = System.currentTimeMillis();
+		start = System.nanoTime();
 	}
 
 	@Override
 	public void endTime()
 	{
-		end = System.currentTimeMillis();
+		end = System.nanoTime();
 	}
 
 	@Override
-	public long getTime()
+	public double getTime()
 	{
-		return end - start;
+		return (end - start) / 1000000D;
 	}
 
 	@Override
-	public long getAvg()
-	{
-		return getTime();
-	}
-
-	@Override
-	public long getMin()
+	public double getAvg()
 	{
 		return getTime();
 	}
 
 	@Override
-	public long getMax()
+	public double getMin()
+	{
+		return getTime();
+	}
+
+	@Override
+	public double getMax()
 	{
 		return getTime();
 	}

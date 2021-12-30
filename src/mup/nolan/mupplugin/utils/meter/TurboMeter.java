@@ -63,7 +63,7 @@ public class TurboMeter
 
 		if (m instanceof SingleMeasure)
 		{
-			MupPlugin.log().info("§e[TM] %s took %dms".formatted(m.getName(), m.getTime()));
+			MupPlugin.log().info("§e[TM] %s took %.3fms".formatted(m.getName(), m.getTime()));
 		}
 		else if (m instanceof MultiMeasure)
 		{

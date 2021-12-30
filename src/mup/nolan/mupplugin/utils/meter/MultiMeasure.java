@@ -41,25 +41,25 @@ public class MultiMeasure implements Measure
 	}
 
 	@Override
-	public long getTime()
+	public double getTime()
 	{
 		return 0;
 	}
 
 	@Override
-	public long getAvg()
+	public double getAvg()
 	{
 		return 0;
 	}
 
 	@Override
-	public long getMin()
+	public double getMin()
 	{
 		return 0;
 	}
 
 	@Override
-	public long getMax()
+	public double getMax()
 	{
 		return 0;
 	}
