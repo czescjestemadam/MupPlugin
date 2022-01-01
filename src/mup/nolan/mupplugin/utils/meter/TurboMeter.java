@@ -2,14 +2,15 @@ package mup.nolan.mupplugin.utils.meter;
 
 import mup.nolan.mupplugin.MupPlugin;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class TurboMeter
 {
-	private static final Stack<Measure> activeMeasures = new Stack<>();
-	private static final List<Measure> measures = new ArrayList<>();
+	private static final Stack<String> activeMeasureNames = new Stack<>();
+	private static final Map<String, Measure> measures = new ConcurrentHashMap<>();
 
 	private TurboMeter()
 	{
@@ -25,11 +26,17 @@ public class TurboMeter
 	{
 		final Measure m;
 		if (maxSize > 1)
-			m = new MultiMeasure(measure, maxSize);
+		{
+			if (measures.containsKey(measure))
+				m = measures.get(measure);
+			else
+				m = new MultiMeasure(measure, maxSize);
+		}
 		else
 			m = new SingleMeasure(measure);
 		m.startTime();
-		activeMeasures.push(m);
+		measures.put(measure, m);
+		activeMeasureNames.push(measure);
 	}
 
 	public static void end()
@@ -39,9 +46,8 @@ public class TurboMeter
 
 	public static void end(boolean log)
 	{
-		final Measure m = activeMeasures.pop();
+		final Measure m = measures.get(activeMeasureNames.pop());
 		m.endTime();
-		measures.add(m);
 
 		if (log)
 			log(m.getName());
@@ -49,7 +55,7 @@ public class TurboMeter
 
 	public static Measure get(String measure)
 	{
-		return measures.stream().filter(m -> m.getName().equals(measure)).findFirst().orElse(null);
+		return measures.get(measure);
 	}
 
 	public static void log(String measure)
@@ -68,8 +74,10 @@ public class TurboMeter
 		}
 	}
 
-	public static List<String> ls()
+	public static List<String> ls(boolean activeOnly)
 	{
-		return measures.stream().map(Measure::getName).toList();
+		if (activeOnly)
+			return activeMeasureNames.stream().toList();
+		return measures.keySet().stream().toList();
 	}
 }

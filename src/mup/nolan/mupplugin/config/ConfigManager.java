@@ -8,11 +8,15 @@ import org.bukkit.Bukkit;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class ConfigManager
 {
 	private final MupPlugin mupPlugin;
+	private final Lock lock = new ReentrantLock(true);
 	private final List<Config> configs = new ArrayList<>();
 
 	public ConfigManager(MupPlugin mupPlugin)
@@ -24,8 +28,8 @@ public class ConfigManager
 	{
 		TurboMeter.start("init_config");
 
+		load("db");
 		final ExecutorService exec = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-		exec.execute(() -> load("db"));
 		exec.execute(() -> load("modules"));
 		exec.execute(() -> load("placeholders"));
 		exec.execute(() -> load("antiafk"));
@@ -37,12 +41,10 @@ public class ConfigManager
 		exec.execute(() -> load("chatpatrol"));
 		exec.shutdown();
 
-		Bukkit.getScheduler().runTaskAsynchronously(mupPlugin, () -> {
+		Bukkit.getScheduler().runTaskLaterAsynchronously(mupPlugin, () -> {
 			FileUtils.copyFile(MupPlugin.getRes("files/permissions.txt"), new File(MupPlugin.get().getDataFolder(), "permissions.txt"));
 			FileUtils.copyFile(MupPlugin.getRes("files/placeholders.txt"), new File(MupPlugin.get().getDataFolder(), "placeholders.txt"));
-		});
-
-		System.out.println("getConfig(\"db\") = " + getConfig("db"));
+		}, 60);
 
 		TurboMeter.end(MupPlugin.DEBUG > 0);
 	}
@@ -62,7 +64,9 @@ public class ConfigManager
 		TurboMeter.start("init_config_" + name);
 		final Config config = new Config(name, new File(mupPlugin.getDataFolder(), name + ".yml"), mupPlugin.getResource("files/" + name + ".yml"));
 		config.load();
+		lock.lock();
 		configs.add(config);
+		lock.unlock();
 		TurboMeter.end(MupPlugin.DEBUG > 1);
 	}
 }
