@@ -5,6 +5,7 @@ bot:
 channels:
   chat: channelId
   notifications: channelId
+  commands: channelId
 
 on-off-message:
   enabled: true
@@ -14,6 +15,11 @@ chat:
   enabled: true
   channel: chat
   send-cancelled: false
+
+commands:
+  enabled: true
+  channel: commands
+
 
 link:
   code-len: 7 # min 6 max 16
@@ -30,6 +36,7 @@ messages:
   off-message: ':red_car: Module discord disabled'
   chat-format: '**[{rank_e}] {player_e}:** {msg_e}' # _e = escaped (* = \*)
   verification-format: '{mention} Zweryfikuj konto wpisując komende `/discord zweryfikuj {code}` na serwerze'
+  not-linked: ':x: Nie masz połączonego konta'
 
   # on minecraft
   invite:
