@@ -51,7 +51,7 @@ public class MupDB
 			{
 				e.printStackTrace();
 			}
-			TurboMeter.end(MupPlugin.DEBUG > 0);
+			TurboMeter.end(MupPlugin.DEBUG > 1);
 		});
 
 		TurboMeter.end(MupPlugin.DEBUG > 0);
@@ -75,18 +75,19 @@ public class MupDB
 
 	public boolean itemsortEnabled(OfflinePlayer player)
 	{
+		boolean ret = false;
 		final Statement st = getStatement();
 		try
 		{
 			final ResultSet rs = st.executeQuery("select id from mup_itemsort where player = '" + player.getName() + "'");
 			if (rs.next())
-				return true;
+				ret = true;
 		} catch (SQLException e)
 		{
 			e.printStackTrace();
 		}
 		closeStatement(st);
-		return false;
+		return ret;
 	}
 
 	public void setItemsort(OfflinePlayer player, boolean enabled)
@@ -217,7 +218,7 @@ public class MupDB
 		{
 			if (userdata.getId() < 0)
 			{
-				st.execute("insert into mup_gallery_userdata values (null, '%s', %d, '%s', '%s', null, null)".formatted(
+				st.executeUpdate("insert into mup_gallery_userdata values (null, '%s', %d, '%s', '%s', null, null)".formatted(
 						userdata.getPlayer().getName(),
 						userdata.getUnlockedSlots(),
 						userdata.getUnlockedBorders(),
@@ -226,7 +227,7 @@ public class MupDB
 			}
 			else
 			{
-				st.execute(("update mup_gallery_userdata set " +
+				st.executeUpdate(("update mup_gallery_userdata set " +
 						"unlocked_slots = %d, unlocked_borders = '%s', current_border = '%s' where id = %d").formatted(
 						userdata.getUnlockedSlots(),
 						userdata.getUnlockedBorders(),
