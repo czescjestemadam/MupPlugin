@@ -71,7 +71,7 @@ public class StrUtils
 
 	public static String discordEscaped(String str)
 	{
-		return str.replaceAll("\\*", "\\\\\\\\*").replaceAll("_", "\\\\\\\\_").replaceAll("~", "\\\\\\\\~").replaceAll("`", "\\\\\\\\`");
+		return str.replaceAll("\\*", "\\\\\\*").replaceAll("_", "\\\\\\\\_").replaceAll("~", "\\\\\\\\~").replaceAll("`", "\\\\\\\\`");
 	}
 
 	public static String random(int len)

@@ -9,9 +9,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-import javax.xml.stream.events.Characters;
-import java.util.function.Supplier;
-
 public class DiscordModule extends Module
 {
 	private final DiscordBot bot;
@@ -53,8 +50,10 @@ public class DiscordModule extends Module
 				.replaceAll("\\{rank}", primaryGroup)
 				.replaceAll("\\{player_e}", StrUtils.discordEscaped(player))
 				.replaceAll("\\{player}", player)
-				.replaceAll("\\{msg_e}", StrUtils.discordEscaped(msg))
-				.replaceAll("\\{msg}", msg);
+				.replace("{msg_e}", StrUtils.discordEscaped(msg))
+				.replace("{msg}", msg)
+				.replaceAll("@here", "@\u200Bhere")
+				.replaceAll("@everyone", "@\u200Beveryone");
 
 		bot.sendMessage(cfg().getString("chat.channel"), formatedMsg);
 	}
