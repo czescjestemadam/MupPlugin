@@ -3,6 +3,7 @@
     <output-path>$PROJECT_DIR$/out/</output-path>
     <root id="archive" name="MupPlugin.jar">
       <element id="module-output" name="MupPlugin" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../java/APIs/javacord-3.3.2-shaded.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

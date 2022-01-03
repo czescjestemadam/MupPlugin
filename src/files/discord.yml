@@ -1,0 +1,52 @@
+bot:
+  token: tokenok
+  prefix: .
+
+channels:
+  chat: channelId
+  notifications: channelId
+
+on-off-message:
+  enabled: true
+  channel: notifications
+
+chat:
+  enabled: true
+  channel: chat
+  send-cancelled: false
+
+link:
+  code-len: 7 # min 6 max 16
+  max-code-generations: 16
+  discord:
+    channel: notifications
+    request-format: ':link: {player_e} requested link with <@{id}> ({id})'
+    link-format: ':link: {player_e} linked with <@{id}> ({id})'
+    unlink-format: ':link: {player_e} unlinked with <@{id}> ({id})'
+
+messages:
+  # on discord
+  on-message: ':green_apple: Module discord enabled'
+  off-message: ':red_car: Module discord disabled'
+  chat-format: '**[{rank_e}] {player_e}:** {msg_e}' # _e = escaped (* = \*)
+  verification-format: '{mention} Zweryfikuj konto wpisując komende `/discord zweryfikuj {code}` na serwerze'
+
+  # on minecraft
+  invite:
+    click-url: invitelink
+    format: '&bKliknij by wbic na dc\n{link}'
+  link:
+    help: '&c/{} polacz <discord id>'
+    failure: '&cNie znaleziono takiego konta'
+    failure-codegen: '&cNie wygenerowano kodu spróbuj ponownie za chwile'
+    failure-linked: '&cKonto jest już połączone'
+    success: '&aWysłano kod weryfikacji'
+  verify:
+    help: '&c/{} zweryfikuj <kod>'
+    failure-linked: '&cKonto nie jest połączone'
+    failure-verified: '&cKonto jest już zweryfikowane'
+    failure: '&cPodano niepoprawny kod'
+    success: '&aZweryfikowano połączenie'
+  unlink:
+    failure: '&cKonto nie jest połączone'
+    success: '&aRozłączono'

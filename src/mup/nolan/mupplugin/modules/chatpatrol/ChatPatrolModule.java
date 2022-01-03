@@ -4,6 +4,7 @@ import com.google.common.primitives.Chars;
 import mup.nolan.mupplugin.MupPlugin;
 import mup.nolan.mupplugin.hooks.VaultHook;
 import mup.nolan.mupplugin.modules.Module;
+import mup.nolan.mupplugin.modules.discord.DiscordModule;
 import mup.nolan.mupplugin.utils.CommandUtils;
 import mup.nolan.mupplugin.utils.NetUtils;
 import mup.nolan.mupplugin.utils.Resrc;
@@ -419,9 +420,13 @@ public class ChatPatrolModule extends Module
 	private void notify(String from, String category, Player player, String original)
 	{
 		final Function<String, String> placeholders = str -> str.replaceAll("\\{player}", player.getName())
+				.replaceAll("\\{player_e}", StrUtils.discordEscaped(player.getName()))
 				.replaceAll("\\{category}", category)
+				.replaceAll("\\{category_e}", StrUtils.discordEscaped(category))
 				.replaceAll("\\{source}", from)
-				.replaceAll("\\{original}", original);
+				.replaceAll("\\{source_e}", StrUtils.discordEscaped(from))
+				.replaceAll("\\{original}", original)
+				.replaceAll("\\{original_e}", StrUtils.discordEscaped(original));
 
 		final String msg = placeholders.apply(cfg().getStringF("notification.message"));
 		final String hover = placeholders.apply(cfg().getStringF("notification.hover"));
@@ -435,5 +440,16 @@ public class ChatPatrolModule extends Module
 			if (p.hasPermission("mup.chatpatrol.notify"))
 				p.spigot().sendMessage(notification);
 		}
+
+		final DiscordModule discord = (DiscordModule)mup().getModuleManager().getModule("discord");
+		if (!discord.isEnabled())
+			return;
+
+		final String channel = cfg().getString("notification.discord.channel");
+		if (channel == null || channel.isEmpty())
+			return;
+
+		final String discordMsg = cfg().getString("notification.discord.format");
+		discord.getBot().sendMessage(channel, placeholders.apply(discordMsg));
 	}
 }

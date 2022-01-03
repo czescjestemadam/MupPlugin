@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -66,5 +67,19 @@ public class StrUtils
 	{
 		final int scale = (int)Math.pow(10, place);
 		return String.valueOf((double)Math.round(val * scale) / scale);
+	}
+
+	public static String discordEscaped(String str)
+	{
+		return str.replaceAll("\\*", "\\\\\\\\*").replaceAll("_", "\\\\\\\\_").replaceAll("~", "\\\\\\\\~").replaceAll("`", "\\\\\\\\`");
+	}
+
+	public static String random(int len)
+	{
+		return new Random().ints(48, 123)
+				.filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+				.limit(len)
+				.collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+				.toString();
 	}
 }

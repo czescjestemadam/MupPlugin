@@ -22,3 +22,11 @@ create table if not exists mup_gallery_userdata (
     viewed_galleries blob,
     liked_galleries blob
 );
+
+create table if not exists mup_discord_linked (
+    id integer primary key autoincrement,
+    player varchar(16) not null,
+    dc_id bigint not null,
+    verification_code varchar(16),
+    verified bool
+);

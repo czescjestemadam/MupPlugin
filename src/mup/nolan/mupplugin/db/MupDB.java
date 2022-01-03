@@ -242,6 +242,109 @@ public class MupDB
 		closeStatement(st);
 	}
 
+	public DiscordLink getLinked(Object acc)
+	{
+		final String where;
+		if (acc instanceof OfflinePlayer)
+			where = "player = '" + ((OfflinePlayer)acc).getName() + "'";
+		else if (acc instanceof String)
+			where = "player = '" + acc + "'";
+		else if (acc instanceof Long)
+			where = "dc_id = " + acc;
+		else
+			return null;
+
+		DiscordLink ret = null;
+
+		final Statement st = getStatement();
+		try
+		{
+			final ResultSet rs = st.executeQuery("select * from mup_discord_linked where " + where);
+			if (rs.next())
+			{
+				final OfflinePlayer player = acc instanceof OfflinePlayer ? (OfflinePlayer)acc : Bukkit.getOfflinePlayer(rs.getString("player"));
+				final long discordId = acc instanceof Long ? (long)acc : rs.getLong("dc_id");
+				final String verificationCode = rs.getString("verification_code");
+				final boolean verified = rs.getBoolean("verified");
+				ret = new DiscordLink(player, discordId, verificationCode, verified);
+			}
+		} catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		closeStatement(st);
+		return ret;
+	}
+
+	public boolean requestLink(DiscordLink link)
+	{
+		if (getLinked(link.getPlayer()) != null)
+			return false;
+
+		final Statement st = getStatement();
+		try
+		{
+			st.executeUpdate("insert into mup_discord_linked values (null, '%s', %d, '%s', %s)".formatted(
+					link.getPlayer().getName(),
+					link.getDiscordId(),
+					link.getVerificationCode(),
+					link.isVerified()
+			));
+		} catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		closeStatement(st);
+		return true;
+	}
+
+	public boolean verify(DiscordLink link)
+	{
+		if (link.isVerified())
+			return false;
+
+		final Statement st = getStatement();
+		try
+		{
+			st.executeUpdate("update mup_discord_linked set verified = true where dc_id = " + link.getDiscordId());
+		} catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		closeStatement(st);
+		return true;
+	}
+
+	public void unlink(DiscordLink link)
+	{
+		final Statement st = getStatement();
+		try
+		{
+			st.executeUpdate("delete from mup_discord_linked where dc_id = " + link.getDiscordId());
+		} catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		closeStatement(st);
+	}
+
+	public boolean linkCodeExists(String code)
+	{
+		boolean ret = false;
+		final Statement st = getStatement();
+		try
+		{
+			final ResultSet rs = st.executeQuery("select verified from mup_discord_linked where verification_code = '" + code + "'");
+			if (rs.next())
+				ret = rs.getBoolean("verified");
+		} catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		closeStatement(st);
+		return ret;
+	}
+
 	public Statement getStatement()
 	{
 		try

@@ -39,6 +39,7 @@ public class ConfigManager
 		exec.execute(() -> load("itemsort"));
 		exec.execute(() -> load("cheatnono"));
 		exec.execute(() -> load("chatpatrol"));
+		exec.execute(() -> load("discord"));
 		exec.shutdown();
 
 		Bukkit.getScheduler().runTaskLaterAsynchronously(mupPlugin, () -> {

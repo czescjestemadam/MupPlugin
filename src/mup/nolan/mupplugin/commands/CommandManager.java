@@ -27,6 +27,7 @@ public class CommandManager
 		register(mupPlugin.getCommand("heal"), new HealCommand());
 		register(mupPlugin.getCommand("galeria"), new GalleryCommand());
 		register(mupPlugin.getCommand("check"), new CheckCommand());
+		register(mupPlugin.getCommand("discord"), new DiscordCommand());
 
 		TurboMeter.end(MupPlugin.DEBUG > 0);
 	}

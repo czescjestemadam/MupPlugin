@@ -3,6 +3,7 @@ package mup.nolan.mupplugin.modules;
 import mup.nolan.mupplugin.MupPlugin;
 import mup.nolan.mupplugin.modules.antiafk.AntiafkModule;
 import mup.nolan.mupplugin.modules.chatpatrol.ChatPatrolModule;
+import mup.nolan.mupplugin.modules.discord.DiscordModule;
 import mup.nolan.mupplugin.modules.gallery.GalleryModule;
 import mup.nolan.mupplugin.utils.meter.TurboMeter;
 import org.bukkit.command.CommandSender;
@@ -30,6 +31,7 @@ public class ModuleManager
 		register(new AntiafkModule(mupPlugin));
 		register(new CheatnonoModule(mupPlugin));
 		register(new ChatPatrolModule(mupPlugin));
+		register(new DiscordModule(mupPlugin));
 
 		TurboMeter.end(MupPlugin.DEBUG > 0);
 	}

@@ -4,6 +4,7 @@ gallery: true
 antiafk: true
 cheatnono: true
 chatpatrol: true
+discord: true
 
 messages:
   on-command-disabled: '&c&o{} &cjest chwilowo wyłączony'

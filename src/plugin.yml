@@ -24,6 +24,8 @@ commands:
     description: poka ity
   check:
     description: co my tu mamy
+  discord:
+    description: dicord wiadomosci jakies
 
 permissions:
   mup.cmd.mupplugin:
@@ -65,4 +67,10 @@ permissions:
   mup.chatpatrol.exempt.spam:
     default: op
   mup.chatpatrol.notify:
+    default: op
+  mup.cmd.discord:
+    default: op
+  mup.cmd.discord.link:
+    default: op
+  mup.cmd.discord.unlink:
     default: op

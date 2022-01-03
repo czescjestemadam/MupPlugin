@@ -15,7 +15,7 @@ public class PermsUtils
 		if (!sender.hasPermission("mup.cmd." + perm))
 		{
 			if (verbose)
-				sender.sendMessage(MupPlugin.get().getConfigManager().getConfig("messages").getStringF("command.no-perms"));
+				sender.sendMessage(MupPlugin.get().getConfigManager().getConfig("commands").getStringF("messages.no-perms"));
 			return false;
 		}
 		return true;
