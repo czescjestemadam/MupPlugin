@@ -105,6 +105,12 @@ public class DiscordModule extends Module
 			return;
 		}
 
+		if (!link.getVerificationCode().equals(code))
+		{
+			sender.sendMessage(cfg().getStringF("messages.verify.failure"));
+			return;
+		}
+
 		final boolean success = mup().getDB().verify(link);
 		if (success)
 		{
