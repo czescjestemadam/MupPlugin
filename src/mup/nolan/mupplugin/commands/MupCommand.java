@@ -59,7 +59,7 @@ public class MupCommand implements TabExecutor
 					"§9/{} reloadconfig <config|-a>".replace("{}", alias)
 			);
 		}
-		else if (args[0].equalsIgnoreCase("module"))
+		else if (args[0].startsWith("mod"))
 		{
 			if (args.length == 1)
 			{
@@ -153,7 +153,7 @@ public class MupCommand implements TabExecutor
 
 		final ModuleManager mm = MupPlugin.get().getModuleManager();
 
-		if (args[0].equalsIgnoreCase("module"))
+		if (args[0].startsWith("mod"))
 		{
 			if (args.length == 2)
 				return StrUtils.returnMatches(args[1], List.of("enable", "disable", "reload"));
