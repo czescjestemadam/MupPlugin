@@ -1,0 +1,51 @@
+reminder:
+  on-join: true
+  on-load: true
+
+types:
+  grief:
+    cooldown: 180
+    help: '&c/{} grief [komentarz]'
+    require: [ ]
+  cheaty:
+    cooldown: 180
+    help: '&c/{} cheaty <gracz> [komentarz]'
+    require:
+      - player
+  scam:
+    cooldown: 180
+    help: '&c/{} scam <gracz> [komentarz]'
+    require:
+      - player
+  inne:
+    cooldown: 180
+    help: '&c/{} inne <komentarz>'
+    require:
+      - comment
+
+check:
+  format: '&c&l[R] &c{from} reported {type}#{id}'
+  hover: "&eplayer=&f{player} &ecomment=&f{comment}\nat {pos}"
+  click: '/tp {pos_tp}'
+
+notification:
+  report:
+    format: '&c&l[R] &c{from} reported {type}#{id}'
+    hover: "&eplayer=&f{player} &ecomment=&f{comment}\nat {pos}"
+    click: '/tp {pos_tp}'
+  checked:
+    format: '&c&l[R] &a{operator} checked report #{id}'
+    hover: "{from} reported {type}\n{pos} player={player} comment={comment}"
+    click: '/tp {pos_tp}'
+  discord:
+    channel: reports
+    format:
+      report: ':detective: {from_e} reported {type_e}#{id} player={player_e} comment={comment_e}'
+      checked: ':detective: {operator_e} checked report #{id}'
+
+messages:
+  help: '&c/{} <typ zgłoszenia> ...'
+  wrong-type: "&cZły typ zgłoszenia\nPoprawne typy: {}"
+  on-blacklist: '&cWysyłanie zgłoszeń jest chwilowo niedostępne'
+  reminder: '&cZgłoszenia oczekujące na sprawdzenie: {}'
+  sent: '&aWysłano zgłoszenie #{id}'

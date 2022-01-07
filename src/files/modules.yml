@@ -5,6 +5,7 @@ antiafk: true
 cheatnono: true
 chatpatrol: true
 discord: true
+reports: true
 
 messages:
   on-command-disabled: '&c&o{} &cjest chwilowo wyłączony'

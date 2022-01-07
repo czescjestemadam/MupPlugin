@@ -30,3 +30,25 @@ create table if not exists mup_discord_linked (
     verification_code varchar(16),
     verified bool
 );
+
+create table if not exists mup_reports (
+    id integer primary key autoincrement,
+    from_player varchar(16) not null,
+    type varchar(16) not null,
+    player varchar(16),
+    pos_world varchar(32),
+    pos_x int,
+    pos_y int,
+    pos_z int,
+    comment varchar(255),
+    sent_at timedate not null,
+    checked bool default false
+);
+
+create table if not exists mup_reports_blacklist (
+    id integer primary key autoincrement,
+    player varchar(16) not null,
+    applied timedate not null,
+    expires timedate,
+    expired bool default false
+);

@@ -28,6 +28,7 @@ public class CommandManager
 		register(mupPlugin.getCommand("galeria"), new GalleryCommand());
 		register(mupPlugin.getCommand("check"), new CheckCommand());
 		register(mupPlugin.getCommand("discord"), new DiscordCommand());
+		register(mupPlugin.getCommand("report"), new ReportCommand());
 
 		TurboMeter.end(MupPlugin.DEBUG > 0);
 	}

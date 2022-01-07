@@ -5,6 +5,7 @@ import mup.nolan.mupplugin.modules.antiafk.AntiafkModule;
 import mup.nolan.mupplugin.modules.gallery.GalleryModule;
 import mup.nolan.mupplugin.modules.ItemsortModule;
 import mup.nolan.mupplugin.modules.ModuleManager;
+import mup.nolan.mupplugin.modules.reports.ReportsModule;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -25,6 +26,7 @@ public class ConnectionListener implements Listener
 	private void onJoin(PlayerJoinEvent e)
 	{
 		((AntiafkModule)mm.getModule("antiafk")).onJoin(e.getPlayer());
+		((ReportsModule)mm.getModule("reports")).onJoin(e.getPlayer());
 	}
 
 	@EventHandler

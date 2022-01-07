@@ -29,18 +29,17 @@ public class ConfigManager
 		TurboMeter.start("init_config");
 
 		load("db");
-		final ExecutorService exec = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-		exec.execute(() -> load("modules"));
-		exec.execute(() -> load("placeholders"));
-		exec.execute(() -> load("antiafk"));
-		exec.execute(() -> load("bottlexp"));
-		exec.execute(() -> load("commands"));
-		exec.execute(() -> load("gallery"));
-		exec.execute(() -> load("itemsort"));
-		exec.execute(() -> load("cheatnono"));
-		exec.execute(() -> load("chatpatrol"));
-		exec.execute(() -> load("discord"));
-		exec.shutdown();
+		load("modules");
+		load("placeholders");
+		load("antiafk");
+		load("bottlexp");
+		load("commands");
+		load("gallery");
+		load("itemsort");
+		load("cheatnono");
+		load("chatpatrol");
+		load("discord");
+		load("reports");
 
 		Bukkit.getScheduler().runTaskLaterAsynchronously(mupPlugin, () -> {
 			FileUtils.copyFile(MupPlugin.getRes("files/permissions.txt"), new File(MupPlugin.get().getDataFolder(), "permissions.txt"));

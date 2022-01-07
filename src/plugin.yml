@@ -26,6 +26,8 @@ commands:
     description: co my tu mamy
   discord:
     description: dicord wiadomosci jakies
+  report:
+    aliases: zglos
 
 permissions:
   mup.cmd.mupplugin:
@@ -73,4 +75,12 @@ permissions:
   mup.cmd.discord.link:
     default: op
   mup.cmd.discord.unlink:
+    default: op
+  mup.cmd.report:
+    default: op
+  mup.cmd.report.blacklist:
+    default: op
+  mup.cmd.report.manage:
+    default: op
+  mup.report.reminder:
     default: op

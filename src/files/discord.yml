@@ -6,6 +6,7 @@ channels:
   chat: channelId
   notifications: channelId
   commands: channelId
+  reports: channelId
 
 on-off-message:
   enabled: true

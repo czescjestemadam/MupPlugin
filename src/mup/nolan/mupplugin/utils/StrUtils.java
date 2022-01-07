@@ -1,12 +1,10 @@
 package mup.nolan.mupplugin.utils;
 
 import joptsimple.internal.Strings;
+import org.bukkit.Location;
 import org.bukkit.Material;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -71,7 +69,9 @@ public class StrUtils
 
 	public static String discordEscaped(String str)
 	{
-		return str.replaceAll("\\*", "\\\\\\*").replaceAll("_", "\\\\\\\\_").replaceAll("~", "\\\\\\\\~").replaceAll("`", "\\\\\\\\`");
+		if (str == null)
+			return "null";
+		return str.replaceAll("\\*", "\\\\\\*").replaceAll("_", "\\\\\\_").replaceAll("~", "\\\\\\~").replaceAll("`", "\\\\\\`");
 	}
 
 	public static String random(int len)
@@ -81,5 +81,46 @@ public class StrUtils
 				.limit(len)
 				.collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
 				.toString();
+	}
+
+	public static Date parseTimeDiff(String str, Date from)
+	{
+		final Date diff = (Date)from.clone();
+
+		final Matcher m = Pattern.compile("\\d+(s|mo?|h|d|w|y)").matcher(str);
+		while (m.find())
+		{
+			final String group = m.group();
+			final int amt = Integer.parseInt(group.replaceAll("\\D+", ""));
+			final String ext = group.replaceAll("\\d+", "");
+
+			switch (ext)
+			{
+				case "s" -> diff.setSeconds(diff.getSeconds() + amt);
+				case "m" -> diff.setMinutes(diff.getMinutes() + amt);
+				case "h" -> diff.setHours(diff.getHours() + amt);
+				case "d" -> diff.setDate(diff.getDate() + amt);
+				case "mo" -> diff.setMonth(diff.getMonth() + amt);
+				case "y" -> diff.setYear(diff.getYear() + amt);
+			}
+		}
+
+		return diff;
+	}
+
+	public static String formatLocation(String format, Location loc, int round)
+	{
+		if (loc == null)
+			return format;
+
+		return format.replace("{x}", roundNum(loc.getX(), round))
+				.replace("{y}", roundNum(loc.getY(), round))
+				.replace("{z}", roundNum(loc.getZ(), round))
+				.replace("{w}", loc.getWorld().getName());
+	}
+
+	public static String safeNull(String str)
+	{
+		return str == null ? "null" : str;
 	}
 }

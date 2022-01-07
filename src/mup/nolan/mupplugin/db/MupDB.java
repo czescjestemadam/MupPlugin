@@ -3,10 +3,12 @@ package mup.nolan.mupplugin.db;
 import mup.nolan.mupplugin.MupPlugin;
 import mup.nolan.mupplugin.config.Config;
 import mup.nolan.mupplugin.utils.FileUtils;
+import mup.nolan.mupplugin.utils.FuncUtils;
 import mup.nolan.mupplugin.utils.ItemBuilder;
 import mup.nolan.mupplugin.utils.Resrc;
 import mup.nolan.mupplugin.utils.meter.TurboMeter;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 
@@ -16,6 +18,7 @@ import java.util.List;
 
 public class MupDB
 {
+	private final List<Runnable> onConnect = new ArrayList<>();
 	private final Config dbConfig;
 	private Connection conn;
 
@@ -52,6 +55,9 @@ public class MupDB
 				e.printStackTrace();
 			}
 			TurboMeter.end(MupPlugin.DEBUG > 1);
+
+			onConnect.forEach(Runnable::run);
+			onConnect.clear();
 		});
 
 		TurboMeter.end(MupPlugin.DEBUG > 0);
@@ -72,6 +78,8 @@ public class MupDB
 			e.printStackTrace();
 		}
 	}
+
+	// TODO move all this to models
 
 	public boolean itemsortEnabled(OfflinePlayer player)
 	{
@@ -346,6 +354,158 @@ public class MupDB
 		return ret;
 	}
 
+	public ReportsBlacklistRow getReportsBlacklist(OfflinePlayer player)
+	{
+		ReportsBlacklistRow ret = null;
+		final Statement st = getStatement();
+		try
+		{
+			final ResultSet rs = st.executeQuery("select * from mup_reports_blacklist where player = '%s'".formatted(player.getName()));
+			if (rs.next())
+				ret = new ReportsBlacklistRow(rs.getInt("id"), player, rs.getDate("applied"), rs.getDate("expires"), rs.getBoolean("expired"));
+		} catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		closeStatement(st);
+		return ret;
+	}
+
+	public void removeReportsBlacklist(ReportsBlacklistRow row)
+	{
+		final Statement st = getStatement();
+		try
+		{
+			st.executeUpdate("delete from mup_reports_blacklist where id = %d".formatted(row.getId()));
+		} catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		closeStatement(st);
+	}
+
+	public void insertReportsBlacklist(ReportsBlacklistRow row)
+	{
+		final Statement st = getStatement();
+		try
+		{
+			st.executeUpdate("insert into mup_reports_blacklist values (null, '%s', %d, %d, %s)".formatted(
+					row.getPlayer().getName(),
+					row.getApplied().getTime(),
+					row.getExpires() == null ? null : row.getExpires().getTime(),
+					row.isExpired()
+			));
+		} catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		closeStatement(st);
+	}
+
+	public List<ReportsRow> getReports(int id, OfflinePlayer from, String type, OfflinePlayer player, boolean uncheckedOnly)
+	{
+		final List<String> where = new ArrayList<>();
+
+		if (id > 0)
+			where.add("id = " + id);
+		else
+		{
+			if (uncheckedOnly)
+				where.add("checked = false");
+			if (from != null)
+				where.add("from_player = '%s'".formatted(from.getName()));
+			if (type != null)
+				where.add("type = '%s'".formatted(type));
+			if (player != null)
+				where.add("player = '%s'".formatted(player.getName()));
+		}
+
+		final List<ReportsRow> ret = new ArrayList<>();
+
+		final Statement st = getStatement();
+		try
+		{
+			final ResultSet rs = st.executeQuery("select * from mup_reports" + (where.isEmpty() ? "" : " where " + String.join(" and ", where)));
+			while (rs.next())
+			{
+				ret.add(new ReportsRow(
+						rs.getInt("id"),
+						Bukkit.getOfflinePlayer(rs.getString("from_player")),
+						rs.getString("type"),
+						Bukkit.getOfflinePlayer(rs.getString("player")),
+						new Location(Bukkit.getWorld(rs.getString("pos_world")), rs.getInt("pos_x"), rs.getInt("pos_y"), rs.getInt("pos_z")),
+						rs.getString("comment"),
+						rs.getDate("sent_at"),
+						rs.getBoolean("checked")
+				));
+			}
+
+		} catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		closeStatement(st);
+		return ret;
+	}
+
+	public int insertReport(ReportsRow row)
+	{
+		int id = -1;
+		final Statement st = getStatement();
+		try
+		{
+			st.executeUpdate("insert into mup_reports values (null, '%s', '%s', '%s', '%s', %d, %d, %d, '%s', %d, false)".formatted(
+					row.getFrom().getName(),
+					row.getType(),
+					FuncUtils.optionallyMap(row.getPlayer(), OfflinePlayer::getName),
+					FuncUtils.optionallyMap(row.getPos(), pos -> pos.getWorld().getName()),
+					FuncUtils.optionallyMap(row.getPos(), Location::getBlockX),
+					FuncUtils.optionallyMap(row.getPos(), Location::getBlockY),
+					FuncUtils.optionallyMap(row.getPos(), Location::getBlockZ),
+					row.getComment(),
+					row.getSentAt().getTime()
+			));
+			final ResultSet rs = st.getGeneratedKeys();
+			if (rs.next())
+				id = rs.getInt(1);
+		} catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		closeStatement(st);
+		return id;
+	}
+
+	public void updateReport(List<ReportsRow> rows)
+	{
+		final Statement st = getStatement();
+		try
+		{
+			for (ReportsRow row : rows)
+				st.addBatch("update mup_reports set checked = %s where id = %d".formatted(row.isChecked(), row.getId()));
+			st.executeBatch();
+		} catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		closeStatement(st);
+	}
+
+	public void removeReports(List<ReportsRow> rows)
+	{
+		final Statement st = getStatement();
+		try
+		{
+			for (ReportsRow row : rows)
+				st.addBatch("delete from mup_reports where id = " + row.getId());
+			st.executeBatch();
+		} catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		closeStatement(st);
+	}
+
 	public Statement getStatement()
 	{
 		try
@@ -361,6 +521,14 @@ public class MupDB
 	public String getType()
 	{
 		return dbConfig.getString("type");
+	}
+
+	public void addOnConnect(Runnable func)
+	{
+		if (conn == null)
+			onConnect.add(func);
+		else
+			func.run();
 	}
 
 	private String replaceFor(String type, String str)
