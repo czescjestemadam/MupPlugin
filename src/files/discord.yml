@@ -16,6 +16,9 @@ chat:
   enabled: true
   channel: chat
   send-cancelled: false
+  from-discord:
+    enabled: true
+    format: '{prefix}{name}{suffix}: {msg}'
 
 commands:
   enabled: true

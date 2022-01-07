@@ -29,6 +29,11 @@ public class StrUtils
 		return str;
 	}
 
+	public static String removeColors(String str)
+	{
+		return str.replaceAll("[§&][0-9a-fklmnor]", "");
+	}
+
 	public static List<String> returnMatches(String arg, List<String> originals)
 	{
 		return originals.stream().filter(s -> s.length() >= arg.length() && s.regionMatches(true, 0, arg, 0, arg.length())).toList();

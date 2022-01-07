@@ -143,7 +143,8 @@ public class CheckCommand implements TabExecutor
 			return null;
 
 		final Location loc = player.getPlayer().getLocation();
-		return "x:%.2f y:%.2f z:%.2f @ %s".formatted(loc.getX(), loc.getY(), loc.getZ(), loc.getWorld().getName());
+//		return "x:%.2f y:%.2f z:%.2f @ %s".formatted(loc.getX(), loc.getY(), loc.getZ(), loc.getWorld().getName());
+		return StrUtils.formatLocation("x:{x} y:{y} z:{z} @ {w}", loc, 2);
 	}
 
 	private String checkV(OfflinePlayer player)

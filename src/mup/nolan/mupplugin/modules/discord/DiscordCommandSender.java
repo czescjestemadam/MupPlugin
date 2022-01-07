@@ -2,6 +2,7 @@ package mup.nolan.mupplugin.modules.discord;
 
 import mup.nolan.mupplugin.db.DiscordLink;
 import mup.nolan.mupplugin.hooks.VaultHook;
+import mup.nolan.mupplugin.utils.StrUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
@@ -28,13 +29,13 @@ public class DiscordCommandSender implements CommandSender
 	@Override
 	public void sendMessage(String s)
 	{
-		channel.sendMessage(s.replaceAll("§[0-9a-fklmnor]", ""));
+		channel.sendMessage(StrUtils.removeColors(s));
 	}
 
 	@Override
 	public void sendMessage(String... strings)
 	{
-		channel.sendMessage(String.join("\n", strings).replaceAll("§[0-9a-fklmnor]", ""));
+		channel.sendMessage(StrUtils.removeColors(String.join("\n", strings)));
 	}
 
 	@Override

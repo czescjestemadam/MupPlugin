@@ -432,7 +432,7 @@ public class ChatPatrolModule extends Module
 		final String hover = placeholders.apply(cfg().getStringF("notification.hover"));
 
 		final TextComponent notification = new TextComponent(msg);
-		notification.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, List.of(new Text(hover))));
+		notification.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(hover)));
 
 		MupPlugin.log().info(msg + "§r; " + hover);
 		for (Player p : Bukkit.getOnlinePlayers())

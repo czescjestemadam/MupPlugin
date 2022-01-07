@@ -20,6 +20,9 @@ public class DiscordCommand implements TabExecutor
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String alias, String[] args)
 	{
+		if (!PermsUtils.hasCmd(sender, "discord", true))
+			return true;
+
 		final Config cfg = MupPlugin.get().getConfigManager().getConfig("discord");
 		if (args.length == 0)
 		{
