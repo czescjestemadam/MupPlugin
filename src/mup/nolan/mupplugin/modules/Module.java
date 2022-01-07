@@ -17,14 +17,27 @@ public abstract class Module
 		this.name = name;
 	}
 
-	public void onEnable() {}
+	public void onEnable()
+	{
+	}
 
-	public void onDisable() {}
+	public void onDisable()
+	{
+	}
 
 	public void reload()
 	{
-		onDisable();
-		onEnable();
+		try
+		{
+			onDisable();
+			onEnable();
+		} catch (Exception e)
+		{
+			MupPlugin.log().severe("Error reloading module " + name);
+			e.printStackTrace();
+			enabled = false;
+			return;
+		}
 		enabled = true;
 		MupPlugin.log().info(mupPlugin.getConfigManager().getConfig("modules").getStringF("messages.on-reload").replace("{}", name));
 	}
@@ -44,10 +57,18 @@ public abstract class Module
 		if (this.enabled == enabled)
 			return;
 
-		if (this.enabled = enabled)
-			onEnable();
-		else
-			onDisable();
+		try
+		{
+			if (this.enabled = enabled)
+				onEnable();
+			else
+				onDisable();
+		} catch (Exception e)
+		{
+			MupPlugin.log().severe("Error %s module %s".formatted(enabled ? "enabling" : "disabling", name));
+			e.printStackTrace();
+			return;
+		}
 
 		final String cfgStr = enabled ? "messages.on-enable" : "messages.on-disable";
 		MupPlugin.log().info(mupPlugin.getConfigManager().getConfig("modules").getStringF(cfgStr).replace("{}", name));

@@ -5,6 +5,7 @@ import mup.nolan.mupplugin.modules.antiafk.AntiafkModule;
 import mup.nolan.mupplugin.modules.chatpatrol.ChatPatrolModule;
 import mup.nolan.mupplugin.modules.discord.DiscordModule;
 import mup.nolan.mupplugin.modules.gallery.GalleryModule;
+import mup.nolan.mupplugin.modules.reports.ReportsModule;
 import mup.nolan.mupplugin.utils.meter.TurboMeter;
 import org.bukkit.command.CommandSender;
 
@@ -25,13 +26,14 @@ public class ModuleManager
 	{
 		TurboMeter.start("init_modules");
 
-		register(new ItemsortModule(mupPlugin));
-		register(new BottlexpModule(mupPlugin));
-		register(new GalleryModule(mupPlugin));
-		register(new AntiafkModule(mupPlugin));
-		register(new CheatnonoModule(mupPlugin));
-		register(new ChatPatrolModule(mupPlugin));
-		register(new DiscordModule(mupPlugin));
+		register(ItemsortModule.class);
+		register(BottlexpModule.class);
+		register(GalleryModule.class);
+		register(AntiafkModule.class);
+		register(CheatnonoModule.class);
+		register(ChatPatrolModule.class);
+		register(DiscordModule.class);
+		register(ReportsModule.class);
 
 		TurboMeter.end(MupPlugin.DEBUG > 0);
 	}
@@ -64,8 +66,20 @@ public class ModuleManager
 		modules.forEach(m -> m.setEnabled(false));
 	}
 
-	private void register(Module module)
+	private void register(Class<? extends Module> moduleClass)
 	{
+		final Module module;
+
+		try
+		{
+			module = moduleClass.getConstructor(MupPlugin.class).newInstance(mupPlugin);
+		} catch (Exception e)
+		{
+			MupPlugin.log().severe("Error constructing module class " + moduleClass.getName());
+			e.printStackTrace();
+			return;
+		}
+
 		if (mupPlugin.getConfigManager().getConfig("modules").getBool(module.getName()))
 			module.setEnabled(true);
 		modules.add(module);
