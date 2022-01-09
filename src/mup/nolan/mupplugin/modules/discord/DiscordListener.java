@@ -48,7 +48,8 @@ public class DiscordListener implements MessageCreateListener
 		final String cmd = args.remove(0);
 
 		final List<DCommand> commandLs = commands.stream().filter(c -> c.getName().equalsIgnoreCase(cmd) || c.getAliases().contains(cmd)).toList();
-		commandLs.get(0).execute(e.getMessage(), e.getMessageAuthor(), args);
+		if (!commandLs.isEmpty())
+			commandLs.get(0).execute(e.getMessage(), e.getMessageAuthor(), args);
 	}
 
 	private void handleMessage(MessageCreateEvent e)
@@ -128,7 +129,7 @@ public class DiscordListener implements MessageCreateListener
 			final String suffix = VaultHook.getChat().getPlayerSuffix(null, link.getPlayer());
 			final String msg = cfg.getStringF("chat.from-discord.format")
 					.replace("{prefix}", prefix)
-					.replace("{name}", link.getPlayer().getName())
+					.replace("{name}", StrUtils.safeNull(link.getPlayer().getName()))
 					.replace("{suffix}", suffix)
 					.replace("{msg}", e.getMessageContent());
 
