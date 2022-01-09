@@ -43,7 +43,7 @@ notification:
     format:
       report: ':detective: {from_e} reported {type_e}#{id} player={player_e} comment={comment_e}'
       checked: ':detective: {operator_e} checked report #{id}'
-      removed: ':detective: {operator_e} removed report #{id}'
+      remove: ':detective: {operator_e} removed report #{id}'
 
 messages:
   help: '&c/{} <typ zgłoszenia> ...'
