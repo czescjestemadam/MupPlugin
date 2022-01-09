@@ -20,11 +20,13 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-import java.util.function.Function;
+import java.util.Map;
 
 public class ReportsModule extends Module
 {
+	private final Map<Player, Long> cooldown = new HashMap<>();
 	private int reports;
 
 	public ReportsModule(MupPlugin mupPlugin)
@@ -62,10 +64,24 @@ public class ReportsModule extends Module
 			player.sendMessage(cfg().getStringF("messages.reminder").replace("{}", String.valueOf(reports)));
 	}
 
+	public void onQuit(Player player)
+	{
+		if (!cfg().getBool("persistent-cooldown"))
+			cooldown.remove(player);
+	}
+
 	public void report(Player from, String type, OfflinePlayer player, Location pos, String comment)
 	{
 		if (!this.isEnabled())
 			return;
+
+		if (!from.hasPermission("mup.report.cooldown-exempt") && cooldown.containsKey(from) && cooldown.get(from) + cfg().getInt("cooldown") * 1000L > System.currentTimeMillis())
+		{
+			final double timeLeft = cooldown.get(from) + cfg().getInt("cooldown") * 1000L - System.currentTimeMillis();
+			from.sendMessage(cfg().getStringF("messages.on-cooldown").replace("{}", StrUtils.roundNum(timeLeft / 1000D, 1)));
+			return;
+		}
+		cooldown.put(from, System.currentTimeMillis());
 
 		final ReportsRow row = new ReportsRow(-1, from, type, player, pos, comment, new Date(), false);
 		row.setId(mup().getDB().insertReport(row));

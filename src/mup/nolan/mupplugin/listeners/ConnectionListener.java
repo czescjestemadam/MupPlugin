@@ -35,5 +35,6 @@ public class ConnectionListener implements Listener
 		((ItemsortModule)mm.getModule("itemsort")).clearReminder(e.getPlayer());
 		((GalleryModule)mm.getModule("gallery")).clearReminder(e.getPlayer());
 		((AntiafkModule)mm.getModule("antiafk")).onQuit(e.getPlayer());
+		((ReportsModule)mm.getModule("reports")).onQuit(e.getPlayer());
 	}
 }

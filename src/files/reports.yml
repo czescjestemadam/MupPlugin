@@ -2,23 +2,21 @@ reminder:
   on-join: true
   on-load: true
 
+cooldown: 180
+persistent-cooldown: true
 types:
   grief:
-    cooldown: 180
     help: '&c/{} grief [komentarz]'
     require: [ ]
   cheaty:
-    cooldown: 180
     help: '&c/{} cheaty <gracz> [komentarz]'
     require:
       - player
   scam:
-    cooldown: 180
     help: '&c/{} scam <gracz> [komentarz]'
     require:
       - player
   inne:
-    cooldown: 180
     help: '&c/{} inne <komentarz>'
     require:
       - comment
@@ -49,3 +47,5 @@ messages:
   on-blacklist: '&cWysyłanie zgłoszeń jest chwilowo niedostępne'
   reminder: '&cZgłoszenia oczekujące na sprawdzenie: {}'
   sent: '&aWysłano zgłoszenie #{id}'
+  empty-report-set: '&cNie znaleziono zgłoszeń do podanych flag'
+  on-cooldown: '&cMusisz poczekać {} sekund zanim wyślesz następne zgłoszenie'
