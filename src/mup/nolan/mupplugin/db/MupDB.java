@@ -491,19 +491,21 @@ public class MupDB
 		closeStatement(st);
 	}
 
-	public void removeReports(List<ReportsRow> rows)
+	public int removeReports(List<ReportsRow> rows)
 	{
+		int ret = -1;
 		final Statement st = getStatement();
 		try
 		{
 			for (ReportsRow row : rows)
 				st.addBatch("delete from mup_reports where id = " + row.getId());
-			st.executeBatch();
+			ret = st.executeBatch().length;
 		} catch (SQLException e)
 		{
 			e.printStackTrace();
 		}
 		closeStatement(st);
+		return ret;
 	}
 
 	public Statement getStatement()

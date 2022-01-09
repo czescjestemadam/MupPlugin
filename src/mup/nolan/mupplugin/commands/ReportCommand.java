@@ -151,7 +151,9 @@ public class ReportCommand implements TabExecutor
 			else if (action.equalsIgnoreCase("-checked"))
 				mod.checkedReports(rows);
 			else if (action.equalsIgnoreCase("-remove"))
-				mod.removeReports(rows);
+				mod.removeReports(rows, sender);
+
+			return true;
 		}
 
 		if (!(sender instanceof final Player p))

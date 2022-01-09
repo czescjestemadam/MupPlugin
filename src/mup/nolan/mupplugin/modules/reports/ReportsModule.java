@@ -110,8 +110,16 @@ public class ReportsModule extends Module
 		mup().getDB().updateReport(rows);
 	}
 
-	public void removeReports(List<ReportsRow> rows)
+	public void removeReports(List<ReportsRow> rows, CommandSender op)
 	{
+		if (rows.isEmpty())
+		{
+			op.sendMessage(cfg().getStringF("messages.empty-report-set"));
+			return;
+		}
+
+		rows.forEach(ReportsRow::check);
+		rows.forEach(r -> notify(r, "remove", op));
 		mup().getDB().removeReports(rows);
 	}
 
