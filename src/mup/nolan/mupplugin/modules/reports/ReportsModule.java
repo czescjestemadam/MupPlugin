@@ -45,10 +45,8 @@ public class ReportsModule extends Module
 				return;
 
 			reports = mup().getDB().getReports(-1, null, null, null, true).size();
-			if (reports == 0)
-				return;
-
-			Bukkit.broadcast(cfg().getStringF("messages.reminder").replace("{}", String.valueOf(reports)), "mup.report.reminder");
+			if (reports > 0)
+				Bukkit.broadcast(cfg().getStringF("messages.reminder").replace("{}", String.valueOf(reports)), "mup.report.reminder");
 		});
 	}
 
@@ -60,7 +58,7 @@ public class ReportsModule extends Module
 
 	public void onJoin(Player player)
 	{
-		if (cfg().getBool("reminder.on-join") && player.hasPermission("mup.report.reminder"))
+		if (cfg().getBool("reminder.on-join") && player.hasPermission("mup.report.reminder") && reports > 0)
 			player.sendMessage(cfg().getStringF("messages.reminder").replace("{}", String.valueOf(reports)));
 	}
 
