@@ -97,7 +97,7 @@ public class ReportCommand implements TabExecutor
 			boolean all = false;
 
 			final List<String> flags = new ArrayList<>(List.of(Arrays.copyOfRange(args, 1, args.length)));
-			if (flags.size() < 2)
+			if (flags.isEmpty())
 			{
 				sender.sendMessage("§cFlags: -from -type -player -all");
 				return true;
@@ -109,9 +109,12 @@ public class ReportCommand implements TabExecutor
 
 				if (val.startsWith("#"))
 				{
-					id = Integer.parseInt(val.substring(1));
+					id = Integer.parseInt(val.replaceAll("\\D+", ""));
 					break;
 				}
+
+				if (val.equalsIgnoreCase("-all"))
+					all = true;
 
 				if (i < 1)
 					continue;
@@ -134,9 +137,6 @@ public class ReportCommand implements TabExecutor
 					if (player == null)
 						player = Bukkit.getOfflinePlayer(val);
 				}
-
-				if (val.equalsIgnoreCase("-all"))
-					all = true;
 			}
 
 			final List<ReportsRow> rows = new ArrayList<>();
