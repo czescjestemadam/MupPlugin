@@ -149,7 +149,7 @@ public class ReportCommand implements TabExecutor
 			if (action.equalsIgnoreCase("-get"))
 				mod.sendFormatedReport(sender, rows);
 			else if (action.equalsIgnoreCase("-checked"))
-				mod.checkedReports(rows);
+				mod.checkedReports(rows, sender);
 			else if (action.equalsIgnoreCase("-remove"))
 				mod.removeReports(rows, sender);
 

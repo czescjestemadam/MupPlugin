@@ -16,7 +16,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 
 import java.util.Date;
@@ -84,7 +83,7 @@ public class ReportsModule extends Module
 		final ReportsRow row = new ReportsRow(-1, from, type, player, pos, comment, new Date(), false);
 		row.setId(mup().getDB().insertReport(row));
 		notify(row, "report", null);
-		from.sendMessage(cfg().getStringF("messages.sent").replaceAll("\\{}", String.valueOf(row.getId())));
+		from.sendMessage(cfg().getStringF("messages.sent").replace("{id}", String.valueOf(row.getId())));
 
 		reports++;
 	}
@@ -102,9 +101,16 @@ public class ReportsModule extends Module
 		return mup().getDB().getReports(-1, from, type, player, !all);
 	}
 
-	public void checkedReports(List<ReportsRow> rows)
+	public void checkedReports(List<ReportsRow> rows, CommandSender op)
 	{
+		if (rows.isEmpty())
+		{
+			op.sendMessage(cfg().getStringF("messages.empty-report-set"));
+			return;
+		}
+
 		rows.forEach(ReportsRow::check);
+		rows.forEach(r -> notify(r, "checked", op));
 		mup().getDB().updateReport(rows);
 	}
 
@@ -121,7 +127,7 @@ public class ReportsModule extends Module
 		mup().getDB().removeReports(rows);
 	}
 
-	public void notify(ReportsRow row, String type, Player op)
+	public void notify(ReportsRow row, String type, CommandSender op)
 	{
 		final TextComponent notification = new TextComponent(checkedPlaceholders(cfg().getStringF("notification." + type + ".format"), row, op));
 		notification.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(checkedPlaceholders(cfg().getStringF("notification." + type + ".hover"), row, op))));
@@ -149,15 +155,18 @@ public class ReportsModule extends Module
 	{
 		for (ReportsRow row : rows)
 		{
+			final String fmt = getPlaceholders(cfg().getStringF("notification.get.format"), row);
+			final String hover = getPlaceholders(cfg().getStringF("notification.get.hover"), row);
+
 			if (sender instanceof Player)
 			{
-				final TextComponent msg = new TextComponent(placeholders(cfg().getStringF("notification.report.format"), row));
-				msg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(placeholders(cfg().getStringF("notification.report.hover"), row))));
-				msg.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, placeholders(cfg().getString("notification.report.click"), row)));
+				final TextComponent msg = new TextComponent(fmt);
+				msg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(hover)));
+				msg.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, placeholders(cfg().getString("notification.get.click"), row)));
 				sender.spigot().sendMessage(msg);
 			}
 			else
-				sender.sendMessage(placeholders(cfg().getStringF("notification.report.format"), row) + "; " + placeholders(cfg().getStringF("notification.report.hover"), row));
+				sender.sendMessage(fmt + "; " + hover);
 		}
 		sender.sendMessage("§c§l[R] §cReports: " + rows.size());
 	}
@@ -202,9 +211,15 @@ public class ReportsModule extends Module
 				.replace("{comment_e}", StrUtils.discordEscaped(row.getComment()));
 	}
 
-	private String checkedPlaceholders(String fmt, ReportsRow row, Player op)
+	private String checkedPlaceholders(String fmt, ReportsRow row, CommandSender op)
 	{
-		return placeholders(fmt, row).replace("{operator}", StrUtils.safeNull(FuncUtils.optionallyMap(op, HumanEntity::getName)))
-				.replace("{operator_e}", StrUtils.discordEscaped(FuncUtils.optionallyMap(op, HumanEntity::getName)));
+		return placeholders(fmt, row).replace("{operator}", StrUtils.safeNull(FuncUtils.optionallyMap(op, CommandSender::getName)))
+				.replace("{operator_e}", StrUtils.discordEscaped(FuncUtils.optionallyMap(op, CommandSender::getName)));
+	}
+
+	private String getPlaceholders(String fmt, ReportsRow row)
+	{
+		return placeholders(fmt, row).replace("{checked}", String.valueOf(row.isChecked()))
+				.replace("{sent_at}", row.getSentAt().toString());
 	}
 }

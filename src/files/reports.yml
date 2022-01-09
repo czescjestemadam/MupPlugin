@@ -21,19 +21,22 @@ types:
     require:
       - comment
 
-check:
-  format: '&c&l[R] &c{from} reported {type}#{id}'
-  hover: "&eplayer=&f{player} &ecomment=&f{comment}\nat {pos}"
-  click: '/tp {pos_tp}'
-
 notification:
   report:
     format: '&c&l[R] &c{from} reported {type}#{id}'
     hover: "&eplayer=&f{player} &ecomment=&f{comment}\nat {pos}"
     click: '/tp {pos_tp}'
+  get:
+    format: '&c&l[R] &c{from} reported {type}#{id}'
+    hover: "&eplayer=&f{player} &ecomment=&f{comment}\n&esent at &f{sent_at}\n&eat &f{pos}"
+    click: '/tp {pos_tp}'
   checked:
     format: '&c&l[R] &a{operator} checked report #{id}'
-    hover: "{from} reported {type}\n{pos} player={player} comment={comment}"
+    hover: "{from} &ereported &f{type}\n&eplayer=&f{player} &ecomment=&f{comment}\n&eat &f{pos} {sent_at}"
+    click: '/tp {pos_tp}'
+  remove:
+    format: '&c&l[R] &a{operator} removed report #{id}'
+    hover: "{from} &ereported &f{type}\n&eplayer=&f{player} &ecomment=&f{comment}\n&eat &f{pos} {sent_at}"
     click: '/tp {pos_tp}'
   discord:
     channel: reports
