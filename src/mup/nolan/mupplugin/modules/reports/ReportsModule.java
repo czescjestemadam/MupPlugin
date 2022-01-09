@@ -148,7 +148,8 @@ public class ReportsModule extends Module
 			return;
 
 		final String discordMsg = cfg().getString("notification.discord.format." + type);
-		discord.getBot().sendMessage(channel, checkedPlaceholders(discordMsg, row, op));
+		if (discordMsg != null)
+			discord.getBot().sendMessage(channel, checkedPlaceholders(discordMsg, row, op));
 	}
 
 	public void sendFormatedReport(CommandSender sender, List<ReportsRow> rows)
