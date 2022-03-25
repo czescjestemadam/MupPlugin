@@ -49,12 +49,6 @@ public class ReportsModule extends Module
 		});
 	}
 
-	@Override
-	public void onDisable()
-	{
-
-	}
-
 	public void onJoin(Player player)
 	{
 		if (cfg().getBool("reminder.on-join") && player.hasPermission("mup.report.reminder") && reports > 0)

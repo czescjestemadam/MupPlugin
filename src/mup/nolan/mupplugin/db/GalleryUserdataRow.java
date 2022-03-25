@@ -1,6 +1,5 @@
 package mup.nolan.mupplugin.db;
 
-import mup.nolan.mupplugin.MupPlugin;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 
