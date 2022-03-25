@@ -26,6 +26,7 @@ public class ListenerManager
 		register(new BlockListener(mupPlugin));
 		register(new BookListener(mupPlugin));
 		register(new ChatListener(mupPlugin));
+		register(new ChestShopListener(mupPlugin));
 
 		TurboMeter.end(MupPlugin.DEBUG > 0);
 	}

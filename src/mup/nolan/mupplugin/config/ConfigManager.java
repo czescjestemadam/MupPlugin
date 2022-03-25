@@ -40,6 +40,7 @@ public class ConfigManager
 		load("chatpatrol");
 		load("discord");
 		load("reports");
+		load("chestshop-fix");
 
 		Bukkit.getScheduler().runTaskLaterAsynchronously(mupPlugin, () -> {
 			FileUtils.copyFile(MupPlugin.getRes("files/permissions.txt"), new File(MupPlugin.get().getDataFolder(), "permissions.txt"));

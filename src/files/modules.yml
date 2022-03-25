@@ -6,6 +6,7 @@ cheatnono: true
 chatpatrol: true
 discord: true
 reports: true
+chestshop-fix: true
 
 messages:
   on-command-disabled: '&c&o{} &cjest chwilowo wyłączony'

@@ -1,0 +1,3 @@
+max-price: 10000
+messages:
+  price-exceeded: '&6[Sklep] &fMaksymalna cena to {}'

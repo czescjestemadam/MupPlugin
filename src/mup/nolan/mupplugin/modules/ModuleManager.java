@@ -34,6 +34,7 @@ public class ModuleManager
 		register(ChatPatrolModule.class);
 		register(DiscordModule.class);
 		register(ReportsModule.class);
+		register(ChestshopFix.class);
 
 		TurboMeter.end(MupPlugin.DEBUG > 0);
 	}
