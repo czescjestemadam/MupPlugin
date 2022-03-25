@@ -71,6 +71,9 @@ public class ChatPatrolModule extends Module
 
 	public void onSign(SignChangeEvent e)
 	{
+		if (!isEnabled())
+			return;
+
 		for (int i = 0; i < 4; i++)
 		{
 			final Resrc<String> line = new Resrc<>(e.getLine(i));
@@ -83,6 +86,9 @@ public class ChatPatrolModule extends Module
 
 	public void onBook(PlayerEditBookEvent e)
 	{
+		if (!isEnabled())
+			return;
+
 		final BookMeta m = e.getNewBookMeta();
 		for (int i = 1; i <= m.getPageCount(); i++)
 		{
@@ -102,6 +108,9 @@ public class ChatPatrolModule extends Module
 
 	public void onCommand(PlayerCommandPreprocessEvent e)
 	{
+		if (!isEnabled())
+			return;
+
 		final String msg = e.getMessage().substring(1);
 		final int idx = msg.indexOf(" ");
 		if (idx < 0)
@@ -115,7 +124,7 @@ public class ChatPatrolModule extends Module
 	public void onAnvil(InventoryClickEvent e)
 	{
 		final Player player = (Player)e.getView().getPlayer();
-		if (!(e.getClickedInventory() instanceof AnvilInventory inv))
+		if (!isEnabled() || !(e.getClickedInventory() instanceof AnvilInventory inv))
 			return;
 
 		final ItemStack result = inv.getItem(2);
@@ -136,7 +145,7 @@ public class ChatPatrolModule extends Module
 
 	private void checkCooldown(AsyncPlayerChatEvent e)
 	{
-		if (e.getPlayer().hasPermission("mup.chatpatrol.exempt.cooldown"))
+		if (!isEnabled() || e.getPlayer().hasPermission("mup.chatpatrol.exempt.cooldown"))
 			return;
 
 		final ChatPatrolLogMessage lastMessage = chatLog.stream().filter(m -> m.sender == e.getPlayer()).max(Comparator.comparingLong(v -> v.timestamp)).orElse(null);
@@ -156,7 +165,7 @@ public class ChatPatrolModule extends Module
 
 	private void checkSpam(AsyncPlayerChatEvent e)
 	{
-		if (e.isCancelled() || e.getPlayer().hasPermission("mup.chatpatrol.exempt.spam"))
+		if (!isEnabled() || e.isCancelled() || e.getPlayer().hasPermission("mup.chatpatrol.exempt.spam"))
 			return;
 
 		final List<ChatPatrolLogMessage> messages = chatLog.stream().filter(m -> m.sender == e.getPlayer() && !m.warned).toList();
@@ -225,7 +234,7 @@ public class ChatPatrolModule extends Module
 
 	private void checkCaps(AsyncPlayerChatEvent e)
 	{
-		if (e.isCancelled() || e.getPlayer().hasPermission("mup.chatpatrol.exempt.caps"))
+		if (!isEnabled() || e.isCancelled() || e.getPlayer().hasPermission("mup.chatpatrol.exempt.caps"))
 			return;
 
 		String msg = e.getMessage();
@@ -263,7 +272,7 @@ public class ChatPatrolModule extends Module
 
 	private void checkFlood(AsyncPlayerChatEvent e)
 	{
-		if (e.isCancelled())
+		if (!isEnabled() || e.isCancelled())
 			return;
 
 		final int maxRepeats = cfg().getInt("flood.max-repeats");
