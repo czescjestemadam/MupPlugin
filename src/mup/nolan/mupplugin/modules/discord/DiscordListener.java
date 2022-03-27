@@ -9,7 +9,6 @@ import mup.nolan.mupplugin.modules.discord.commands.DPingCommand;
 import mup.nolan.mupplugin.utils.StrUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandException;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.javacord.api.event.message.MessageCreateEvent;
 import org.javacord.api.listener.message.MessageCreateListener;
@@ -84,7 +83,7 @@ public class DiscordListener implements MessageCreateListener
 			return;
 		}
 
-		final CommandSender sender = new DiscordCommandSender(link, e.getChannel());
+		final DiscordCommandSender sender = new DiscordCommandSender(link, e.getChannel());
 		final String cmd = e.getMessageContent().trim();
 		Bukkit.getScheduler().runTask(MupPlugin.get(), () -> {
 			try
