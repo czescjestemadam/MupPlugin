@@ -46,7 +46,13 @@ public class ModuleManager
 
 	public Module getModule(String moduleName)
 	{
-		return modules.stream().filter(m -> m.getName().equalsIgnoreCase(moduleName)).findFirst().orElse(null);
+//		return modules.stream().filter(m -> m.getName().equalsIgnoreCase(moduleName)).findFirst().orElse(null);
+		for (Module mod : modules)
+		{
+			if (mod.getName().equalsIgnoreCase(moduleName))
+				return mod;
+		}
+		return null;
 	}
 
 	public boolean isModuleEnabled(String moduleName)
