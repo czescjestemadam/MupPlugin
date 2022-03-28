@@ -5,7 +5,7 @@ import mup.nolan.mupplugin.modules.ModuleManager;
 import mup.nolan.mupplugin.modules.chatpatrol.ChatPatrolModule;
 import mup.nolan.mupplugin.modules.gallery.GalleryModule;
 import mup.nolan.mupplugin.modules.ItemsortModule;
-import mup.nolan.mupplugin.modules.UnbreakableanvilsModule;
+import mup.nolan.mupplugin.modules.AnvilsModule;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
@@ -26,7 +26,7 @@ public class InventoryListener implements Listener
 	{
 		((GalleryModule)mm.getModule("gallery")).onClose(e);
 		((ItemsortModule)mm.getModule("itemsort")).onChest(e);
-		((UnbreakableanvilsModule)mm.getModule("unbreakableanvils")).onAnvil(e);
+		((AnvilsModule)mm.getModule("anvils")).onAnvil(e);
 	}
 
 	@EventHandler
