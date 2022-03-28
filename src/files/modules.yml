@@ -7,6 +7,7 @@ chatpatrol: true
 discord: true
 reports: true
 chestshop-fix: true
+unbreakableanvils: true
 
 messages:
   on-command-disabled: '&c&o{} &cjest chwilowo wyłączony'
