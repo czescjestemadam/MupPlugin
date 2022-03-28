@@ -1,5 +1,6 @@
 package mup.nolan.mupplugin.modules;
 
+import com.sk89q.worldguard.protection.flags.StateFlag;
 import mup.nolan.mupplugin.MupPlugin;
 import mup.nolan.mupplugin.hooks.WGHook;
 import org.bukkit.Location;
@@ -22,7 +23,7 @@ public class AnvilsModule extends Module
 	@Override
 	public void onEnable()
 	{
-		if (!WGHook.hasFlag(WGHook.unbreakableAnvils))
+		if (!WGHook.hasFlag((StateFlag)WGHook.getFlag("unbreakable-anvils")))
 		{
 			MupPlugin.log().warning("No unbreakable-anvils flag");
 			this.setEnabled(false);
@@ -34,7 +35,7 @@ public class AnvilsModule extends Module
 		if (!this.isEnabled())
 			return;
 
-		if (!WGHook.hasFlag(WGHook.unbreakableAnvils))
+		if (!WGHook.hasFlag((StateFlag)WGHook.getFlag("unbreakable-anvils")))
 		{
 			MupPlugin.log().warning("No unbreakable-anvils flag");
 			this.setEnabled(false);
@@ -47,7 +48,7 @@ public class AnvilsModule extends Module
 			return;
 
 		final Location loc = inv.getLocation();
-		if (loc != null && WGHook.getFlagState(loc, (Player)e.getPlayer(), WGHook.unbreakableAnvils))
+		if (loc != null && WGHook.getFlagState(loc, (Player)e.getPlayer(), (StateFlag)WGHook.getFlag("unbreakable-anvils")))
 			fix(loc.getBlock());
 	}
 

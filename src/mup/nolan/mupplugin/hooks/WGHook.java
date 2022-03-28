@@ -5,16 +5,12 @@ import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.flags.StateFlag;
-import com.sk89q.worldguard.protection.flags.registry.FlagConflictException;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
-import mup.nolan.mupplugin.MupPlugin;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 public class WGHook
 {
-	public static final StateFlag unbreakableAnvils = new StateFlag("unbreakable-anvils", false);
-
 	private static WorldGuard wg;
 
 	public static void init()
@@ -25,21 +21,18 @@ public class WGHook
 
 	private static void addFlags()
 	{
-		registerFlag(unbreakableAnvils);
+		registerFlag(new StateFlag("unbreakable-anvils", false));
 	}
 
 	private static void registerFlag(Flag<?> flag)
 	{
-		try
-		{
+		if (!hasFlag((StateFlag)getFlag(flag.getName())))
 			wg.getFlagRegistry().register(flag);
-		} catch (FlagConflictException e)
-		{
-			MupPlugin.log().warning("Flag " + flag.getName() + " exists");
-		} catch (IllegalStateException e)
-		{
-			MupPlugin.log().severe("New flags cannot be registered at this time");
-		}
+	}
+
+	public static Flag<?> getFlag(String name)
+	{
+		return wg.getFlagRegistry().get(name);
 	}
 
 	public static boolean getFlagState(Location loc, Player player, StateFlag flag)
