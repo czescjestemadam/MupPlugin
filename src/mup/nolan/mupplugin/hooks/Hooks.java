@@ -10,6 +10,14 @@ public class Hooks
 
 		PapiHook.init();
 		VaultHook.init();
+
+		TurboMeter.end(true);
+	}
+
+	public static void loadInit()
+	{
+		TurboMeter.start("load_init_hooks");
+
 		WGHook.init();
 
 		TurboMeter.end(true);

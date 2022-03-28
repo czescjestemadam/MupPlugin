@@ -26,6 +26,12 @@ public final class MupPlugin extends JavaPlugin
 	private CommandManager commandManager;
 
 	@Override
+	public void onLoad()
+	{
+		Hooks.loadInit();
+	}
+
+	@Override
 	public void onEnable()
 	{
 		inst = this;
