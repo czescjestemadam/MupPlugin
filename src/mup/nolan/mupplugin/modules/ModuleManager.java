@@ -35,6 +35,7 @@ public class ModuleManager
 		register(DiscordModule.class);
 		register(ReportsModule.class);
 		register(ChestshopFix.class);
+		register(AnvilsModule.class);
 
 		TurboMeter.end(MupPlugin.DEBUG > 0);
 	}

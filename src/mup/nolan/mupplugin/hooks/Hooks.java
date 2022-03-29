@@ -13,4 +13,9 @@ public class Hooks
 
 		TurboMeter.end(true);
 	}
+
+	public static void loadInit()
+	{
+		WGHook.init();
+	}
 }
