@@ -5,6 +5,7 @@ import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.flags.StateFlag;
+import com.sk89q.worldguard.protection.flags.registry.FlagConflictException;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -26,8 +27,12 @@ public class WGHook
 
 	private static void registerFlag(Flag<?> flag)
 	{
-		if (!hasFlag((StateFlag)getFlag(flag.getName())))
+		try
+		{
 			wg.getFlagRegistry().register(flag);
+		} catch (FlagConflictException | IllegalStateException e)
+		{
+		}
 	}
 
 	public static Flag<?> getFlag(String name)
