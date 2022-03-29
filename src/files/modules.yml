@@ -8,6 +8,7 @@ discord: true
 reports: true
 chestshop-fix: true
 anvils: true
+nogrief: true
 
 messages:
   on-command-disabled: '&c&o{} &cjest chwilowo wyłączony'

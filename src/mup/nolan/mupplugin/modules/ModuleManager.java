@@ -5,6 +5,7 @@ import mup.nolan.mupplugin.modules.antiafk.AntiafkModule;
 import mup.nolan.mupplugin.modules.chatpatrol.ChatPatrolModule;
 import mup.nolan.mupplugin.modules.discord.DiscordModule;
 import mup.nolan.mupplugin.modules.gallery.GalleryModule;
+import mup.nolan.mupplugin.modules.nogrief.NoGrief;
 import mup.nolan.mupplugin.modules.reports.ReportsModule;
 import mup.nolan.mupplugin.utils.meter.TurboMeter;
 import org.bukkit.command.CommandSender;
@@ -36,6 +37,7 @@ public class ModuleManager
 		register(ReportsModule.class);
 		register(ChestshopFix.class);
 		register(AnvilsModule.class);
+		register(NoGrief.class);
 
 		TurboMeter.end(MupPlugin.DEBUG > 0);
 	}
