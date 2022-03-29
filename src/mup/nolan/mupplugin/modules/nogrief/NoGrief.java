@@ -2,6 +2,7 @@ package mup.nolan.mupplugin.modules.nogrief;
 
 import mup.nolan.mupplugin.MupPlugin;
 import mup.nolan.mupplugin.modules.Module;
+import mup.nolan.mupplugin.modules.nogrief.regionrollback.NoGriefRegionRollback;
 
 public class NoGrief extends Module
 {
