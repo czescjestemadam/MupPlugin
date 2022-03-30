@@ -3,6 +3,12 @@ books:
     title: 'test book'
     author: 'jamup'
     pages:
+      - "&ceko"
+  test-advanced:
+    title: 'advanced test book'
+    author: 'jamup'
+    advanced: true
+    pages:
       - ""
 
 messages:
