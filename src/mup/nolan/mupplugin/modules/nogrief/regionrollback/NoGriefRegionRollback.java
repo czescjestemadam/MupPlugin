@@ -125,14 +125,10 @@ public class NoGriefRegionRollback
 		if (!noGrief.isEnabled())
 			return;
 
-		TurboMeter.start("nogrief_blockChange");
-
 		pendingChanges.add(new RRBlockChange(block, player, placed));
 		synchronized (pendingLock)
 		{
 			pendingLock.notify();
 		}
-
-		TurboMeter.end(true);
 	}
 }
