@@ -31,12 +31,12 @@ public class BlockListener implements Listener
 	@EventHandler
 	private void onBlockPlace(BlockPlaceEvent e)
 	{
-		((NoGrief)mm.getModule("nogrief")).getRegionRollback().blockChange(new BlockSnapshot(e.getBlock(), e.getBlockReplacedState().getType(), e.getBlockReplacedState().getBlockData()), true);
+		((NoGrief)mm.getModule("nogrief")).getRegionRollback().blockChange(new BlockSnapshot(e.getBlock(), e.getBlockReplacedState().getType(), e.getBlockReplacedState().getBlockData()), e.getPlayer(), true);
 	}
 
 	@EventHandler
 	private void onBlockBreak(BlockBreakEvent e)
 	{
-		((NoGrief)mm.getModule("nogrief")).getRegionRollback().blockChange(new BlockSnapshot(e.getBlock()), false);
+		((NoGrief)mm.getModule("nogrief")).getRegionRollback().blockChange(new BlockSnapshot(e.getBlock()), e.getPlayer(), false);
 	}
 }

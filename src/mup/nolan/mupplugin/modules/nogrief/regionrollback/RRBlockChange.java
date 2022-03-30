@@ -1,15 +1,19 @@
 package mup.nolan.mupplugin.modules.nogrief.regionrollback;
 
+import org.bukkit.entity.Player;
+
 public class RRBlockChange
 {
 	private final BlockSnapshot block;
+	private final Player player;
 	private final boolean placed;
 	private final long timestamp;
 	private long rollbackAfter;
 
-	public RRBlockChange(BlockSnapshot block, boolean placed)
+	public RRBlockChange(BlockSnapshot block, Player player, boolean placed)
 	{
 		this.block = block;
+		this.player = player;
 		this.placed = placed;
 		timestamp = System.currentTimeMillis();
 	}
@@ -17,6 +21,11 @@ public class RRBlockChange
 	public BlockSnapshot getBlock()
 	{
 		return block;
+	}
+
+	public Player getPlayer()
+	{
+		return player;
 	}
 
 	public boolean isPlaced()
@@ -46,9 +55,7 @@ public class RRBlockChange
 
 	public void rollback()
 	{
-		System.out.println("block = " + block);
 		block.restore();
-		System.out.println("set block = " + block);
 	}
 
 	public boolean isOpposite(RRBlockChange c)
@@ -61,8 +68,10 @@ public class RRBlockChange
 	{
 		return "RRBlockChange{" +
 				"block=" + block +
+				", player=" + player +
 				", placed=" + placed +
 				", timestamp=" + timestamp +
+				", rollbackAfter=" + rollbackAfter +
 				'}';
 	}
 }

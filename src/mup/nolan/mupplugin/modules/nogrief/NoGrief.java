@@ -11,7 +11,7 @@ public class NoGrief extends Module
 	public NoGrief(MupPlugin mupPlugin)
 	{
 		super(mupPlugin, "nogrief");
-		regionRollback = new NoGriefRegionRollback(this);
+		regionRollback = new NoGriefRegionRollback(this, cfg());
 	}
 
 	@Override

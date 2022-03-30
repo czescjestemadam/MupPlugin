@@ -1,0 +1,7 @@
+region-rollback:
+  check-interval: 40 # ticks
+  max-time: 86400 # seconds
+  exclude:
+    region-owner: true
+    region-members: true
+    ops: false
