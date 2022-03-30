@@ -58,9 +58,9 @@ public class RRBlockChange
 		block.restore();
 	}
 
-	public boolean isOpposite(RRBlockChange c)
+	public boolean equalsLocation(RRBlockChange c)
 	{
-		return c.block.getBlock().getLocation().equals(block.getBlock().getLocation()) && c.block.getBlock().getBlockData().matches(block.getBlock().getBlockData()) && c.placed != placed;
+		return c.block.getBlock().getLocation().equals(block.getBlock().getLocation());
 	}
 
 	@Override

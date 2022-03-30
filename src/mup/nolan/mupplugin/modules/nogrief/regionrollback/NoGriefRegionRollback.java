@@ -7,7 +7,6 @@ import mup.nolan.mupplugin.config.Config;
 import mup.nolan.mupplugin.hooks.WGHook;
 import mup.nolan.mupplugin.modules.nogrief.NoGrief;
 import mup.nolan.mupplugin.utils.StrUtils;
-import mup.nolan.mupplugin.utils.meter.TurboMeter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -64,7 +63,7 @@ public class NoGriefRegionRollback
 
 						change.setRollbackAfter(Math.min(time * 1000L, cfg.getInt("region-rollback.max-time")));
 
-						if (!changes.removeIf(change::isOpposite))
+						if (changes.stream().noneMatch(change::equalsLocation))
 							changes.add(change);
 					}
 
