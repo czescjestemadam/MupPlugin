@@ -28,6 +28,8 @@ commands:
     description: dicord wiadomosci jakies
   report:
     aliases: zglos
+  cbook:
+    description: command books
 
 permissions:
   mup.cmd.mupplugin:

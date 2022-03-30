@@ -1,0 +1,15 @@
+books:
+  test:
+    title: 'test book'
+    author: 'jamup'
+    pages:
+      - ""
+
+messages:
+  usage: ''
+  opened: '&aOtworzono książke {}'
+  not-found: '&cNie znaleziono takiej książki'
+  saved: ''
+  confirmation-flag: '--confirm'
+  confirm-remove: ''
+  removed: ''
