@@ -39,6 +39,7 @@ public class ConfigManager
 		load("discord");
 		load("reports");
 		load("chestshop-fix");
+		load("cbook");
 
 		Bukkit.getScheduler().runTaskLaterAsynchronously(mupPlugin, () -> {
 			FileUtils.copyFile(MupPlugin.getRes("files/permissions.txt"), new File(MupPlugin.get().getDataFolder(), "permissions.txt"));

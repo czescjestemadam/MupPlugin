@@ -2,6 +2,7 @@ package mup.nolan.mupplugin.modules;
 
 import mup.nolan.mupplugin.MupPlugin;
 import mup.nolan.mupplugin.modules.antiafk.AntiafkModule;
+import mup.nolan.mupplugin.modules.cbook.CBookModule;
 import mup.nolan.mupplugin.modules.chatpatrol.ChatPatrolModule;
 import mup.nolan.mupplugin.modules.discord.DiscordModule;
 import mup.nolan.mupplugin.modules.gallery.GalleryModule;
@@ -36,6 +37,7 @@ public class ModuleManager
 		register(ReportsModule.class);
 		register(ChestshopFix.class);
 		register(AnvilsModule.class);
+		register(CBookModule.class);
 
 		TurboMeter.end(MupPlugin.DEBUG > 0);
 	}
