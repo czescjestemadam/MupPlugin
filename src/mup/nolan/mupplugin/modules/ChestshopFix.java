@@ -17,10 +17,23 @@ public class ChestshopFix extends Module
 
 		final String sign = e.getSignLines()[2].replaceAll("[BS ]", "");
 		final int maxPrice = cfg().getInt("max-price");
-		if (Integer.parseInt(sign) > maxPrice)
+		final int signPrice;
+		try
 		{
-			e.setOutcome(PreShopCreationEvent.CreationOutcome.OTHER_BREAK);
-			e.getPlayer().sendMessage(cfg().getStringF("messages.price-exceeded").replace("{}", String.valueOf(maxPrice)));
+			signPrice = Integer.parseInt(sign);
+		} catch (NumberFormatException ex)
+		{
+			cancelCreation(e, maxPrice);
+			return;
 		}
+
+		if (signPrice > maxPrice)
+			cancelCreation(e, maxPrice);
+	}
+
+	private void cancelCreation(PreShopCreationEvent e, int maxPrice)
+	{
+		e.setOutcome(PreShopCreationEvent.CreationOutcome.OTHER_BREAK);
+		e.getPlayer().sendMessage(cfg().getStringF("messages.price-exceeded").replace("{}", String.valueOf(maxPrice)));
 	}
 }
