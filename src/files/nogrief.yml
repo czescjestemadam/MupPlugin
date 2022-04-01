@@ -1,6 +1,7 @@
 region-rollback:
   check-interval: 40 # ticks
   max-time: 86400 # seconds
+  max-blocks-per-interval: 512
   exclude:
     region-owner: true
     region-members: true

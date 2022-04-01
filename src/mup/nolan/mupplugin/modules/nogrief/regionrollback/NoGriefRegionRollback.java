@@ -87,10 +87,14 @@ public class NoGriefRegionRollback
 			@Override
 			public void run()
 			{
+				final int maxPerInterval = cfg.getInt("region-rollback.max-blocks-per-interval");
 				for (RRBlockChange c : changes)
 				{
 					if (c.canRollback())
 						toRollback.add(c);
+
+					if (toRollback.size() >= maxPerInterval)
+						break;
 				}
 
 				changes.removeAll(toRollback);
