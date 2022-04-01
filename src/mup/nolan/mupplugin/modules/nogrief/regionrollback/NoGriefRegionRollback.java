@@ -54,10 +54,10 @@ public class NoGriefRegionRollback
 								(cfg.getBool("region-rollback.exclude.region-owner") && WGHook.isRegionsOwner(loc, change.getPlayer())))
 							continue;
 
-						final int time = WGHook.getFlagValI(loc, change.getPlayer(), (IntegerFlag)WGHook.getFlag("ng-region-rollback-time"));
-						if (time < 1)
+						final Integer time = WGHook.getFlagValI(loc, change.getPlayer(), (IntegerFlag)WGHook.getFlag("ng-region-rollback-time"));
+						if (time == null || time < 1)
 						{
-							MupPlugin.log().warning("Flag ng-region-rollback-time at " + StrUtils.formatLocation("[{w}] {x} {y} {z}", loc, 0) + " is negative");
+							MupPlugin.log().warning("Flag ng-region-rollback-time at " + StrUtils.formatLocation("[{w}] {x} {y} {z}", loc, 0) + " has invalid value (" + time + ")");
 							continue;
 						}
 
