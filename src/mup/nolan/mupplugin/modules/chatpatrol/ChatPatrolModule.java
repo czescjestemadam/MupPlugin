@@ -393,7 +393,7 @@ public class ChatPatrolModule extends Module
 		final List<String> matches = new ArrayList<>();
 		for (String blackString : cfg().getStringList("categories." + category + ".blacklist"))
 		{
-			final Matcher m = Pattern.compile("(" + blackString + "){,64}", Pattern.CASE_INSENSITIVE).matcher(content.get());
+			final Matcher m = Pattern.compile("(" + blackString + "){1,64}", Pattern.CASE_INSENSITIVE).matcher(content.get());
 			while (m.find())
 			{
 				final String group = m.group();
