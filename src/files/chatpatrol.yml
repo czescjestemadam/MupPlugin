@@ -20,25 +20,24 @@ categories:
     command: warn {} Wulgaryzmy
     message: '&cNie przeklinaj'
     blacklist:
-      - '(s|z|wy*)*k+(u|ó)+r+(w|v)+(a|i|o|y)*(my*|e|n+y+|((c|ć)(a|i+e+)*)|s+(z+(o+n+)*|y+n+(y|i+e+)*|k+o+))*' # *kurw*
-      - 'k+u+r+e+w+(s+k+o+|k+(i|o)+)*' # kurew*
+      - '(w+y*|[sz]+)?[kq]+[uó]+r+[wv]+([ao]+|i+(ony|c*[aą]+(m+y*|[cć](ie)?|sz)?|s+(ko|zon))?|y+(s+y+n(y+|i+e+)?)?)?' # *kurw*
+      - 'k+u+r+e+w+(s+k+[aio]+|k+[eio]+)?' # kurew*
       - k+u+h+w+a+
-      - '(j+a+ *|n+a+|o+d*|s+|w+y*|z+a+|r+o+z+)*(p+i+e+r+d)((a|o)+l+(a|e|i)*(a|c(ie)*|ć|sz|(l|ł)(em|y)|on(a|y)|j(my|cie)*|my*|l)*)' # *pierd*
+      - '(j+a+ ?|n+a+|o+d*|s+|w+y*|z+a+|r+o+z+)?(p+i+e+r+d)[ao]+l+[aei]*(a+|[cć](i+e+)?|s+z+|[lł]+(e+m+|y+)|o+n+[ay]+|j+(m+y+|c+i+e+)?|m+y*|l+)?' # *pierd*
       - j+a+p+i+e+r+o+d+l+e+
-      - 'c*h+(u|ó)+(j|i)+(u|e+k*|o+w+o*|n+i+a*)*' # huk*
-      - c+h+o+j+
-      - 'd+z+i+w+(k+(a|i|o|e)+|e+c+z+k+i+)' # dziw*
-      - 's+u+k+(a|e|o|i(n+s+y+n+(y|ów)*)*)+' # suk*
-      - 's+z+m+a+t+(a|o|y)+' # szmat*
-      - 'k+u+t+a+s(y|i+e+)*' # kutas*
-      - 'c+i+p+(a|o|y|e(c+z+k+i+)*|ki*)+' # cip*
+      - 'c*h+[uó]+[ij]+(u+|e+k*|o+w+o*|n+i+a*)?' # huk*
+      - c*h+o+j+
+      - 'd+z+i+w(e+c+z+)?k+[aioe]+' # dziw*
+      - 's+u+k+(a+|e+|o+|i+(n+s+y+n+(y|[oó]+w+)?)?)' # suk*
+      - 's+z+m+a+t+[aeoy]+' # szmat*
+      - '[kq]+u+t+a+s(y+|i+e+)?' # kutas*
+      - 'c+i+p+(a+|k+[aeio]+|o+|y+|e+(czk[aeio])*)' # cip*
       # *jeb*
-      - '(d+o+|n+a+|o+d*|p+(o+|r+z+e+)|w+y+|z+a*)*j+e+b+(a+((l|ł)(o|a|ą|e(s|ś)*|i((s|ś)cie)*)*m*|c|ć|n(a|e|i(u+(t+k+(i|a)+)*)*|y)*)+|y|i+(e|ę)+|n(i+j+|e+|ą(ć|ł))*|c+i+e+)*'
-      - 'p+i+z+d(a|e|o|y)+' # pizd*
+      - '([nz]+a+|z|wy|[dp]*o+d*|prze)?j+e+b+(a+([cć]+|n+[aąyeoi]+[uc]?|[lł]+[aąeio]*)|i+[eę]+|n+([aą]+[cćlł]+|e|i[ej])|[cć]+i+e+)?'
+      - 'p+i+z+d+[aeoy]+' # pizd*
       - b+i+t+c+h+
       - d+i+c+k+
-      - f+u+c+k+
-      - f+u+c+k+e+r+
+      - f+u+c+k+(e+r+)?
     whitelist:
       - kurwcze
       - pierdoly
