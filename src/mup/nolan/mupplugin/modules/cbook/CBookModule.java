@@ -39,6 +39,12 @@ public class CBookModule extends Module
 		}
 	}
 
+	@Override
+	public void onDisable()
+	{
+		books.clear();
+	}
+
 	public List<String> getBooks()
 	{
 		return List.copyOf(cfg().list("books"));
