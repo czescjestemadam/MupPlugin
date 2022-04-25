@@ -12,7 +12,7 @@ books:
       - ""
 
 messages:
-  usage: ''
+  usage: '&c/{} <book>'
   opened: '&aOtworzono książke {}'
   not-found: '&cNie znaleziono takiej książki'
   saved: ''
