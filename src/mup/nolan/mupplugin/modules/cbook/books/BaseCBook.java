@@ -4,6 +4,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 
+import java.util.List;
+
 public abstract class BaseCBook implements CBook
 {
 	protected final String name;
@@ -34,6 +36,8 @@ public abstract class BaseCBook implements CBook
 		meta.setAuthor(author);
 		book.setItemMeta(meta);
 	}
+
+	public abstract void setPages(List<String> pages);
 
 	@Override
 	public String getName()

@@ -12,6 +12,7 @@ public class SimpleCBook extends BaseCBook
 		super(name, book);
 	}
 
+	@Override
 	public void setPages(List<String> pages)
 	{
 		if (pages == null || pages.size() == 0)
