@@ -6,9 +6,6 @@ import mup.nolan.mupplugin.modules.cbook.books.AdvancedCBook;
 import mup.nolan.mupplugin.modules.cbook.books.BaseCBook;
 import mup.nolan.mupplugin.modules.cbook.books.CBook;
 import mup.nolan.mupplugin.modules.cbook.books.SimpleCBook;
-import mup.nolan.mupplugin.utils.StrUtils;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,16 +27,11 @@ public class CBookModule extends Module
 			final BaseCBook book;
 
 			if (cfg().getBool("books." + bookName + ".advanced"))
-			{
-				book = new AdvancedCBook(bookName, new ItemStack(Material.WRITTEN_BOOK));
-				((AdvancedCBook)book).setPages(cfg().getStringList("books." + bookName + ".pages"));
-			}
+				book = new AdvancedCBook(bookName);
 			else
-			{
-				book = new SimpleCBook(bookName, new ItemStack(Material.WRITABLE_BOOK));
-				((SimpleCBook)book).setPages(cfg().getStringList("books." + bookName + ".pages").stream().map(StrUtils::replaceColors).toList());
-			}
+				book = new SimpleCBook(bookName);
 
+			book.setPages(cfg().getStringList("books." + bookName + ".pages"));
 			book.setTitle(cfg().getStringF("books." + bookName + ".title"));
 			book.setAuthor(cfg().getStringF("books." + bookName + ".author"));
 

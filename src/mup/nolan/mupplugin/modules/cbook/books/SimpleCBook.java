@@ -1,15 +1,15 @@
 package mup.nolan.mupplugin.modules.cbook.books;
 
-import org.bukkit.inventory.ItemStack;
+import mup.nolan.mupplugin.utils.StrUtils;
 import org.bukkit.inventory.meta.BookMeta;
 
 import java.util.List;
 
 public class SimpleCBook extends BaseCBook
 {
-	public SimpleCBook(String name, ItemStack book)
+	public SimpleCBook(String name)
 	{
-		super(name, book);
+		super(name);
 	}
 
 	@Override
@@ -19,7 +19,7 @@ public class SimpleCBook extends BaseCBook
 			return;
 
 		final BookMeta meta = (BookMeta)book.getItemMeta();
-		meta.setPages(pages);
+		meta.setPages(pages.stream().map(StrUtils::replaceColors).toList());
 		book.setItemMeta(meta);
 	}
 }

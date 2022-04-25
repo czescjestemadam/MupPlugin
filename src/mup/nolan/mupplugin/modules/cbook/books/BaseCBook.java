@@ -1,5 +1,6 @@
 package mup.nolan.mupplugin.modules.cbook.books;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
@@ -9,12 +10,11 @@ import java.util.List;
 public abstract class BaseCBook implements CBook
 {
 	protected final String name;
-	protected final ItemStack book;
+	protected final ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
 
-	public BaseCBook(String name, ItemStack book)
+	public BaseCBook(String name)
 	{
 		this.name = name;
-		this.book = book;
 	}
 
 	public void setTitle(String title)

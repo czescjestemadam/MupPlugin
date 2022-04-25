@@ -3,16 +3,15 @@ package mup.nolan.mupplugin.modules.cbook.books;
 import com.google.common.collect.Lists;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 
 import java.util.*;
 
 public class AdvancedCBook extends BaseCBook
 {
-	public AdvancedCBook(String name, ItemStack book)
+	public AdvancedCBook(String name)
 	{
-		super(name, book);
+		super(name);
 	}
 
 	@Override
