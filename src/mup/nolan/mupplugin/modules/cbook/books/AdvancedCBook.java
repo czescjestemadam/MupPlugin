@@ -1,6 +1,6 @@
 package mup.nolan.mupplugin.modules.cbook.books;
 
-import com.google.common.collect.Lists;
+import mup.nolan.mupplugin.utils.StrUtils;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -38,23 +38,37 @@ public class AdvancedCBook extends BaseCBook
 			final List<BaseComponent> elements = new ArrayList<>();
 
 			boolean tag = false;
+			boolean qs = false;
 			String buff = "";
 
 			for (char c : page.toCharArray())
 			{
-				if (c == '<' && !tag)
+				if (c == '\'' || c == '"')
+					qs = !qs;
+
+				if (qs)
+					buff += c;
+				else if (c == '<' && !tag)
 				{
-					elements.add(new TextComponent(buff));
 					tag = true;
+					elements.add(new TextComponent(StrUtils.replaceColors(buff)));
+					buff = "" + c;
 				}
 				else if (c == '>' && tag)
 				{
-					elements.add(Tag.fromString(buff).toComponent());
+					buff += c;
+					elements.add(new Tag(buff).toComponent());
+					buff = "";
 					tag = false;
 				}
-
-				buff += c;
+				else
+					buff += c;
 			}
+
+			if (!buff.isEmpty())
+				elements.add(new TextComponent(StrUtils.replaceColors(buff)));
+
+			interpretedPages.add(elements.toArray(BaseComponent[]::new));
 		}
 
 		return interpretedPages;
