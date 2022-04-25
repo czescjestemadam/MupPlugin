@@ -154,9 +154,13 @@ public class AdvancedCBook extends BaseCBook
 
 			tx.setText((String)props.get("text"));
 
+			if (flags.contains("under"))
+				tx.setUnderlined(true);
+
 			switch (name)
 			{
 				case "link" -> link(tx);
+				case "page" -> page(tx);
 			}
 
 			return tx;
@@ -165,8 +169,11 @@ public class AdvancedCBook extends BaseCBook
 		private void link(TextComponent tx)
 		{
 			tx.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, (String)props.get("url")));
-			if (flags.contains("u"))
-				tx.setUnderlined(true);
+		}
+
+		private void page(TextComponent tx)
+		{
+			tx.setClickEvent(new ClickEvent(ClickEvent.Action.CHANGE_PAGE, String.valueOf(props.get("page"))));
 		}
 
 		@Override
