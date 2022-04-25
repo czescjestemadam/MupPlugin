@@ -358,7 +358,7 @@ public class ChatPatrolModule extends Module
 		final String replacement = cfg().getString("replacement");
 
 		boolean dnsAction = false;
-		if (cfg().has("categories." + category + ".dns-lookup"))
+		if (cfg().has("categories." + category + ".dns-lookup") && cfg().getBool("dns-lookup"))
 		{
 			final Matcher m = Pattern.compile(cfg().getString("categories." + category + ".dns-lookup.format"), Pattern.CASE_INSENSITIVE).matcher(content.get());
 			while (m.find())
