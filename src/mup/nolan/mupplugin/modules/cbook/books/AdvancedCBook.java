@@ -150,9 +150,13 @@ public class AdvancedCBook extends BaseCBook
 
 		public TextComponent toComponent()
 		{
-			final TextComponent tx = new TextComponent();
+			if (returnRaw)
+				return new TextComponent(raw);
 
-			tx.setText((String)props.get("text"));
+			final TextComponent tx = new TextComponent(StrUtils.replaceColors((String)props.get("text")));
+
+			if (props.containsKey("hover"))
+				tx.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(StrUtils.replaceColors((String)props.get("hover")))));
 
 			if (flags.contains("under"))
 				tx.setUnderlined(true);
@@ -161,6 +165,7 @@ public class AdvancedCBook extends BaseCBook
 			{
 				case "link" -> link(tx);
 				case "page" -> page(tx);
+				case "cmd" -> cmd(tx);
 			}
 
 			return tx;
@@ -174,6 +179,11 @@ public class AdvancedCBook extends BaseCBook
 		private void page(TextComponent tx)
 		{
 			tx.setClickEvent(new ClickEvent(ClickEvent.Action.CHANGE_PAGE, String.valueOf(props.get("page"))));
+		}
+
+		private void cmd(TextComponent tx)
+		{
+			tx.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, (String)props.get("cmd")));
 		}
 
 		@Override
