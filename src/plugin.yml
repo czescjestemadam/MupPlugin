@@ -88,3 +88,5 @@ permissions:
     default: op
   mup.report.cooldown-exempt:
     default: op
+  mup.cmd.cbook:
+    default: op
