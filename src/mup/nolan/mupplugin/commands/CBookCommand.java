@@ -7,6 +7,7 @@ import mup.nolan.mupplugin.modules.cbook.CBookModule;
 import mup.nolan.mupplugin.modules.cbook.books.CBook;
 import mup.nolan.mupplugin.utils.CommandUtils;
 import mup.nolan.mupplugin.utils.PermsUtils;
+import mup.nolan.mupplugin.utils.StrUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -49,6 +50,7 @@ public class CBookCommand implements TabExecutor
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args)
 	{
-		return List.of();
+		final CBookModule mod = (CBookModule)MupPlugin.get().getModuleManager().getModule("cbook");
+		return StrUtils.returnMatches(args[0], mod.getBooks());
 	}
 }

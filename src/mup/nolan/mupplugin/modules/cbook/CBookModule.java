@@ -47,7 +47,7 @@ public class CBookModule extends Module
 
 	public List<String> getBooks()
 	{
-		return List.copyOf(cfg().list("books"));
+		return books.stream().map(CBook::getName).toList();
 	}
 
 	public CBook getBook(String name)
