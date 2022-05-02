@@ -6,6 +6,7 @@ import mup.nolan.mupplugin.db.DiscordLink;
 import mup.nolan.mupplugin.hooks.VaultHook;
 import mup.nolan.mupplugin.modules.discord.commands.DCommand;
 import mup.nolan.mupplugin.modules.discord.commands.DPingCommand;
+import mup.nolan.mupplugin.modules.discord.commands.DTpsCommand;
 import mup.nolan.mupplugin.utils.StrUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandException;
@@ -30,6 +31,7 @@ public class DiscordListener implements MessageCreateListener
 		this.cfg = cfg;
 
 		registerCommand(new DPingCommand());
+		registerCommand(new DTpsCommand());
 	}
 
 	@Override
