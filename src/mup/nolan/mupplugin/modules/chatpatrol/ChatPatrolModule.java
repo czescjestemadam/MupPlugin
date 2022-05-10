@@ -343,9 +343,12 @@ public class ChatPatrolModule extends Module
 			if (!cfg().getStringList("categories." + category + ".apply-to").contains(from))
 				continue;
 
+			if (content.get().isEmpty())
+				continue;
+
 			final String original = content.get();
 			checkCategory(category, player, content, event);
-			if (event.isCancelled() || !original.equalsIgnoreCase(content.get()))
+			if (!original.equalsIgnoreCase(content.get()))
 				notify(from, category, player, original);
 		}
 	}
@@ -417,7 +420,10 @@ public class ChatPatrolModule extends Module
 		player.sendMessage(cfg().getStringF("categories." + category + ".message"));
 		final String action = cfg().getString("categories." + category + ".action");
 		if (action.equalsIgnoreCase("cancel"))
+		{
 			event.setCancelled(true);
+			content.set("");
+		}
 		else if (action.equalsIgnoreCase("replace") && !player.hasPermission("mup.chatpatrol.exempt.replace"))
 			for (String match : matches)
 				content.set(content.get().replace(match, replacement));
